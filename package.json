@@ -1,7 +1,7 @@
 {
-    "name": "cw-vue-framework",
+    "name": "weops-framework",
     "version": "3.0.2",
-    "description": "cw-vue-framework",
+    "description": "weops-framework",
     "author": "vue-group",
     "private": true,
     "scripts": {
