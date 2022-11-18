@@ -1,7 +1,7 @@
 import axios from 'axios'
 import CachedPromise from './cached-promise'
 import RequestQueue from './request-queue'
-import { bkMessage } from '@canway/cw-magic-vue'
+import { bkMessage } from 'bk-magic-vue'
 
 const getToken = () => {
     const DEFAULT_X_CSRFTOKEN = 'NOTPROVIDED'

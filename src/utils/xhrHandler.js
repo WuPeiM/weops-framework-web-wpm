@@ -1,4 +1,4 @@
-import { bkMessage } from '@canway/cw-magic-vue'
+import { bkMessage } from 'bk-magic-vue'
 
 /** 成功消息提示  */
 export const successMessage = (message, delay = 3000, limit = 3) => {

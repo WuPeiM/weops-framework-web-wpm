@@ -12,7 +12,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const TerserPlugin = require("terser-webpack-plugin")
 const ReplaceTemplateStaticUrlPlugin = require("./replace-template-static-url-plugin")
 
-const HTML_TITLE = 'VUE框架'
+const HTML_TITLE = '运营系统'
 
 const webpackConfig = merge(baseWebpackConfig, {
     mode: 'production',
@@ -68,7 +68,7 @@ const webpackConfig = merge(baseWebpackConfig, {
                     // 表示是否使用已有的 chunk，如果为 true 则表示如果当前的 chunk 包含的模块已经被提取出去了，那么将不会重新生成新的。
                     reuseExistingChunk: true,
                     test: module => {
-                        return /@canway\/cw-magic-vue/.test(module.context)
+                        return /bk-magic-vue/.test(module.context)
                     }
                 },
                 // 所有 node_modules 的模块被不同的 chunk 引入超过 1 次的提取为 twice

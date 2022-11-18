@@ -12,7 +12,7 @@ const portfinder = require('portfinder')
 
 const HOST = process.env.HOST
 const PORT = process.env.PORT && Number(process.env.PORT)
-const HTML_TITLE = 'VUE框架'
+const HTML_TITLE = '运营系统'
 
 const devWebpackConfig = merge(baseWebpackConfig, {
     mode: 'development',
