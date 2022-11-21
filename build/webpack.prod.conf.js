@@ -12,7 +12,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const TerserPlugin = require("terser-webpack-plugin")
 const ReplaceTemplateStaticUrlPlugin = require("./replace-template-static-url-plugin")
 
-const HTML_TITLE = '运营系统'
+const HTML_TITLE = config.build.title || 'VUE框架'
 
 const webpackConfig = merge(baseWebpackConfig, {
     mode: 'production',
