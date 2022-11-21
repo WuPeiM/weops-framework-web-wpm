@@ -1,7 +1,7 @@
 {
-    "name": "cw-vue-framework",
+    "name": "weops-framework",
     "version": "3.0.2",
-    "description": "cw-vue-framework",
+    "description": "weops-framework",
     "author": "vue-group",
     "private": true,
     "scripts": {
@@ -25,8 +25,8 @@
     "dependencies": {
         "@antv/data-set": "^0.11.8",
         "@antv/g2": "^4.1.16",
-        "@canway/cw-magic-vue": "3.2.0",
         "axios": "^0.16.2",
+        "bk-magic-vue": "^2.4.15-beta.3",
         "echarts": "^5.1.1",
         "jquery": "^2.2.4",
         "lint-staged": "^11.0.0",

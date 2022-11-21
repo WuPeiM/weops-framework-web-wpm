@@ -6,10 +6,10 @@ import {
     bkPopover, bkProcess, bkProgress, bkRadio, bkRadioGroup, bkSearchSelect, bkSelect, bkTableSettingContent, bkBigTree,
     bkSideslider, bkSlider, bkSteps, bkSwitcher, bkTab, bkTabPanel, bkTable, bkTableColumn, bkTagInput, bkTimePicker,
     bkTimeline, bkClickoutside, bkTooltips, bkOverflowTips, bkCascade, bkIcon, bkDivider, bkPopconfirm, bkRadioButton, bkTag, bkResizeLayout
-} from '@canway/cw-magic-vue'
+} from 'bk-magic-vue'
 
 // bkDiff 组件体积较大且不是很常用，因此注释掉。如果需要，打开注释即可
-// import { bkDiff } from '@canway/cw-magic-vue'
+// import { bkDiff } from 'bk-magic-vue'
 
 // components use
 // Vue.use(bkBadge)
