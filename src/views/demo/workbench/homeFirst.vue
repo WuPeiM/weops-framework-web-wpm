@@ -91,10 +91,10 @@
 
 <script>
     import Card from '@main/components/base/card'
-    import StatsCard from '@main/components/custom/stats_cards'
+    import StatsCard from '@main/components/custom/statsCards'
     import Flow from '@main/components/custom/flow'
-    import JobBar from './charts/job_bars'
-    import JobLine from './charts/job_lines'
+    import JobBar from './charts/jobBars'
+    import JobLine from './charts/jobLines'
 
     export default {
         name: 'home-first',

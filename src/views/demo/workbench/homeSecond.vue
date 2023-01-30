@@ -63,10 +63,10 @@
 
 <script>
     import Card from '@main/components/base/card'
-    import DisplayCard from '@main/components/custom/display_card'
-    import JobBar from './charts/job_bars'
-    import JobPie from './charts/job_pie'
-    import JobTend from './charts/job_tend'
+    import DisplayCard from '@main/components/custom/displayCard'
+    import JobBar from './charts/jobBars'
+    import JobPie from './charts/jobPie'
+    import JobTend from './charts/jobTend'
 
     export default {
         name: 'home-second',

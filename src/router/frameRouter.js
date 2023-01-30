@@ -1,7 +1,7 @@
 // 主站
-const HomeFirst = () => import('@main/views/ui_demo/workbench/home_first')
-const HomeSecond = () => import('@main/views/ui_demo/workbench/home_second')
-const HomeThird = () => import('@main/views/ui_demo/workbench/home_third')
+const HomeFirst = () => import('@main/views/demo/workbench/homeFirst')
+const HomeSecond = () => import('@main/views/demo/workbench/homeSecond')
+const HomeThird = () => import('@main/views/demo/workbench/homeThird')
 
 let mainRouter = [
     {

@@ -12,7 +12,7 @@
 </template>
 
 <script>
-    import SysSetting from './sys_setting'
+    import SysSetting from './sysSetting'
 
     export default {
         name: 'sys-tab',

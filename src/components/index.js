@@ -1,6 +1,6 @@
 import container from './base/container'
 import header from './base/header'
-import leftNavigation from './base/left_navigation'
+import leftNavigation from './base/leftNavigation'
 
 const components = [
     container,
