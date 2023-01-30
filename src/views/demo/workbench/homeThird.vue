@@ -79,11 +79,11 @@
 
 <script>
     import Card from '@main/components/base/card'
-    import JobLine from './charts/job_lines'
-    import NestedPie from './charts/nested_pie'
-    import StatsCard from '@main/components/custom/stats_cards'
-    import DisplayCard from '@main/components/custom/display_card'
-    import ProcessCard from '@main/components/custom/process_card'
+    import JobLine from './charts/jobLines'
+    import NestedPie from './charts/nestedPie'
+    import StatsCard from '@main/components/custom/statsCards'
+    import DisplayCard from '@main/components/custom/displayCard'
+    import ProcessCard from '@main/components/custom/processCard'
 
     export default {
         name: 'home-third',

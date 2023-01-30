@@ -34,9 +34,9 @@
 
 <script>
     import Card from '@main/components/base/card'
-    import LogoSetting from '@main/components/custom/logo_setting'
-    import SysSetting from './components/sys_setting'
-    import SysTab from './components/sys_tab'
+    import LogoSetting from '@main/components/custom/logoSetting'
+    import SysSetting from './components/sysSetting'
+    import SysTab from './components/sysTab'
 
     export default {
         name: 'system-settings',

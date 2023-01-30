@@ -5,7 +5,7 @@
 </template>
 
 <script>
-    import leftNavigation from '@main/components/base/left_navigation'
+    import leftNavigation from '@main/components/base/leftNavigation'
 
     export default {
         name: 'app',
