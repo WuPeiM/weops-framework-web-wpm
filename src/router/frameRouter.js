@@ -1,39 +1,21 @@
 // 主站
-const HomeFirst = () => import('@main/views/demo/workbench/homeFirst')
-const HomeSecond = () => import('@main/views/demo/workbench/homeSecond')
-const HomeThird = () => import('@main/views/demo/workbench/homeThird')
+const Home = () => import('@main/views/demo/workbench/home')
 
 let mainRouter = [
     {
         path: '/',
-        name: 'HomeFirst',
-        component: HomeFirst,
+        name: 'Home',
+        component: Home,
         meta: {
-            title: '首页1'
+            title: '首页'
         }
     },
     {
         path: '/home',
-        name: 'HomeFirst',
-        component: HomeFirst,
+        name: 'Home',
+        component: Home,
         meta: {
-            title: '首页1'
-        }
-    },
-    {
-        path: '/homeSecond',
-        name: 'HomeSecond',
-        component: HomeSecond,
-        meta: {
-            title: '首页2'
-        }
-    },
-    {
-        path: '/homeThird',
-        name: 'HomeThird',
-        component: HomeThird,
-        meta: {
-            title: '首页3'
+            title: '首页'
         }
     }
 ]
@@ -41,30 +23,11 @@ let mainRouter = [
 // 导航栏
 let routeConfig = [
     {
-        name: '工作台',
-        icon: 'iconfont icon-mianxingtubiao-shezhi',
-        id: 'workbench',
-        children: [
-            {
-                name: '首页1',
-                id: 'HomeFirst',
-                icon: 'iconfont icon-mianxingtubiao-shezhi',
-                active: true,
-                url: '/home'
-            },
-            {
-                name: '首页2',
-                id: 'HomeSecond',
-                icon: 'iconfont icon-mianxingtubiao-riqi',
-                url: '/homeSecond'
-            },
-            {
-                name: '首页3',
-                id: 'HomeThird',
-                icon: 'iconfont icon-mianxingtubiao-danju',
-                url: '/homeThird'
-            }
-        ]
+        name: '首页',
+        id: 'Home',
+        icon: 'iconfont icon-mianxingtubiao-shouye',
+        active: true,
+        url: '/home'
     }
 ]
 
