@@ -14,14 +14,6 @@
          * @param {string} cancelText 取消按钮文字内容
          * @param promiseStatus 构造promise函数，释放两个出口
          */
-        name: 'confirm',
-        data() {
-            return {
-            }
-        },
-        mounted() {
-        },
-        methods: {
-        }
+        name: 'confirm'
     }
 </script>
