@@ -209,6 +209,14 @@ module.exports = {
         "unit-case": "lower",
 
         // 禁止使用未知单位
-        "unit-no-unknown": true
+        "unit-no-unknown": true,
+
+        // 允许scss中使用mixin、include和extend
+        "at-rule-no-unknown": [
+            true,
+            {
+              "ignoreAtRules": ["mixin", "include","extend"]
+            }
+        ]
     }
 }

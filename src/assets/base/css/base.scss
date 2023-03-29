@@ -31,14 +31,11 @@ body ul {
     width: 100%;
     position: relative;
     height: 100%;
-    color: #475468 !important;
+    color: $cw-color-text-1 !important;
 }
 
 @media screen and (min-width: 1368px) {
     body {
         font-size: 14px;
-    }
-    .ivu-table {
-        font-size: 14px !important;
     }
 }

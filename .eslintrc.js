@@ -2,14 +2,17 @@
  * @file eslint config
  * @author
  */
-module.exports = {
+ module.exports = {
     // 无需向父目录查找eslint文件
     root: true,
 
     // 使用babel-eslint解析器
     parserOptions: {
         parser: 'babel-eslint',
-        sourceType: 'module'
+        sourceType: 'module',
+        ecmaFeatures: {
+            legacyDecorators: true
+        }
     },
 
     // 指定脚本的运行环境,每种环境都有一组特定的预定义全局变量
@@ -31,7 +34,8 @@ module.exports = {
     // 配置额外的全局变量
     globals: {
         // value 为 true 允许被重写，为 false 不允许被重写
-        NODE_ENV: false
+        NODE_ENV: false,
+        $: false
     },
 
     // 自定义规则
@@ -130,7 +134,7 @@ module.exports = {
 
         // 在开发阶段打开调试 (区分stag prod)
         // https://eslint.org/docs/rules/no-debugger
-        'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+        'no-debugger': 'off',
 
         // 只有一个参数时，箭头函数体可以省略圆括号
         // https://eslint.org/docs/rules/arrow-parens
@@ -260,13 +264,13 @@ module.exports = {
 
         // 不允许数组括号内有空格
         // https://github.com/vuejs/eslint-plugin-vue/blob/master/docs/rules/array-bracket-spacing.md
-        /** 
+        /**
          * 示例
          * bad code
          * var arr = [ 'foo', 'bar' ];
          * var arr = ['foo', 'bar' ];
          * var [ x, y ] = z;
-         * 
+         *
          * good code
          * var arr = ['foo', 'bar', 'baz'];
          * var arr = [['foo'], 'bar', 'baz'];
@@ -276,14 +280,14 @@ module.exports = {
 
         // 在箭头函数的箭头之前/之后需要空格
         // https://github.com/vuejs/eslint-plugin-vue/blob/master/docs/rules/arrow-spacing.md
-        /** 
+        /**
          * 示例
          * bad code
          * ()=> {};
          * () =>{};
          * (a)=> {};
          * (a) =>{};
-         * 
+         *
          * good code
          * () => {};
          * (a) => {};
@@ -294,11 +298,11 @@ module.exports = {
 
         // https://github.com/vuejs/eslint-plugin-vue/blob/master/docs/rules/attribute-hyphenation.md
         // vue html 属性小写，连字符
-        /** 
+        /**
          * 示例
          * bad code
          * <MyComponent myProp="prop" />
-         * 
+         *
          * good code
          * <MyComponent my-prop="prop" />
          */
@@ -307,10 +311,10 @@ module.exports = {
         // https://github.com/vuejs/eslint-plugin-vue/blob/master/docs/rules/attributes-order.md
         // 属性顺序，不限制
         'vue/attributes-order': 'off',
-        
+
         // 在打开块之后和关闭块之前强制块内的空格
         // https://github.com/vuejs/eslint-plugin-vue/blob/master/docs/rules/block-spacing.md
-        /** 
+        /**
          * 示例
          * bad code
          * function foo() {return true;}
@@ -318,7 +322,7 @@ module.exports = {
          * (a) =>{};function baz() {let i = 0;
          * return i;
          * }
-         * 
+         *
          * good code
          * function foo() { return true; }
          * if (foo) { bar = 0; }
@@ -327,7 +331,7 @@ module.exports = {
 
         // https://github.com/vuejs/eslint-plugin-vue/blob/master/docs/rules/camelcase.md
         // 后端数据字段经常不是驼峰，所以不限制 properties，也不限制解构
-        /** 
+        /**
          * 示例
          * bad code
          * import { no_camelcased } from "external-module"
@@ -335,7 +339,7 @@ module.exports = {
          * obj.do_something = function() {
          * // ...
          * };
-         * 
+         *
          * good code
          * import { no_camelcased as camelCased } from "external-module";
          * var myFavoriteColor   = "#112C85";
@@ -343,10 +347,10 @@ module.exports = {
          * var myFavoriteColor_  = "#112C85";
          */
         'vue/camelcase': ['error', {'properties': 'never'}],
-        
+
         // https://github.com/vuejs/eslint-plugin-vue/blob/master/docs/rules/comma-dangle.md
         // 禁止使用拖尾逗号，如 {demo: 'test',}
-        /** 
+        /**
          * 示例
          * bad code
          * var foo = {
@@ -354,7 +358,7 @@ module.exports = {
          * qux: "quux",
          * var arr = [1,2,];
          * };
-         * 
+         *
          * good code
          * var foo = {
          * bar: "baz",
@@ -362,27 +366,27 @@ module.exports = {
          * var arr = [1,2];
          */
         'vue/comma-dangle': ['error', 'never'],
-        
+
         // https://github.com/vuejs/eslint-plugin-vue/blob/master/docs/rules/comment-directive.md
         // vue 文件 template 中允许 eslint-disable eslint-enable eslint-disable-line eslint-disable-next-line
         // 行内注释启用/禁用某些规则，配置为 1 即允许
-        /** 
+        /**
          * 示例
          * bad code
          * <div a="1" />
-         * 
+         *
          * good code
          * <div a="1" b="2" c="3" d="4" />
          */
         'vue/comment-directive': 'error',
-        
+
         // https://github.com/vuejs/eslint-plugin-vue/blob/master/docs/rules/component-name-in-template-casing.md
         // 组件 html 标签的形式，连字符形式，所有 html 标签均会检测，如引入第三方不可避免，可通过 ignores 配置，支持正则，不限制
         'vue/component-name-in-template-casing': 'off',
-        
+
         // 需要 === 和 !==,不将此规则应用于null
         // https://github.com/vuejs/eslint-plugin-vue/blob/master/docs/rules/eqeqeq.md
-        /** 
+        /**
          * 示例
          * bad code
          * if (x == 42) { }
@@ -390,7 +394,7 @@ module.exports = {
          * if (obj.getStuff() != undefined) { }
          * var arr = [1,2,];
          * };
-         * 
+         *
          * good code
          * a === b
          * foo === true
@@ -398,7 +402,7 @@ module.exports = {
          * value === undefined
          */
         'vue/eqeqeq': ['error', 'always', {'null': 'ignore'}],
-        
+
         // https://github.com/vuejs/eslint-plugin-vue/blob/master/docs/rules/html-closing-bracket-newline.md
         // 单行写法不需要换行，多行需要，不限制
         'vue/html-closing-bracket-newline': 'off',
@@ -431,7 +435,7 @@ module.exports = {
         /* 示例
             <!-- bad code -->
             <div>
-            <p> 
+            <p>
 
             <!-- good code -->
             <div></div>
@@ -444,13 +448,13 @@ module.exports = {
         /* 示例
             <!-- bad code -->
             <div id=""
-                
+
                  some-attr=""
             />
 
             <!-- good code -->
             <div id=""
-               
+
                 some-attr=""
             />
         */
@@ -524,11 +528,11 @@ module.exports = {
         // name属性强制使用连字符形式
         // https://github.com/vuejs/eslint-plugin-vue/blob/master/docs/rules/name-property-casing.md
         /* 示例
-            // bad code 
+            // bad code
             export default {
                 name: 'MyComponent'
             }
-        
+
             // good code
             export default {
                 name: 'my-component'
@@ -635,7 +639,7 @@ module.exports = {
             </div>
         */
         'vue/no-parsing-error': 'error',
-        
+
         // https://github.com/vuejs/eslint-plugin-vue/blob/master/docs/rules/no-reserved-keys.md
         // 禁止使用保留字，包括Vue
         /* 示例
@@ -678,7 +682,7 @@ module.exports = {
         /* 示例
             // bad code
             <div class = "item"></div>
-            
+
             // good code
             <div></div>
         */
@@ -807,7 +811,7 @@ module.exports = {
             <script>
                 export default {
                     props: {
-                        // bad code 
+                        // bad code
                         'greeting-text': String,
                         greeting_text: String
 
@@ -888,13 +892,13 @@ module.exports = {
             Vue.component('bar', {
                 props: ['foo']
             })
-            
+
             Vue.component('baz', {
                 props: {
                 foo: {},
                 }
             })
-            
+
             // good code
             Vue.component('foo', {
                 props: {
@@ -1300,7 +1304,7 @@ module.exports = {
             <div v-show="foo"/>
         */
         'vue/valid-v-show': 'error',
-    
+
         // https://github.com/vuejs/eslint-plugin-vue/blob/master/docs/rules/valid-v-text.md
         // v-text 指令必须合法
         /* 示例
