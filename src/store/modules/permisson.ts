@@ -14,10 +14,9 @@ const state = {
 }
 
 function handleMenuList(userInfo) {
-    // const testArr = ['health_advisor', 'monitor_mgmt', 'operational_tools', 'repository', 'big_screen', 'senior_resource', 'resource', 'itsm', 'patch_mgmt', 'auto_process']
     const inactiveMenuList = JSON.parse(JSON.stringify(menuList)).filter(item => {
         if (item.children) {
-            const grandChildren = item.children.filter(child => child.children);
+            const grandChildren = item.children.filter(child => child.children)
             if (grandChildren.length > 0) {
                 const greatGrandChildren = grandChildren[0].children.filter(grandChild => grandChild.id === 'CreditManage')
                 grandChildren[0].children = greatGrandChildren

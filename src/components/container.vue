@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts">
-    import BreadCrumb from '@/components/base/breadCrumb'
+    import BreadCrumb from '@/components/breadCrumb.vue'
     import { Component, Prop, Vue } from 'vue-property-decorator'
 
     @Component({

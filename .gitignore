@@ -12,3 +12,7 @@ package-lock.json
 *.ntvs*
 *.njsproj
 *.sln
+
+# 忽略不提交projects和.gitmodules
+/src/projects/*
+.gitmodules
