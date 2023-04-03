@@ -6,9 +6,9 @@
 </template>
 
 <script>
-    import appAuth from '@/components/base/appAuth'
+    import appAuth from '@/components/appAuth'
     import bus from './common/bus/index'
-    import navFrame from '@/components/base/navFrame'
+    import navFrame from '@/components/navFrame'
     import { subsMenuList } from '@/router/frameRouter'
     export default {
         name: 'app',

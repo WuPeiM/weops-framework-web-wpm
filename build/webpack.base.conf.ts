@@ -51,6 +51,10 @@ const createTsLintingRule = () => ({
 })
 
 module.exports = {
+    externals: {
+        // 新增
+        'microRouter': 'microRouter'
+    },
     context: path.resolve(__dirname, '../'),
     entry: {
         app: './src/main.ts'

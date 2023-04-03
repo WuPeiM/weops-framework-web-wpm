@@ -88,7 +88,17 @@ const dealRouterByPermission = async(to, from, next) => {
     } else {
         const menus = userInfo.menus || []
         if (userInfo.is_super) {
-            next()
+            if (to.name.indexOf('-') !== -1) {
+                next({
+                    name: to.name.split('-')[1],
+                    query: {
+                        ...to.query
+                    }
+                })
+            } else {
+                next()
+            }
+
         } else {
             const defaultMenu = ['Home', 'SysRole', 'SysUser', 'NoticeWays', 'SelfCureProcess', 'CreditManage', 'SysLog', 'SysLogo']
             const isRead = (userInfo.applications || ['Home']).some(item => {
@@ -136,13 +146,25 @@ const dealRouterByPermission = async(to, from, next) => {
 router.beforeEach(async(to, from, next) => {
     await cancelRequest()
     const permission = store.state.permission
+    const menu = store.state.menu
     const completeDynamicRoute = permission.completeDynamicRoute
+    const completeLoadChildApp = menu.completeLoadChildApp
     // 处理其他菜单 如:资产的动态和基础监控的动态菜单时,需要走以下的公共逻辑
     if (!completeDynamicRoute && hasCommonFolder('common')) {
         const commonFiles = require.context('@/projects', true, /\.ts$/)
         const module = commonFiles('./common/router/dealRoute.ts')
         if (module?.default) {
             await module.default.dealRouterByMenu(to, from, next, router)
+        } else {
+            await dealRouterByPermission(to, from, next)
+        }
+    } else if (!completeLoadChildApp && hasCommonFolder('common')) {
+        // 处理加载外部资源子应用
+        // @ts-ignore
+        const commonFiles = require.context('@/projects', true, /\.ts$/)
+        const module = commonFiles('./common/router/dealRoute.ts')
+        if (module?.default) {
+            await module.default.dealRouterByChildApp(to, from, next, router)
         } else {
             await dealRouterByPermission(to, from, next)
         }

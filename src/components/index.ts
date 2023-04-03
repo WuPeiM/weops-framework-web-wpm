@@ -1,4 +1,4 @@
-import container from './base/container'
+import container from './container'
 
 const components = [
     container

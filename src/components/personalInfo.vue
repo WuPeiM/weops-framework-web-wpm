@@ -19,7 +19,7 @@
 
 <script lang="ts">
     import { Vue, Component } from 'vue-property-decorator'
-    import WikiIframe from '@/components/base/commonIframe.vue'
+    import WikiIframe from '@/components/commonIframe.vue'
 
     @Component({
         components: {
