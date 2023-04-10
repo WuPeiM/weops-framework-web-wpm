@@ -88,17 +88,17 @@ const dealRouterByPermission = async(to, from, next) => {
     } else {
         const menus = userInfo.menus || []
         if (userInfo.is_super) {
-            if (to.name.indexOf('-') !== -1) {
-                next({
-                    name: to.name.split('-')[1],
-                    query: {
-                        ...to.query
-                    }
-                })
-            } else {
-                next()
-            }
-
+            // if (to.name.indexOf('-') !== -1) {
+            //     next({
+            //         name: to.name.split('-')[1],
+            //         query: {
+            //             ...to.query
+            //         }
+            //     })
+            // } else {
+            //     next()
+            // }
+            next()
         } else {
             const defaultMenu = ['Home', 'SysRole', 'SysUser', 'NoticeWays', 'SelfCureProcess', 'CreditManage', 'SysLog', 'SysLogo']
             const isRead = (userInfo.applications || ['Home']).some(item => {
