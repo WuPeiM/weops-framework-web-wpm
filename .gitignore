@@ -13,6 +13,9 @@ package-lock.json
 *.njsproj
 *.sln
 
+# 忽略不提交static下的dist文件
+/static/dist
+
 # 忽略不提交projects和.gitmodules
 /src/projects/*
 .gitmodules
