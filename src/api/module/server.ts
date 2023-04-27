@@ -11,8 +11,8 @@ export default {
     getMonitorMenus: function(params) {
         return get(reUrl + '/get_monitor_menus/', params)
     },
-    getLogo: function(params) {
-        return get(reUrl + '/system/mgmt/logo/', params)
+    getLogo: function(params, config) {
+        return get(reUrl + '/system/mgmt/logo/', params, config)
     },
     updateLogo: function(params) {
         return put(reUrl + '/system/mgmt/logo/', params)
