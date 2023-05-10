@@ -10,10 +10,17 @@ const state = {
     user: {},
     menuList: [],
     completeDynamicRoute: false,
-    ticketCount: 0
+    ticketCount: 0,
+    activationMenu: []
 }
 
 function handleMenuList(userInfo) {
+    const handleNeedMenuList = handleActivationMenu(userInfo)
+    const userMenus = userInfo.menus
+    return userInfo.is_super ? handleNeedMenuList : setMenuPurview(handleNeedMenuList, userMenus)
+}
+
+function handleActivationMenu(userInfo) {
     const inactiveMenuList = JSON.parse(JSON.stringify(menuList)).filter(item => {
         if (item.children) {
             const grandChildren = item.children.filter(child => child.children)
@@ -28,8 +35,7 @@ function handleMenuList(userInfo) {
     const allMenus = JSON.parse(JSON.stringify(window.is_activate ? menuList : inactiveMenuList))
     handleAllMenus(allMenus)
     const handleNeedMenuList = handleBelongModule(userInfo.applications, JSON.parse(JSON.stringify(allMenus)))
-    const userMenus = userInfo.menus
-    return userInfo.is_super ? handleNeedMenuList : setMenuPurview(handleNeedMenuList, userMenus)
+    return handleNeedMenuList
 }
 
 function handleBelongModule(moduleInfo, menuList) {
@@ -131,6 +137,9 @@ const mutations = {
     },
     setTicketCount(state, value) {
         state.ticketCount = value
+    },
+    setActivationMenu(state, value) {
+        state.activationMenu = value
     }
 }
 
@@ -161,6 +170,7 @@ const actions = {
                         })
                     }
                     commit('setMenuList', handleMenuList(res.data))
+                    commit('setActivationMenu', handleActivationMenu(res.data))
                     resolve(res.data)
                 } else {
                     reject(res.message)
