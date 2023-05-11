@@ -101,7 +101,7 @@ const dealRouterByPermission = async(to, from, next) => {
             // }
             next()
         } else {
-            const defaultMenu = ['Home', 'SysRole', 'SysUser', 'NoticeWays', 'SelfCureProcess', 'CreditManage', 'SysLog', 'SysSetting']
+            const defaultMenu = ['Home', 'SysRole', 'SysUser', 'NoticeWays', 'SelfCureProcess', 'CreditManage', 'SysLog', 'SysLogo', 'SysSetting']
             const isRead = (userInfo.applications || ['Home']).some(item => {
                 const menus = (subsMenuList[item] || []).concat(defaultMenu)
                 return menus.includes(to.name) || (to?.meta?.parentIds || []).filter(r => menus.includes(r)).length || menus.includes(to?.meta?.relatedMenu)
