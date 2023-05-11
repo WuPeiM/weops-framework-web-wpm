@@ -33,7 +33,7 @@
                 handler(val) {
                     // this.user?.applications
                     // const testArr = ['health_advisor', 'monitor_mgmt', 'operational_tools', 'repository', 'big_screen', 'senior_resource', 'resource', 'itsm', 'patch_mgmt', 'auto_process']
-                    const defaultMenu = ['Home', 'SysRole', 'SysUser', 'NoticeWays', 'SelfCureProcess', 'CreditManage', 'SysLog', 'SysSetting']
+                    const defaultMenu = ['Home', 'SysRole', 'SysUser', 'NoticeWays', 'SelfCureProcess', 'CreditManage', 'SysLog', 'SysLogo', 'SysSetting']
                     this.isRead = (this.user?.applications || ['Home']).some(item => {
                         const menus = (subsMenuList[item] || []).concat(defaultMenu)
                         return menus.includes(val.name) || (val?.meta?.parentIds || []).filter(r => menus.includes(r)).length || menus.includes(val?.meta?.relatedMenu)
