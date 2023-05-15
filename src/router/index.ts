@@ -11,6 +11,7 @@ import httpConfig from '@/api/axiosconfig/request'
 // }
 
 // 遍历 projects 目录下的所有文件和子目录
+// @ts-ignore
 const files = require.context('@/projects', true, /\.\/[^/]+\/.*/)
 
 // 判断是否包含了 common 文件夹
@@ -69,7 +70,7 @@ const dealRouterByPermission = async(to, from, next) => {
             allowJumpList.push(item)
         }
     })
-    if (!window.is_activate && to.name !== 'CreditManage') {
+    if (!window['is_activate'] && to.name !== 'CreditManage') {
         if (to.name === 'ActivationPage') {
             next()
         } else {
@@ -100,7 +101,7 @@ const dealRouterByPermission = async(to, from, next) => {
             // }
             next()
         } else {
-            const defaultMenu = ['Home', 'SysRole', 'SysUser', 'NoticeWays', 'SelfCureProcess', 'CreditManage', 'SysLog', 'SysLogo']
+            const defaultMenu = ['Home', 'SysRole', 'SysUser', 'NoticeWays', 'SelfCureProcess', 'CreditManage', 'SysLog', 'SysLogo', 'SysSetting']
             const isRead = (userInfo.applications || ['Home']).some(item => {
                 const menus = (subsMenuList[item] || []).concat(defaultMenu)
                 return menus.includes(to.name) || (to?.meta?.parentIds || []).filter(r => menus.includes(r)).length || menus.includes(to?.meta?.relatedMenu)
@@ -151,6 +152,7 @@ router.beforeEach(async(to, from, next) => {
     const completeLoadChildApp = menu.completeLoadChildApp
     // 处理其他菜单 如:资产的动态和基础监控的动态菜单时,需要走以下的公共逻辑
     if (!completeDynamicRoute && hasCommonFolder('common')) {
+        // @ts-ignore
         const commonFiles = require.context('@/projects', true, /\.ts$/)
         const module = commonFiles('./common/router/dealRoute.ts')
         if (module?.default) {
