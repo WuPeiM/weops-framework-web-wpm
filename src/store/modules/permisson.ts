@@ -11,17 +11,38 @@ const state = {
     menuList: [],
     completeDynamicRoute: false,
     ticketCount: 0,
-    activationMenu: []
+    activationMenu: [],
+    updateCustomMenu: false
+}
+// 遍历 projects 目录下的所有文件和子目录
+// @ts-ignore
+const files = require.context('@/projects', true, /\.\/[^/]+\/.*/)
+const hasCommonFolder = (fileName) => {
+    return files.keys().some(key => key.indexOf(`/${fileName}/`) !== -1)
 }
 
 function handleMenuList(userInfo) {
-    const handleNeedMenuList = handleActivationMenu(userInfo)
+    const handleNeedMenuList = handleActivationMenu(userInfo, 'custom')
     const userMenus = userInfo.menus
     return userInfo.is_super ? handleNeedMenuList : setMenuPurview(handleNeedMenuList, userMenus)
 }
 
-function handleActivationMenu(userInfo) {
-    const inactiveMenuList = JSON.parse(JSON.stringify(menuList)).filter(item => {
+function handleActivationMenu(userInfo, type) {
+    let customMenu = JSON.parse(JSON.stringify(menuList))
+     // 若weops_menu自定义菜单选择是默认，则使用menulist内置菜单
+    const weopsMenu = userInfo?.weops_menu
+    if (type === 'custom' && weopsMenu && weopsMenu.length) {
+        customMenu = weopsMenu
+        if (hasCommonFolder('common')) {
+            // @ts-ignore
+            const commonFiles = require.context('@/projects', true, /\.ts$/)
+            const module = commonFiles('./common/common/dynamicMenus.ts')
+            if (module?.default) {
+                module.default.dealDynamicMenus(JSON.parse(JSON.stringify(menuList)), customMenu)
+            }
+        }
+    }
+    const inactiveMenuList = JSON.parse(JSON.stringify(customMenu)).filter(item => {
         if (item.children) {
             const grandChildren = item.children.filter(child => child.children)
             if (grandChildren.length > 0) {
@@ -32,7 +53,7 @@ function handleActivationMenu(userInfo) {
         }
         return false
     })
-    const allMenus = JSON.parse(JSON.stringify(window.is_activate ? menuList : inactiveMenuList))
+    const allMenus = JSON.parse(JSON.stringify(window.is_activate ? customMenu : inactiveMenuList))
     handleAllMenus(allMenus)
     const handleNeedMenuList = handleBelongModule(userInfo.applications, JSON.parse(JSON.stringify(allMenus)))
     return handleNeedMenuList
@@ -140,6 +161,9 @@ const mutations = {
     },
     setActivationMenu(state, value) {
         state.activationMenu = value
+    },
+    setCustomMenuStatus(state) {
+        state.updateCustomMenu = !state.updateCustomMenu
     }
 }
 
@@ -170,7 +194,7 @@ const actions = {
                         })
                     }
                     commit('setMenuList', handleMenuList(res.data))
-                    commit('setActivationMenu', handleActivationMenu(res.data))
+                    commit('setActivationMenu', handleActivationMenu(res.data, ''))
                     resolve(res.data)
                 } else {
                     reject(res.message)
@@ -205,6 +229,9 @@ const actions = {
             })
         })
         return promise
+    },
+    updateMenuList({commit}, userInfo) {
+        commit('setMenuList', handleMenuList(userInfo))
     }
 }
 

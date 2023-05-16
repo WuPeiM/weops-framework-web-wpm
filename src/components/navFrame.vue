@@ -87,7 +87,7 @@
                     :url="item.url"
                     :id="item.id"
                     @click="handleNavItemClick(item)">
-                    <span><i :class="[item.icon, 'icon-class']"></i>{{ item.name }}</span>
+                    <span><i :class="[item.icon || 'cw-icon weops-folder', 'icon-class']"></i>{{ item.name }}</span>
                     <div slot="child">
                         <bk-navigation-menu-item
                             v-for="child in item.children"
@@ -120,6 +120,7 @@
     import Container from './container.vue'
     import personalInfo from './personalInfo.vue'
     import { mapState } from 'vuex'
+    import { removeItemsWithId } from '@/common/dealMenu.ts'
     @Component({
         components: {
             Container,
@@ -181,6 +182,9 @@
         get ticketCount() {
             return this.permission.ticketCount
         }
+        get updateCustomMenu() {
+            return this.permission?.updateCustomMenu
+        }
         get needLeftNav() {
             const target = this.menuList.find(item => item.id === this.activeTopNav)
             return !!(target && target.children)
@@ -192,22 +196,30 @@
             immediate: true,
             deep: true
         })
+        @Watch('updateCustomMenu', {
+            deep: true
+        })
         on$routeChanged(val) {
+            let routeValue = val
+            // 若watch的变量updateCustomMenu，则为布尔值，即该菜单改变时处理如下
+            if (typeof val === 'boolean') {
+                routeValue = this.$route
+            }
             if (this.clickFlag) {
                 this.clickFlag = false
                 this.renderKey++
             }
             this.menuList.forEach(item => {
-                if (item.id === val.name || (item.sonMenuIds || []).includes(val.name)) {
+                if (item.id === routeValue.name || (item.sonMenuIds || []).includes(routeValue.name)) {
                     this.activeTopNav = item.id
-                    if ((item.sonMenuIds || []).includes(val.name)) {
+                    if ((item.sonMenuIds || []).includes(routeValue.name)) {
                         this.leftNavList = item.children
                     }
                 } else {
-                    if (!val.meta.parentIds) {
+                    if (!routeValue.meta?.parentIds) {
                         return false
                     }
-                    const morePage = item.sonMenuIds.map(tex => val.meta.parentIds.find(nev => nev === tex))
+                    const morePage = item.sonMenuIds.map(tex => routeValue.meta.parentIds.find(nev => nev === tex))
                     if (!morePage.every(tex => !tex)) {
                         this.activeTopNav = item.id
                         this.leftNavList = item.children
@@ -221,14 +233,10 @@
             deep: true
         })
         onLeftNavListChanged(val) {
-            if (this.activeTopNav === 'Setting' && !this.user.is_super) {
-                val.forEach(nev => {
-                    (nev.children || []).forEach((item, index) => {
-                        if (['ServiceDeskManage', 'AutoProcess', 'SysRole', 'SysUser', 'NoticeWays'].includes(item.id)) {
-                            nev.children.splice(index, 1)
-                        }
-                    })
-                })
+            // 判断用户不是超管组内的人员，则不展示系统管理的界面[角色管理，用户管理，通知渠道，服务台管理]
+            if (!this.user.is_super) {
+                const ONLY_ADMIN_HAS_MENUS = ['ServiceDeskManage', 'AutoProcessManage', 'SysRole', 'SysUser', 'NoticeWays']
+                removeItemsWithId(val, ONLY_ADMIN_HAS_MENUS)
             }
         }
         created() {
@@ -362,8 +370,9 @@
                 return false
             }
             this.leftNavList = item.children
+            const children = this.leftNavList[0].children
             this.$router.push({
-                name: this.leftNavList[0].children ? this.leftNavList[0].children[0].id : this.leftNavList[0].id
+                name: children?.length ? children[0].id : this.leftNavList[0].id
             })
         }
         goHome() {
