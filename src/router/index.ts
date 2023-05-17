@@ -49,6 +49,21 @@ Router.prototype.replace = function push(location, onResolve, onReject) {
 const router = new Router({
     routes: frameRouter // 替换到这里
 })
+// 按照层级顺序检查每层级的第一个是否具有url属性
+function findFirstUrl(menus) {
+    const firstLevelItem = menus[0]
+    let id = null
+    if (firstLevelItem) {
+        if (firstLevelItem.url) {
+            id = firstLevelItem.id
+        } else if (firstLevelItem.children?.[0]?.url) {
+            id = firstLevelItem.children[0].id
+        } else if (firstLevelItem.children?.[0]?.children?.[0]?.url) {
+            id = firstLevelItem.children[0].children[0].id
+        }
+    }
+    return id
+}
 const dealRouterByPermission = async(to, from, next) => {
     const permission = store.state.permission
     if (!permission.user || JSON.stringify(permission.user) === '{}') {
@@ -88,6 +103,14 @@ const dealRouterByPermission = async(to, from, next) => {
         next()
     } else {
         const menus = userInfo.menus || []
+        // 判断weops_menu得值是否存在，存在的话拿第一个路由的值
+        const weopsMenu = userInfo?.weops_menu
+        if (weopsMenu?.length) {
+            if (to.fullPath === '/') {
+                const defaultName = findFirstUrl(weopsMenu)
+                next({name: defaultName})
+            }
+        }
         if (userInfo.is_super) {
             // if (to.name.indexOf('-') !== -1) {
             //     next({
@@ -113,11 +136,9 @@ const dealRouterByPermission = async(to, from, next) => {
                     if (menus.includes('Home')) {
                         next()
                     } else {
-                        // next()
                         if (menuList.length === 0) {
                             next({name: 'AuthPermissionFail'})
                         } else {
-                            debugger
                             allowJumpList[0].children ? next({name: allowJumpList[0].children[0].id}) : next({name: allowJumpList[0].id})
                         }
                     }
@@ -134,6 +155,7 @@ const dealRouterByPermission = async(to, from, next) => {
                         if (from.name === 'Home') {
                             Vue.prototype.$bus.$emit('setBkTabShow', true)
                         }
+                        debugger
                         next({ path: from.path })
                     } else {
                         isRead ? next() : next({ path: from.path })
