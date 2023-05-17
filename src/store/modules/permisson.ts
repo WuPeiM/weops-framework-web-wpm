@@ -29,7 +29,7 @@ function handleMenuList(userInfo) {
 
 function handleActivationMenu(userInfo, type) {
     let customMenu = JSON.parse(JSON.stringify(menuList))
-     // 若weops_menu自定义菜单选择是默认，则使用menulist内置菜单
+    // 若weops_menu自定义菜单选择是默认，则使用menulist内置菜单
     const weopsMenu = userInfo?.weops_menu
     if (type === 'custom' && weopsMenu && weopsMenu.length) {
         customMenu = weopsMenu
@@ -177,7 +177,6 @@ const actions = {
             api.User.homeInfo().then(async res => {
                 if (res.result) {
                     const { data } = res
-                    data.menus = ['HelloWorld'].concat(data.menus)
                     sessionStorage.setItem('loginInfo', JSON.stringify(data))
                     window.$store.commit('setLoginInfo', data)
                     commit('setUser', { ...data })
