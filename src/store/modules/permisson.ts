@@ -29,7 +29,7 @@ function handleMenuList(userInfo) {
 
 function handleActivationMenu(userInfo, type) {
     let customMenu = JSON.parse(JSON.stringify(menuList))
-     // 若weops_menu自定义菜单选择是默认，则使用menulist内置菜单
+    // 若weops_menu自定义菜单选择是默认，则使用menulist内置菜单
     const weopsMenu = userInfo?.weops_menu
     if (type === 'custom' && weopsMenu && weopsMenu.length) {
         customMenu = weopsMenu
