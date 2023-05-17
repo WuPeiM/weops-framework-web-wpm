@@ -3,6 +3,7 @@ import store from '@/store'
 import Router from 'vue-router'
 import { frameRouter, subsMenuList } from './frameRouter'
 import httpConfig from '@/api/axiosconfig/request'
+import { findFirstUrl, hasPathInChildren } from '@/common/dealMenu.ts'
 
 // 遇到路由重读点击报错时，取消注释解决
 // const originalPush = Router.prototype.push
@@ -49,21 +50,6 @@ Router.prototype.replace = function push(location, onResolve, onReject) {
 const router = new Router({
     routes: frameRouter // 替换到这里
 })
-// 按照层级顺序检查每层级的第一个是否具有url属性
-function findFirstUrl(menus) {
-    const firstLevelItem = menus[0]
-    let id = null
-    if (firstLevelItem) {
-        if (firstLevelItem.url) {
-            id = firstLevelItem.id
-        } else if (firstLevelItem.children?.[0]?.url) {
-            id = firstLevelItem.children[0].id
-        } else if (firstLevelItem.children?.[0]?.children?.[0]?.url) {
-            id = firstLevelItem.children[0].children[0].id
-        }
-    }
-    return id
-}
 const dealRouterByPermission = async(to, from, next) => {
     const permission = store.state.permission
     if (!permission.user || JSON.stringify(permission.user) === '{}') {
@@ -103,12 +89,12 @@ const dealRouterByPermission = async(to, from, next) => {
         next()
     } else {
         const menus = userInfo.menus || []
-        // 判断weops_menu得值是否存在，存在的话拿第一个路由的值
         const weopsMenu = userInfo?.weops_menu
         if (weopsMenu?.length) {
-            if (to.fullPath === '/') {
+            // 若自定义菜单中不存在url='/'的数据,则默认访问第一个路由
+            if (to.fullPath === '/' && !hasPathInChildren(weopsMenu, '/')) {
                 const defaultName = findFirstUrl(weopsMenu)
-                next({name: defaultName})
+                next({ name: defaultName })
             }
         }
         if (userInfo.is_super) {
