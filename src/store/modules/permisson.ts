@@ -53,7 +53,7 @@ function handleActivationMenu(userInfo, type) {
         }
         return false
     })
-    const allMenus = JSON.parse(JSON.stringify(window.is_activate ? customMenu : inactiveMenuList))
+    const allMenus = JSON.parse(JSON.stringify(window['is_activate'] ? customMenu : inactiveMenuList))
     handleAllMenus(allMenus)
     const handleNeedMenuList = handleBelongModule(userInfo.applications, JSON.parse(JSON.stringify(allMenus)))
     return handleNeedMenuList
@@ -178,7 +178,7 @@ const actions = {
                 if (res.result) {
                     const { data } = res
                     sessionStorage.setItem('loginInfo', JSON.stringify(data))
-                    window.$store.commit('setLoginInfo', data)
+                    window['$store'].commit('setLoginInfo', data)
                     commit('setUser', { ...data })
                     if (api.ticket) {
                         api.ticket.getTickets({

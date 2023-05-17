@@ -155,7 +155,6 @@ const dealRouterByPermission = async(to, from, next) => {
                         if (from.name === 'Home') {
                             Vue.prototype.$bus.$emit('setBkTabShow', true)
                         }
-                        debugger
                         next({ path: from.path })
                     } else {
                         isRead ? next() : next({ path: from.path })
