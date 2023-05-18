@@ -3,6 +3,7 @@ import store from '@/store'
 import Router from 'vue-router'
 import { frameRouter, subsMenuList } from './frameRouter'
 import httpConfig from '@/api/axiosconfig/request'
+import { findFirstUrl, hasPathInChildren } from '@/common/dealMenu.ts'
 
 // 遇到路由重读点击报错时，取消注释解决
 // const originalPush = Router.prototype.push
@@ -88,6 +89,14 @@ const dealRouterByPermission = async(to, from, next) => {
         next()
     } else {
         const menus = userInfo.menus || []
+        const weopsMenu = userInfo?.weops_menu
+        if (weopsMenu?.length) {
+            // 若自定义菜单中不存在url='/'的数据,则默认访问第一个路由
+            if (to.fullPath === '/' && !hasPathInChildren(weopsMenu, '/')) {
+                const defaultName = findFirstUrl(weopsMenu)
+                next({ name: defaultName })
+            }
+        }
         if (userInfo.is_super) {
             // if (to.name.indexOf('-') !== -1) {
             //     next({
@@ -113,11 +122,9 @@ const dealRouterByPermission = async(to, from, next) => {
                     if (menus.includes('Home')) {
                         next()
                     } else {
-                        // next()
                         if (menuList.length === 0) {
                             next({name: 'AuthPermissionFail'})
                         } else {
-                            debugger
                             allowJumpList[0].children ? next({name: allowJumpList[0].children[0].id}) : next({name: allowJumpList[0].id})
                         }
                     }
