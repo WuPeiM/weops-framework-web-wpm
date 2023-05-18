@@ -117,7 +117,6 @@ const dealRouterByPermission = async(to, from, next) => {
                         if (menuList.length === 0) {
                             next({name: 'AuthPermissionFail'})
                         } else {
-                            debugger
                             allowJumpList[0].children ? next({name: allowJumpList[0].children[0].id}) : next({name: allowJumpList[0].id})
                         }
                     }
