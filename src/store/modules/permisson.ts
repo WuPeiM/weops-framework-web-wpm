@@ -144,7 +144,6 @@ const actions = {
             api.User.homeInfo().then(async res => {
                 if (res.result) {
                     const { data } = res
-                    data.menus = ['HelloWorld'].concat(data.menus)
                     sessionStorage.setItem('loginInfo', JSON.stringify(data))
                     window.$store.commit('setLoginInfo', data)
                     commit('setUser', { ...data })
