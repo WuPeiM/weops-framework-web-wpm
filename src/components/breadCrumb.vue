@@ -37,6 +37,14 @@
                 size="small"
                 :theme="'default'"
                 type="submit"
+                @click="printTicket"
+                class="mr10">
+                打印
+            </bk-button>
+            <bk-button
+                size="small"
+                :theme="'default'"
+                type="submit"
                 @click="refreshTicketDetail"
                 class="mr10">
                 刷新
@@ -84,6 +92,15 @@
         })
         on$routeChange() {
             this.getBreadcrumb()
+        }
+        printTicket() {
+            this.$router.push({
+                name: 'TicketPrint',
+                query: {
+                    id: this.$route.query.id
+                },
+                target: '_blank'
+            })
         }
         getBreadcrumb() {
             const meta = this.$route.meta
