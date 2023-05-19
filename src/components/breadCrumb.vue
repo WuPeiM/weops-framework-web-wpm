@@ -94,13 +94,12 @@
             this.getBreadcrumb()
         }
         printTicket() {
-            this.$router.push({
+            window.open(this.$router.resolve({
                 name: 'TicketPrint',
                 query: {
                     id: this.$route.query.id
-                },
-                target: '_blank'
-            })
+                }
+            }).href, '_blank')
         }
         getBreadcrumb() {
             const meta = this.$route.meta
