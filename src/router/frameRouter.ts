@@ -1,4 +1,33 @@
-let mainRouter = []
+// 无设置菜单权限
+const AuthPermission = () => import('@/views/authPermission.vue')
+const Forbidden = () => import('@/views/403.vue')
+const NoFound = () => import('@/views/404.vue')
+let mainRouter = [
+    {
+        path: '/authPermissionFail',
+        name: 'AuthPermissionFail',
+        component: AuthPermission,
+        meta: {
+            title: '无菜单权限'
+        }
+    },
+    {
+        path: '/403',
+        name: '403',
+        component: Forbidden,
+        meta: {
+            title: '页面无访问权限'
+        }
+    },
+    {
+        path: '/404',
+        name: '404',
+        component: NoFound,
+        meta: {
+            title: '页面找不到'
+        }
+    }
+]
 let routeConfig = []
 let subsMenuPromission = {}
 let manageMenu = []

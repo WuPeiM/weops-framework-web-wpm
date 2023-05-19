@@ -1,5 +1,5 @@
 // 获取登录信息！！！勿动
-import { get, post, reUrl } from '@/api/axiosconfig/axiosconfig'
+import { get, reUrl } from '@/api/axiosconfig/axiosconfig'
 
 // 返回在vue模板中的调用接口
 export default {
