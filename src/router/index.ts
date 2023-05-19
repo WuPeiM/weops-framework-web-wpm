@@ -1,9 +1,9 @@
 import Vue from 'vue'
 import store from '@/store'
 import Router from 'vue-router'
-import { frameRouter, subsMenuList } from './frameRouter'
+import { frameRouter } from './frameRouter'
 import httpConfig from '@/api/axiosconfig/request'
-import { findFirstUrl, hasPathInChildren } from '@/common/dealMenu.ts'
+import {findFirstUrl, findIdsWithNoChildren, hasPathInChildren} from '@/common/dealMenu'
 
 // 遇到路由重读点击报错时，取消注释解决
 // const originalPush = Router.prototype.push
@@ -50,7 +50,7 @@ Router.prototype.replace = function push(location, onResolve, onReject) {
 const router = new Router({
     routes: frameRouter // 替换到这里
 })
-const dealRouterByPermission = async(to, from, next) => {
+const handleRouteAuthorization = async(to, from, next) => {
     const permission = store.state.permission
     if (!permission.user || JSON.stringify(permission.user) === '{}') {
         await store.dispatch('GenerateNavLists1')
@@ -59,18 +59,31 @@ const dealRouterByPermission = async(to, from, next) => {
     if (!(allUserData && JSON.stringify(allUserData).length)) {
         await store.dispatch('getAllUserList')
     }
+    checkRouteAccess(to, from, next)
+}
+
+function checkRouteAccess(to, from, next) {
+    const permission = store.state.permission
+    const isDefinedRoute = frameRouter.some(item => item.name === to?.name)
+    const ids = findIdsWithNoChildren(permission.menuList).concat(['404', '403', 'AuthPermissionFail'])
+    const isHasPermission = ids.includes(to.name) || (to?.meta?.parentIds || []).filter(r => ids.includes(r)).length || ids.includes(to?.meta?.relatedMenu)
+    // 不包含在全定义路由中,即是不存在该页面
+    if (!isDefinedRoute && !ids.includes(to.name)) {
+        next({ name: '404' })
+    }
+    // 判断是否存在在定义的路由中,存在但没有访问权限,则isRead为false,若不在isRead为true,且跳转到404
+    const isRead = isDefinedRoute ? isHasPermission : true
+    if (!isRead) {
+        next({ name: '403' })
+    }
+    dealRouterByPermission(to, from, next)
+}
+
+function dealRouterByPermission(to, from, next) {
+    const permission = store.state.permission
     const userInfo = permission.user
     const menuList = permission.menuList
-    const allowJumpList = []
-    menuList.forEach(item => {
-        if (item.children) {
-            item.children.forEach(tex => {
-                allowJumpList.push(tex)
-            })
-        } else {
-            allowJumpList.push(item)
-        }
-    })
+    // 判断是否为已激活,未激活的话,进行跳转判断
     if (!window['is_activate'] && to.name !== 'CreditManage') {
         if (to.name === 'ActivationPage') {
             next()
@@ -89,6 +102,7 @@ const dealRouterByPermission = async(to, from, next) => {
         next()
     } else {
         const menus = userInfo.menus || []
+        // 处理自定义菜单的默认路由的逻辑
         const weopsMenu = userInfo?.weops_menu
         if (weopsMenu?.length) {
             // 若自定义菜单中不存在url='/'的数据,则默认访问第一个路由
@@ -98,55 +112,31 @@ const dealRouterByPermission = async(to, from, next) => {
             }
         }
         if (userInfo.is_super) {
-            // if (to.name.indexOf('-') !== -1) {
-            //     next({
-            //         name: to.name.split('-')[1],
-            //         query: {
-            //             ...to.query
-            //         }
-            //     })
-            // } else {
-            //     next()
-            // }
             next()
         } else {
-            const defaultMenu = ['Home', 'SysRole', 'SysUser', 'NoticeWays', 'SelfCureProcess', 'CreditManage', 'SysLog', 'SysLogo', 'SysSetting']
-            const isRead = (userInfo.applications || ['Home']).some(item => {
-                const menus = (subsMenuList[item] || []).concat(defaultMenu)
-                return menus.includes(to.name) || (to?.meta?.parentIds || []).filter(r => menus.includes(r)).length || menus.includes(to?.meta?.relatedMenu)
-            })
-            if (menus.includes(to.name)) {
-                isRead ? next() : next({ path: from.path })
-            } else {
-                if (to.fullPath === '/') {
-                    if (menus.includes('Home')) {
-                        next()
-                    } else {
-                        if (menuList.length === 0) {
-                            next({name: 'AuthPermissionFail'})
-                        } else {
-                            allowJumpList[0].children ? next({name: allowJumpList[0].children[0].id}) : next({name: allowJumpList[0].id})
-                        }
-                    }
+            // 处理非管理组用户的路由逻辑
+            if (to.fullPath === '/') {
+                if (menus.includes('Home')) {
+                    next()
                 } else {
-                    const parentIds = to.meta.parentIds || []
-                    if (to.name === 'InstanceDetails') {
-                        const dynamicMenus = store.state.menu.dynamicMenus
-                        for (const k in dynamicMenus.classification) {
-                            parentIds.push(k)
-                        }
-                    }
-                    const flag = menus.every(item => !parentIds.includes(item))
-                    if (flag) {
-                        if (from.name === 'Home') {
-                            Vue.prototype.$bus.$emit('setBkTabShow', true)
-                        }
-                        next({ path: from.path })
+                    // 访问的path='/'若不存在home页面,则获取第一个id
+                    if (menuList.length === 0) {
+                        next({name: 'AuthPermissionFail'})
                     } else {
-                        isRead ? next() : next({ path: from.path })
+                        const defaultName = findFirstUrl(menuList)
+                        next({ name: defaultName })
+                    }
+                }
+            } else {
+                const parentIds = to.meta.parentIds || []
+                if (to.name === 'InstanceDetails') {
+                    const dynamicMenus = store.state.menu.dynamicMenus
+                    for (const k in dynamicMenus.classification) {
+                        parentIds.push(k)
                     }
                 }
             }
+            next()
         }
     }
 }
@@ -163,9 +153,9 @@ router.beforeEach(async(to, from, next) => {
         const commonFiles = require.context('@/projects', true, /\.ts$/)
         const module = commonFiles('./common/router/dealRoute.ts')
         if (module?.default) {
-            await module.default.dealRouterByMenu(to, from, next, router)
+            await module.default.dealRouterByMenu(to, next)
         } else {
-            await dealRouterByPermission(to, from, next)
+            await handleRouteAuthorization(to, from, next)
         }
     } else if (!completeLoadChildApp && hasCommonFolder('common')) {
         // 处理加载外部资源子应用
@@ -175,10 +165,10 @@ router.beforeEach(async(to, from, next) => {
         if (module?.default) {
             await module.default.dealRouterByChildApp(to, from, next, router)
         } else {
-            await dealRouterByPermission(to, from, next)
+            await handleRouteAuthorization(to, from, next)
         }
     } else {
-        await dealRouterByPermission(to, from, next)
+        await handleRouteAuthorization(to, from, next)
     }
 })
 

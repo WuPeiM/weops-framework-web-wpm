@@ -102,7 +102,7 @@
                 </bk-navigation-menu-item>
             </bk-navigation-menu>
         </template>
-        <Container :key="renderKey" :nav-toggle="nav.toggle" :user="user" :is-read="isRead"></Container>
+        <Container :key="renderKey" :nav-toggle="nav.toggle" :user="user"></Container>
         <bk-dialog
             v-model="isShow"
             theme="primary"
@@ -116,11 +116,11 @@
 </template>
 
 <script lang="ts">
-    import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
+    import { Component, Vue, Watch } from 'vue-property-decorator'
     import Container from './container.vue'
     import personalInfo from './personalInfo.vue'
     import { mapState } from 'vuex'
-    import { removeItemsWithId } from '@/common/dealMenu.ts'
+    import { removeItemsWithId } from '@/common/dealMenu'
     @Component({
         components: {
             Container,
@@ -133,7 +133,6 @@
         }
     })
     export default class NavFrame extends Vue {
-        @Prop({type: Boolean, default: () => true}) isRead :boolean
         defaultOpen: boolean = false
         renderKey: number = 0
         clickFlag: boolean = false
@@ -226,7 +225,7 @@
                     }
                 }
             })
-            this.defaultActive = this.getDefaultActive()
+            this.setDefaultActive()
         }
         @Watch('leftNavList', {
             immediate: true,
@@ -249,7 +248,7 @@
                 this.getLogo()
             })
             this.$bus.$on('refreshNav', from => {
-                this.defaultActive = this.getDefaultActive()
+                this.setDefaultActive()
                 this.refreshNavKey = Vue.prototype.$random(5)
                 const topNav = this.menuList.find(item => item.sonMenuIds.includes(from.name) || item.sonMenuIds.includes(from.meta.activeMenu))
                 if (topNav) {
@@ -273,7 +272,7 @@
                 name: 'Ticket'
             })
         }
-        getDefaultActive() {
+        setDefaultActive() {
             if (this.$route.meta.hasOwnProperty('parentIds')) {
                 if (this.$route.meta.activeMenu) {
                     return this.$route.meta.activeMenu
@@ -284,7 +283,7 @@
                     }
                 }
             }
-            return this.$route.name
+            this.defaultActive = this.$route.name
         }
         hidePopover() {
             const userPopover:any = this.$refs['userPopover']
