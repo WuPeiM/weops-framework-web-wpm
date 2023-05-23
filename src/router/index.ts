@@ -63,6 +63,11 @@ const handleRouteAuthorization = async(to, from, next) => {
 }
 
 function checkRouteAccess(to, from, next) {
+    // 远程连接不做路由拦截
+    if (to.name === 'RemoteConnect') {
+        next()
+        return
+    }
     const permission = store.state.permission
     const isDefinedRoute = frameRouter.some(item => item.name === to?.name)
     const ids = findIdsWithNoChildren(permission.menuList).concat(['404', '403', 'AuthPermissionFail'])
@@ -93,10 +98,6 @@ function dealRouterByPermission(to, from, next) {
     }
     if (!userInfo.is_super && to.name === 'ServiceDeskManage') {
         next({path: from.path})
-    }
-    if (to.name === 'RemoteConnect') {
-        next()
-        return
     }
     if (to.name === 'AuthPermissionFail' && menuList.length === 0) {
         next()
