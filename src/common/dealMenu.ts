@@ -44,3 +44,14 @@ export function hasPathInChildren(data, path) {
     // 如果遍历完整个数组都没有找到匹配的 path，返回 false
     return false
 }
+
+export function findIdsWithNoChildren(data, result = []) {
+    for (const item of data) {
+        if (!item.children || item.children.length === 0) {
+            result.push(item.id)
+        } else {
+            findIdsWithNoChildren(item.children, result)
+        }
+    }
+    return result
+}
