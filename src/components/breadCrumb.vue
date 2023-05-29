@@ -32,26 +32,6 @@
             v-if="subTitle">
             -- {{ subTitle }}
         </span>
-        <div class="ticket-btn-box" v-if="$route.name === 'TicketsDetail'">
-            <bk-button
-                size="small"
-                :theme="'default'"
-                type="submit"
-                @click="refreshTicketDetail"
-                class="mr10">
-                刷新
-            </bk-button>
-            <bk-button
-                v-permission="powerParams"
-                size="small"
-                :disabled="!ticketInfo.can_close"
-                :theme="'default'"
-                type="submit"
-                class="mr10"
-                @click="closeTicket">
-                撤单
-            </bk-button>
-        </div>
     </div>
 </template>
 
@@ -65,18 +45,11 @@
         menuList: any[] = []
         parentMenus: any[] = []
         nextRoute: string = ''
-        ticketInfo: any = ''
         get subTitle() {
             return this.$route.query?.subTitle || this.$route.query?.ip
         }
         get dynamicRoutes() {
             return this.$store.state.menu.dynamicRoutes
-        }
-        get powerParams() {
-            return {
-                id: 'TicketsDetail',
-                type: 'operateAuth'
-            }
         }
         @Watch('$route', {
             immediate: true,
@@ -146,15 +119,6 @@
                 query: preRoute?.query
             })
         }
-        refreshTicketDetail() {
-            this.$bus.$emit('refreshTicketDetail')
-        }
-        closeTicket() {
-            if (!this.$BtnPermission(this.powerParams)) {
-                return false
-            }
-            this.$bus.$emit('closeTicket')
-        }
     }
 </script>
 
@@ -170,30 +134,6 @@
     position: sticky;
     top: -20px;
     z-index: 99;
-    .ticket-btn-box {
-        position: absolute;
-        right: 10px;
-        top: 50%;
-        transform: translateY(-50%);
-        display: flex;
-        .btn {
-            height: 28px;
-            line-height: 28px;
-            padding: 0 10px;
-            border: 1px solid #979ba5;
-            box-sizing: border-box;
-            color: #1E252E;
-            margin-left: 20px;
-            cursor: pointer;
-            border-radius: 4px;
-        }
-        .btn-disabled {
-            cursor: not-allowed;
-            background-color: #dcdee5;
-            border-color: #dcdee5;
-            color: #fff;
-        }
-    }
     .icon-arrows-left {
         font-size: 28px !important;
         margin-right: 5px !important;
