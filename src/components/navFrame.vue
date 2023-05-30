@@ -295,6 +295,7 @@
                 const res = response?.data
                 if (res.result) {
                     this.bindStatus = false
+                    this.$success('解绑成功')
                     this.$api.Server.syncUsers()
                 }
             })
@@ -435,6 +436,8 @@
         .top-nav {
             display: flex;
             height: 100%;
+            max-width: calc(100vw - 100px);
+            overflow-x: scroll;
             .top-nav-item {
                 list-style: none;
                 margin-right: 65px;
