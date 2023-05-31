@@ -427,6 +427,9 @@
         text-align: left;
         display: inline-block;
     }
+    .bk-navigation-title {
+        flex: 0 0 200px !important;
+    }
     .monitor-navigation-header {
         height: 100%;
         width: 100%;
@@ -436,8 +439,8 @@
         .top-nav {
             display: flex;
             height: 100%;
-            max-width: calc(100vw - 100px);
-            overflow-x: scroll;
+            max-width: calc(100vw - 450px);
+            overflow-x: auto;
             .top-nav-item {
                 list-style: none;
                 margin-right: 65px;
@@ -449,6 +452,9 @@
                 &:hover {
                     cursor: pointer;
                     color: #d3d9e4;
+                }
+                &:last-child {
+                    margin-right: 0;
                 }
             }
             .active-top-nav {
@@ -682,6 +688,14 @@
     .navigation-menu-item {
         .cw-icon {
             text-align: left !important;
+        }
+    }
+    /* 当屏幕宽度小于或等于 1280 像素时 */
+    @media screen and (max-width: 1280px) {
+        .monitor-navigation-header {
+            .top-nav {
+                max-width: 810px !important;
+            }
         }
     }
 </style>
