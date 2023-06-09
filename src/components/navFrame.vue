@@ -58,7 +58,10 @@
                             </ul>
                         </template>
                     </bk-popover>
-                    <span class="version">v{{ version }}</span>
+                    <span class="version" @click="checkVersionLog">
+                        v{{ version }}
+                        <span class="cw-icon weops-directions-fill version-tips"></span>
+                    </span>
                     <bk-badge
                         v-if="ticketIconVisible"
                         style="width: 25px;height: 25px;"
@@ -112,19 +115,22 @@
             <img :src="qrode" alt="这是一个二维码" width="200" height="200">
         </bk-dialog>
         <personal-info ref="personalInfo"></personal-info>
+        <version-log ref="versionLog"></version-log>
     </bk-navigation>
 </template>
 
 <script lang="ts">
     import { Component, Vue, Watch } from 'vue-property-decorator'
     import Container from './container.vue'
-    import personalInfo from './personalInfo.vue'
+    import PersonalInfo from './personalInfo.vue'
+    import VersionLog from './versionLog.vue'
     import { mapState } from 'vuex'
     import { removeItemsWithId } from '@/common/dealMenu'
     @Component({
         components: {
             Container,
-            personalInfo
+            PersonalInfo,
+            VersionLog
         },
         computed: {
             ...mapState({
@@ -262,6 +268,10 @@
         }
         beforeDestroy() {
             this.$bus.$off('updateLogo')
+        }
+        checkVersionLog() {
+            const versionLog: any = this.$refs.versionLog
+            versionLog.show()
         }
         checkPersonalInfo() {
             const personalInfo: any = this.$refs.personalInfo
@@ -487,6 +497,17 @@
             .version {
                 font-size: 12px;
                 margin-right: 20px;
+                position: relative;
+                cursor: pointer;
+                &:hover {
+                    color: #fff;
+                }
+                .version-tips {
+                    position: absolute;
+                    font-size: 13px;
+                    right: -13px;
+                    top: -4px;
+                }
             }
         }
     }
