@@ -365,7 +365,6 @@
             if (item.isUrl) {
                 window.open(item.url, '_blank')
             } else {
-                console.log(123456)
                 this.activeTopNav = item.id
                 if (!item.children) {
                     this.$router.push({
