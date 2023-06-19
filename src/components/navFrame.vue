@@ -7,6 +7,7 @@
         navigation-type="top-bottom"
         :need-menu="needLeftNav"
         :head-height="headerHight"
+        :class="{ 'navigation-other-wrapper': user.expired_day <= user.notify_day }"
         @toggle="handleToggle">
         <template slot="side-icon">
             <div class="monitor-logo" @click="goHome">
@@ -424,7 +425,7 @@
         .credit-tip {
             position: absolute;
             top: 5px;
-            left: 150px;
+            left: 140px;
         }
     }
     .bk-navigation-wrapper .navigation-container {
@@ -449,7 +450,7 @@
         .top-nav {
             display: flex;
             height: 100%;
-            max-width: calc(100vw - 450px);
+            max-width: calc(100vw - 470px);
             overflow-x: auto;
             .top-nav-item {
                 list-style: none;
@@ -711,11 +712,29 @@
             text-align: left !important;
         }
     }
+    // 适配到期情况的宽度
+    .navigation-other-wrapper {
+        .bk-navigation-title {
+            flex: 0 0 260px !important;
+        }
+        .monitor-navigation-header {
+            .top-nav {
+                max-width: calc(100vw - 530px);
+            }
+        }
+    }
     /* 当屏幕宽度小于或等于 1280 像素时 */
     @media screen and (max-width: 1280px) {
         .monitor-navigation-header {
             .top-nav {
                 max-width: 810px !important;
+            }
+        }
+        .navigation-other-wrapper {
+            .monitor-navigation-header {
+                .top-nav {
+                    max-width: 750px !important;
+                }
             }
         }
     }
