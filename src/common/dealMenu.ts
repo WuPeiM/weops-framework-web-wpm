@@ -55,3 +55,19 @@ export function findIdsWithNoChildren(data, result = []) {
     }
     return result
 }
+
+export function filterDataWithId(arr, id) {
+    for (let i = 0; i < arr.length; i++) {
+        const item = arr[i]
+        if (item.id === id) {
+            return [item] // 返回包含id的项作为初始层级
+        }
+        if (item.children) {
+            const result = filterDataWithId(item.children, id)
+            if (result.length > 0) {
+                return [{ ...item, children: result }] // 返回包含id的项及其子层级的新对象
+            }
+        }
+    }
+    return [] // 没有找到符合条件的项
+}
