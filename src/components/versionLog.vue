@@ -49,7 +49,6 @@ export default class VersionLog extends Vue {
     loading: boolean = false
 
     @Watch('activeItem', {
-        immediate: true,
         deep: true
     })
     onActiveItemChange() {
@@ -67,7 +66,7 @@ export default class VersionLog extends Vue {
         try {
             const res = await this.$api.Server.getVersionLogsList()
             if (!res.result) {
-                return res.message
+                return
             }
             this.versionList = res.data.map(item => {
                 return {
@@ -88,7 +87,8 @@ export default class VersionLog extends Vue {
             }
             const res = await this.$api.Server.getversionLogDetail(params)
             if (!res.result) {
-                return res.message
+                this.versionDetail = ''
+                return
             }
             this.versionDetail = res.data
         } finally {
