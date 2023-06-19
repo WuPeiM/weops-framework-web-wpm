@@ -78,6 +78,7 @@
         <template slot="menu">
             <bk-navigation-menu
                 ref="menu"
+                :before-nav-change="beforeNavChange"
                 :default-active="defaultActive"
                 :toggle-active="nav.toggle"
                 style="cursor: default;"
@@ -373,18 +374,22 @@
             })
         }
         changeTopNav(item) {
-            this.activeTopNav = item.id
-            if (!item.children) {
+            if (item.isUrl) {
+                window.open(item.url, '_blank')
+            } else {
+                this.activeTopNav = item.id
+                if (!item.children) {
+                    this.$router.push({
+                        name: this.activeTopNav
+                    })
+                    return false
+                }
+                this.leftNavList = item.children
+                const children = this.leftNavList[0].children
                 this.$router.push({
-                    name: this.activeTopNav
+                    name: children?.length ? children[0].id : this.leftNavList[0].id
                 })
-                return false
             }
-            this.leftNavList = item.children
-            const children = this.leftNavList[0].children
-            this.$router.push({
-                name: children?.length ? children[0].id : this.leftNavList[0].id
-            })
         }
         goHome() {
             this.$router.push('/')
@@ -393,16 +398,40 @@
         handleToggle(v) {
             this.nav.toggle = v
         }
+        beforeNavChange(item) {
+            return !this.isIdExists(this.leftNavList, item)
+        }
         handleNavItemClick(item) {
-            this.clickFlag = true
-            if (this.$route.name !== item.id) {
-                this.nav.name = item.name
-                sessionStorage.setItem('activeMenuId', JSON.stringify(item.id))
-                this.$router.push({
-                    name: item.id,
-                    params: item.params || {}
-                })
+            if (item.isUrl) {
+                window.open(item.url, '_blank')
+            } else {
+                this.clickFlag = true
+                if (this.$route.name !== item.id) {
+                    this.nav.name = item.name
+                    sessionStorage.setItem('activeMenuId', JSON.stringify(item.id))
+                    this.$router.push({
+                        name: item.id,
+                        params: item.params || {}
+                    })
+                }
             }
+        }
+        isIdExists(arr, targetId) {
+            for (let i = 0; i < arr.length; i++) {
+                const element = arr[i]
+                // 检查当前元素的 id 是否匹配目标 id
+                if (element.id === targetId) {
+                    return true
+                }
+                // 如果当前元素有 children 属性，则递归调用 isIdExists 函数进行子元素的判断
+                if (element.children && element.children.length > 0) {
+                    if (this.isIdExists(element.children, targetId)) {
+                        return true
+                    }
+                }
+            }
+            // 如果遍历完整个数组都没有找到匹配的 id，则返回 false
+            return false
         }
         linkToCredit() {
             if (!this.user.is_super) {
