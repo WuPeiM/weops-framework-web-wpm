@@ -34,7 +34,7 @@ export function hasPathInChildren(data, path) {
             return true // 如果匹配，直接返回 true
         }
         // 判断当前对象是否有 children 属性且为非空数组
-        if (item.children && item.children.length) {
+        if (item.children?.length) {
             // 递归调用 hasPathInChildren 函数检查子级数组
             if (hasPathInChildren(item.children, path)) {
                 return true // 如果子级数组中存在匹配的 path，直接返回 true
