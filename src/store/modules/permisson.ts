@@ -115,7 +115,6 @@ function compare(p) {
         return a - b
     }
 }
-
 // getters
 const getters = {
     addNavLists: () => {
@@ -185,6 +184,14 @@ const actions = {
                     }
                     commit('setMenuList', handleMenuList(res.data))
                     commit('setActivationMenu', handleActivationMenu(res.data, ''))
+                    if (res.data.applications.includes('chat_ops') && hasCommonFolder('common')) {
+                        // @ts-ignore
+                        const commonFiles = require.context('@/projects', true, /\.ts$/)
+                        const module = commonFiles('./common/common/loadBot.ts')
+                        if (module?.default) {
+                            await module.default.loadChatBot()
+                        }
+                    }
                     resolve(res.data)
                 } else {
                     reject(res.message)
