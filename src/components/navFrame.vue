@@ -385,11 +385,29 @@
                     return false
                 }
                 this.leftNavList = item.children
-                const children = this.leftNavList[0].children
+                if (this.leftNavList.every(item => item.isUrl)) {
+                    return false
+                }
                 this.$router.push({
-                    name: children?.length ? children[0].id : this.leftNavList[0].id
+                    name: this.findFirstNonUrlId(this.leftNavList)
                 })
             }
+        }
+        findFirstNonUrlId(arr) {
+            for (const item of arr) {
+                if (item.isUrl) {
+                    continue
+                }
+                if (item.children && item.children.length > 0) {
+                    const childResult = this.findFirstNonUrlId(item.children)
+                    if (childResult !== null) {
+                        return childResult
+                    }
+                } else {
+                    return item.id
+                }
+            }
+            return null
         }
         goHome() {
             this.$router.push('/')
