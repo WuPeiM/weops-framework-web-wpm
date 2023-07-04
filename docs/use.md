@@ -35,7 +35,8 @@ export default {
         return post(`${mockUrl}/example/list/`, params)
     }
 }
-
+```
+``` bash
 # api/index.ts
 import example from './modules/example'
 
@@ -44,7 +45,8 @@ const exampleBaseApi = {
 }
 
 export default exampleBaseApi
-
+```
+``` bash
 # router/frameRouter.ts
 const Example = () => import('@example/views/index.vue')
 
@@ -75,8 +77,9 @@ export const adminRouteConfig = [
 ]
 
 export const createAdminRouteConfig = () => adminRouteConfig
-
-# router/modules/example.ts
+```
+``` bash
+# store/modules/example.ts
 // initial state
 const state = {
     list: []
@@ -108,21 +111,78 @@ export default {
     actions,
     mutations
 }
-
-# router/index.ts
+```
+``` bash
+# store/index.ts
 import example from './modules/example'
 
 export default {
     example
 }
-
+```
+``` bash
 # views/index.vue
 <template>
-    <div class="example-wrapper">
-       hello world !
+    <div class="example-wrapper" v-bkloading="{ isLoading: loading, zIndex: 10 }">
+        <div class="example-wrapper-content">
+            {{msg}}
+        </div>
     </div>
 </template>
 
+<script lang="ts">
+import { Component, Vue } from 'vue-property-decorator'
+import { mapState, mapActions } from 'vuex'
+
+@Component({
+    components: {},
+    computed: {
+        ...mapState('example', { list: 'list' })
+    },
+    methods: {
+        ...mapActions('example', { updateList: 'updateList' })
+    }
+})
+
+export default class Example extends Vue {
+    loading: boolean = false
+
+    created() {
+        this.getDetail()
+    }
+
+    get msg() {
+        return this.list?.[0]?.message || '--'
+    }
+
+    async getDetail() {
+        const { id } = this.$route.query
+        this.loading = true
+        try {
+            const res = await this.$api.example.getList({ id })
+            if (!res.result) {
+                return this.$error(res.message)
+            }
+            this.updateList(res.data)
+        } finally {
+            this.loading = false
+        }
+    }
+}
+</script>
+
+<style  lang="scss" scoped>
+.example-wrapper {
+    background: #fff;
+    height: 100%;
+
+    .example-wrapper-content {
+        color: #000;
+    }
+}
+</style>
+```
+``` bash
 # main.ts
 // 公共方法
 import './controller/func'

@@ -34,5 +34,3 @@ npm run build
 # 生产环境build以及文件分析
 npm run build --report
 ```
-
-如果想知道相关的[底层工作原理](http://vuejs-templates.github.io/webpack/) 、 [vue-loader 相关文档](http://vuejs.github.io/vue-loader) 和 [开发示例指引](/docs/use)
