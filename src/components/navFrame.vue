@@ -417,7 +417,22 @@
             this.nav.toggle = v
         }
         beforeNavChange(item) {
-            return !this.isIdExists(this.leftNavList, item)
+            const result = this.findItemById(this.leftNavList, item)
+            return !result.isUrl
+        }
+        findItemById(arr, id) {
+            for (const item of arr) {
+                if (item.id === id) {
+                    return item
+                }
+                if (item.children) {
+                    const found = this.findItemById(item.children, id)
+                    if (found) {
+                        return found
+                    }
+                }
+            }
+            return null
         }
         handleNavItemClick(item) {
             if (item.isUrl) {
@@ -433,23 +448,6 @@
                     })
                 }
             }
-        }
-        isIdExists(arr, targetId) {
-            for (let i = 0; i < arr.length; i++) {
-                const element = arr[i]
-                // 检查当前元素的 id 是否匹配目标 id
-                if (element.id === targetId) {
-                    return true
-                }
-                // 如果当前元素有 children 属性，则递归调用 isIdExists 函数进行子元素的判断
-                if (element.children && element.children.length > 0) {
-                    if (this.isIdExists(element.children, targetId)) {
-                        return true
-                    }
-                }
-            }
-            // 如果遍历完整个数组都没有找到匹配的 id，则返回 false
-            return false
         }
         linkToCredit() {
             if (!this.user.is_super) {
