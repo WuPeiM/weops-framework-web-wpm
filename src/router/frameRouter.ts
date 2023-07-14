@@ -30,7 +30,7 @@ let mainRouter = [
 ]
 let routeConfig = []
 let subsMenuPromission = {}
-let manageMenu = []
+const manageMenu = []
 // 自动导入子应用
 // @ts-ignore
 const files = require.context('@/projects', true, /frameRouter.ts/)
@@ -41,8 +41,16 @@ files.keys().forEach(key => {
     mainRouter = mainRouter.concat(router)
     routeConfig = routeConfig.concat(menuList).sort((a, b) => a.sortIndex - b.sortIndex)
     subsMenuPromission = { ...subsMenuPromission, ...subsMenu }
-    if (files(key).manageMenu) {
-        manageMenu = manageMenu.concat(files(key).manageMenu)
+    const manageMenuItem = files(key).manageMenu
+    if (manageMenuItem) {
+        manageMenuItem.forEach(item => {
+            const findIndex = manageMenu.findIndex(tex => tex.id === item.id)
+            if (findIndex !== -1) {
+                manageMenu[findIndex].children = manageMenu[findIndex].children.concat(item.children).sort((a, b) => a.sortIndex - b.sortIndex)
+            } else {
+                manageMenu.push(item)
+            }
+        })
     }
 })
 
