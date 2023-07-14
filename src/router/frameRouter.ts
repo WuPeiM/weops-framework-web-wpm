@@ -50,7 +50,6 @@ files.keys().forEach(key => {
     })
     routeConfig.sort((a, b) => a.sortIndex - b.sortIndex)
     subsMenuPromission = { ...subsMenuPromission, ...subsMenu }
-    console.log(menuList)
     const manageMenuItem = files(key).manageMenu
     if (manageMenuItem) {
         manageMenuItem.forEach(item => {
