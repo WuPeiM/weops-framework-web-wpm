@@ -28,7 +28,7 @@ let mainRouter = [
         }
     }
 ]
-let routeConfig = []
+const routeConfig = []
 let subsMenuPromission = {}
 const manageMenu = []
 // 自动导入子应用
@@ -39,7 +39,16 @@ files.keys().forEach(key => {
     const menuList = files(key).adminRouteConfig
     const subsMenu = files(key).subsMenuList
     mainRouter = mainRouter.concat(router)
-    routeConfig = routeConfig.concat(menuList).sort((a, b) => a.sortIndex - b.sortIndex)
+    // 处理合并项目菜单
+    menuList.forEach(item => {
+        const targetIndex = routeConfig.findIndex(tex => tex.id === item.id)
+        if (targetIndex !== -1) {
+            routeConfig[targetIndex].children = routeConfig[targetIndex].children.concat(item.children).sort((a, b) => a.sortIndex - b.sortIndex)
+        } else {
+            routeConfig.push(item)
+        }
+    })
+    routeConfig.sort((a, b) => a.sortIndex - b.sortIndex)
     subsMenuPromission = { ...subsMenuPromission, ...subsMenu }
     const manageMenuItem = files(key).manageMenu
     if (manageMenuItem) {
