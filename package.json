@@ -44,6 +44,7 @@
     "mini-css-extract-plugin": "^1.6.2",
     "moment": "^2.29.4",
     "monaco-editor": "^0.25.2",
+    "numeral": "^2.0.6",
     "pinyin": "^2.8.3",
     "plotly.js-dist-min": "^2.24.3",
     "spark-md5": "^3.0.2",
