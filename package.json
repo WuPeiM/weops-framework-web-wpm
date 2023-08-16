@@ -43,6 +43,7 @@
     "mavon-editor": "^2.10.4",
     "mini-css-extract-plugin": "^1.6.2",
     "moment": "^2.29.4",
+    "moment-timezone": "^0.5.43",
     "monaco-editor": "^0.25.2",
     "numeral": "^2.0.6",
     "pinyin": "^2.8.3",
