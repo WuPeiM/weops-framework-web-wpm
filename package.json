@@ -28,6 +28,7 @@
     "base-64": "^1.0.0",
     "bk-magic-vue": "^2.4.15-beta.3",
     "cache-loader": "^4.1.0",
+    "cron-parser-custom": "^2.13.0",
     "crypto-js": "^4.1.1",
     "echarts": "~5.1.1",
     "file-saver": "^2.0.5",
