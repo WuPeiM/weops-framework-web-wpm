@@ -380,6 +380,7 @@
             } else {
                 this.activeTopNav = item.id
                 if (!item.children) {
+                    this.clickFlag = true
                     this.$router.push({
                         name: this.activeTopNav
                     })
