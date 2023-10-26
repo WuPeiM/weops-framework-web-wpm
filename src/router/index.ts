@@ -79,6 +79,14 @@ function checkRouteAccess(to, from, next) {
     const isHasPermission = ids.includes(to.name) || (to?.meta?.parentIds || []).filter(r => ids.includes(r)).length || ids.includes(to?.meta?.relatedMenu)
     // 不包含在全定义路由中,即是不存在该页面
     if (!isDefinedRoute && !ids.includes(to.name)) {
+        // 首页需要特殊处理,若defaultName存在,则跳转到该页面
+        const permission = store.state.permission
+        const menuList = permission.menuList
+        const defaultName = findFirstUrl(menuList)
+        if (to.fullPath === '/' && defaultName) {
+            next({ name: defaultName })
+            return
+        }
         next({ name: '404' })
     }
     // 判断是否存在在定义的路由中,存在但没有访问权限,则isRead为false,若不在isRead为true,且跳转到404
@@ -126,11 +134,6 @@ function dealRouterByPermission(to, from, next) {
                     if (menuList.length === 0) {
                         next({name: 'AuthPermissionFail'})
                     } else {
-                        const toName = menuList[0]?.children[0]?.id
-                        if (toName) {
-                            next({ name: toName })
-                            return
-                        }
                         const defaultName = findFirstUrl(menuList)
                         next({ name: defaultName })
                     }
