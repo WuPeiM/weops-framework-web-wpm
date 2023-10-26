@@ -1,6 +1,5 @@
 // 用户管理模块
 import {get, deletes, patch, post, put, reUrl} from '@/api/axiosconfig/axiosconfig'
-// const reUrl = 'http://yapi.canway.top/mock/1273'
 export default {
     /**
      * 获取用户列表数据

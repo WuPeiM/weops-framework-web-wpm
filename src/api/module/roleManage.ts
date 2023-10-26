@@ -1,6 +1,5 @@
 // 角色管理模块
 import {get, deletes, post, put, reUrl} from '@/api/axiosconfig/axiosconfig'
-// const reUrl = 'http://yapi.canway.top/mock/1273'
 export default {
     /**
      * 获取角色列表数据

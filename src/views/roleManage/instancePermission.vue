@@ -111,7 +111,7 @@
         }
         async confirmDelete(row) {
             try {
-                const res = await this.$api.roleManageMain.deleteInstPermissions({
+                const res = await this.$api.RoleManageMain.deleteInstPermissions({
                     id: row.id
                 })
                 if (!res.result) {
@@ -130,7 +130,7 @@
         }
         getList() {
             this.tableLoading = true
-            this.$api.roleManageMain.getInstPermissions({
+            this.$api.RoleManageMain.getInstPermissions({
                 role: this.role.id,
                 page: this.pagination.current,
                 page_size: this.pagination.limit

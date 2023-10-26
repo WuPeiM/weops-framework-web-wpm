@@ -141,7 +141,7 @@
         }
         getList() {
             this.tableLoading = true
-            this.$api.roleManageMain.getInstances({
+            this.$api.RoleManageMain.getInstances({
                 page: this.pagination.current,
                 page_size: this.pagination.limit,
                 search: this.searchValue,

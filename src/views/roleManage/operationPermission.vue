@@ -136,7 +136,7 @@
         confirm() {
             this.menuLoading = true
             this.$emit('getMenuLoading', this.menuLoading)
-            this.$api.roleManageMain.setRoleMenu({
+            this.$api.RoleManageMain.setRoleMenu({
                 id: this.role.id,
                 menu_ids: this.checkAuthMenusIds
             }).then(res => {
@@ -341,7 +341,7 @@
         getRoleMenus() {
             this.menuLoading = true
             this.$emit('getMenuLoading', this.menuLoading)
-            this.$api.roleManageMain.getRoleMenus(
+            this.$api.RoleManageMain.getRoleMenus(
                 {
                     id: this.role.id
                 }

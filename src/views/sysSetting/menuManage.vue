@@ -141,7 +141,7 @@
         async getMenuList() {
             this.loading = true
             try {
-                const res = await this.$api.userManageMain.getMenuManage({
+                const res = await this.$api.UserManageMain.getMenuManage({
                     search: this.keywords,
                     page_size: this.pagination.limit,
                     page: this.pagination.current
@@ -179,7 +179,7 @@
                 title: `是否启用菜单: ${row.menu_name}`,
                 confirmLoading: true,
                 confirmFn: async() => {
-                    const res = await this.$api.userManageMain.useCustomMenu({
+                    const res = await this.$api.UserManageMain.useCustomMenu({
                         id: row.id
                     })
                     if (res.result) {
@@ -219,7 +219,7 @@
             })
         }
         async confirmDelete(row) {
-            const res = await this.$api.userManageMain.deleteCustomMenu({
+            const res = await this.$api.UserManageMain.deleteCustomMenu({
                 id: row.id
             })
             if (res.result) {

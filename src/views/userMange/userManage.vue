@@ -224,7 +224,7 @@
     }
     setUserStatus(row, lastValue) {
         return new Promise((resolve, reject) => {
-            this.$api.userManageMain.updateUserStatus(
+            this.$api.UserManageMain.updateUserStatus(
                 {
                     id: row.id,
                     body: {
@@ -293,7 +293,7 @@
     }
     async confirmDelete(row) {
         try {
-            const res = await this.$api.userManageMain.deleteUser({
+            const res = await this.$api.UserManageMain.deleteUser({
                 id: row.id,
                 bk_user_id: row.bk_user_id
             })
@@ -318,7 +318,7 @@
     }
     confirmSetRole(data) {
         this.tableLoading = true
-        this.$api.userManageMain.setUserRoles({
+        this.$api.UserManageMain.setUserRoles({
             id: data.id,
             roles: data.roles
         }).then(res => {
@@ -341,7 +341,7 @@
             roles: this.roles
         }
         this.tableLoading = true
-        this.$api.userManageMain.getUserList(params).then(res => {
+        this.$api.UserManageMain.getUserList(params).then(res => {
             if (!res.result) {
                 return false
             }
@@ -356,7 +356,7 @@
         })
     }
     getRoleList() {
-        this.$api.roleManageMain.getAllRoleList().then(res => {
+        this.$api.RoleManageMain.getAllRoleList().then(res => {
             if (!res.result) {
                 return false
             }

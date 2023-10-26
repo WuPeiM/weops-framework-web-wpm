@@ -205,7 +205,7 @@
         }
         async confirmDelete(row) {
             try {
-                const res = await this.$api.roleManageMain.deleteRole({
+                const res = await this.$api.RoleManageMain.deleteRole({
                     id: row.id
                 })
                 if (!res.result) {
@@ -229,7 +229,7 @@
                 search: this.search
             }
             this.tableLoading = true
-            this.$api.roleManageMain.getRoleList(params).then(res => {
+            this.$api.RoleManageMain.getRoleList(params).then(res => {
                 if (!res.result) {
                     return false
                 }

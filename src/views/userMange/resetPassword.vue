@@ -74,7 +74,7 @@
             const validatePsdForm: any = this.$refs.validatePsdForm
             validatePsdForm.validate().then(validator => {
                 this.resetLoading = true
-                this.$api.userManageMain.resetPassword({
+                this.$api.UserManageMain.resetPassword({
                     password: this.formData.password,
                     id: this.resetUser.bk_user_id
                 }).then(res => {

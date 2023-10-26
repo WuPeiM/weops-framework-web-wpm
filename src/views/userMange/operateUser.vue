@@ -160,7 +160,7 @@
                     }
                 }
                 this.loading = true
-                this.$api.userManageMain[url](params).then(res => {
+                this.$api.UserManageMain[url](params).then(res => {
                     if (!res.result) {
                         this.$error(res.message)
                         return false

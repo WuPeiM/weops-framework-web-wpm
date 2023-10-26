@@ -190,7 +190,7 @@
             }
             if (this.isMyCredentials) {
                 this.credentialsDetail = row
-                const { result, data } = await this.$api.remoteConnectMain.getCredDetail({id: row.id})
+                const { result, data } = await this.$api.RemoteConnectMain.getCredDetail({id: row.id})
                 if (result) {
                     originList.role = data.role
                     originList.user = data.user
@@ -227,8 +227,8 @@
             this.loading = true
             try {
                 const res = this.isGroup
-                    ? await this.$api.userManageMain.searchRoleList(params)
-                    : await this.$api.userManageMain.searchUserList(params)
+                    ? await this.$api.UserManageMain.searchRoleList(params)
+                    : await this.$api.UserManageMain.searchUserList(params)
                 if (!res.result) {
                     this.dataList = []
                     this.pagination.count = 0
@@ -266,7 +266,7 @@
         async setUsersByRole() {
             this.isConfirm = true
             try {
-                const res = await this.$api.userManageMain.setUsersByRole({
+                const res = await this.$api.UserManageMain.setUsersByRole({
                     users: this.selectedData.user.map(item => item.id),
                     id: this.roleDetail?.id
                 })
@@ -284,7 +284,7 @@
         }
         imPower() {
             this.isConfirm = true
-            this.$api.remoteConnectMain.setCredAuthList({
+            this.$api.RemoteConnectMain.setCredAuthList({
                 id: this.credentialsDetail.id,
                 body: {
                     user_list: this.selectedData.user.map(item => item.bk_username),

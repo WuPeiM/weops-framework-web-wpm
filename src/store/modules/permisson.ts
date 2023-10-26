@@ -9,7 +9,6 @@ const state = {
     addNavLists: [],
     user: {},
     menuList: [],
-    // menuList: menuList,
     completeDynamicRoute: false,
     ticketCount: 0,
     activationMenu: [],

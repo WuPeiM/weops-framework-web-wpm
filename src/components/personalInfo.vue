@@ -46,7 +46,7 @@
                 page_size: 10,
                 search: this.user.username
             }
-            this.$api.userManageMain.getUserList(params).then(res => {
+            this.$api.UserManageMain.getUserList(params).then(res => {
                 if (!res.result) {
                     return false
                 }

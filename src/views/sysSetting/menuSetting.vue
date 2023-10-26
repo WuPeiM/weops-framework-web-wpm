@@ -201,7 +201,7 @@
         async getMenuById(id = '') {
             this.initLoading = true
             try {
-                const res = await this.$api.userManageMain.getMenuById({
+                const res = await this.$api.UserManageMain.getMenuById({
                     id
                 })
                 const { result, data, message } = res
@@ -470,7 +470,7 @@
             this.loading = true
             try {
                 const url = this.id ? 'updateMenuManage' : 'createMenuManage'
-                const res = await this.$api.userManageMain[url]({
+                const res = await this.$api.UserManageMain[url]({
                     id: this.id,
                     menu_name: this.menuTitle,
                     menu: this.handleMenuParams()

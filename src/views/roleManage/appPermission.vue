@@ -77,7 +77,7 @@
         //     })
         // }
         getRoleApplications() {
-            return this.$api.roleManageMain.getRoleApplications({
+            return this.$api.RoleManageMain.getRoleApplications({
                 id: this.role.id
             })
         }
@@ -88,7 +88,7 @@
                 id: this.role.id,
                 app_ids: this.selectApp.map(item => item.bk_biz_id)
             }
-            this.$api.roleManageMain.setAppPermissions(params).then(res => {
+            this.$api.RoleManageMain.setAppPermissions(params).then(res => {
                 if (!res.result) {
                     this.$error(res.message)
                     return false

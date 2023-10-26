@@ -10,7 +10,7 @@ const SysSetting = () => import('@/views/sysSetting/index.vue')
 const SysLog = () => import('@/views/logManage/index.vue')
 const MenuSetting = () => import('@/views/sysSetting/menuSetting.vue')
 
-const mainRouter = [
+let mainRouter = [
     {
         path: '/authPermissionFail',
         name: 'AuthPermissionFail',
@@ -199,55 +199,40 @@ const routeConfig = [
         ]
     }
 ]
-const subsMenuPromission = {
-    // health_advisor: ['HealthAdvisor', 'PackageManage'],
-    // monitor_mgmt: ['Alarm', 'ApplicationCard', 'BasicMonitor', 'BasicMonitorHost', 'BasicMonitorSql', 'CloudMonitor', 'k8sMonitorNode', 'k8sMonitorPod', 'WebsiteMonitor', 'MonitorGather', 'MonitorPolicy', 'MonitorObject', 'DynamicGroup', 'IndicatorManage', 'AlarmDeal', 'TeamAndGroup', 'AlarmNotifySetting', 'AlarmSource', 'AgentManage'],
-    // operational_tools: ['OperationTools', 'OperationToolsManage', 'WebEquipmentlManage'],
-    // repository: ['lore', 'ArticleTagManage', 'ArticleTemplateManage'],
-    // big_screen: ['Digital', 'ReportForms', 'ScreenManage', 'ReportFormsManage'],
-    // senior_resource: ['EventSubscription', 'DataAssociation'],
-    // resource: ['ApplicationManage', 'AssetRecords', 'AssetRecordsHost', 'ModelManage', 'AutoDiscovery', 'OidManage', 'RemoteVoucher', 'RemoteConnect'],
-    // itsm: ['Ticket', 'ItsmProcess', 'Announcement', 'Service', 'ServiceCatalog', 'SLA', 'WatchManage', 'OperationalAnalysis', 'RoutineWork', 'PortalTheme', 'AutoProcess', 'MyWatch', 'TicketPrint'],
-    // patch_mgmt: ['PatchInstall'],
-    // auto_process: ['AutoProcessManage'],
-    // syslog: ['Log', 'DataReceive', 'LogMonitor', 'LogNode', 'CollectionConfig', 'LogGroup'],
-    // dashboard: ['Dashboard'],
-    // custom_topology: ['TopologyMap'],
-    // timed_job: ['TimingJob']
-}
+let subsMenuPromission = {}
 const manageMenu = []
 
 // 自动导入子应用
 // @ts-ignore
-// const files = require.context('@/projects', true, /frameRouter.ts/)
-// files.keys().forEach(key => {
-//     const router = files(key).frameRouter
-//     const menuList = files(key).adminRouteConfig
-//     const subsMenu = files(key).subsMenuList
-//     mainRouter = mainRouter.concat(router)
-//     // 处理合并项目菜单
-//     menuList.forEach(item => {
-//         const targetIndex = routeConfig.findIndex(tex => tex.id === item.id)
-//         if (targetIndex !== -1) {
-//             routeConfig[targetIndex].children = routeConfig[targetIndex].children.concat(item.children).sort((a, b) => a.sortIndex - b.sortIndex)
-//         } else {
-//             routeConfig.push(item)
-//         }
-//     })
-//     routeConfig.sort((a, b) => a.sortIndex - b.sortIndex)
-//     subsMenuPromission = { ...subsMenuPromission, ...subsMenu }
-//     const manageMenuItem = files(key).manageMenu
-//     if (manageMenuItem) {
-//         manageMenuItem.forEach(item => {
-//             const findIndex = manageMenu.findIndex(tex => tex.id === item.id)
-//             if (findIndex !== -1) {
-//                 manageMenu[findIndex].children = manageMenu[findIndex].children.concat(item.children).sort((a, b) => a.sortIndex - b.sortIndex)
-//             } else {
-//                 manageMenu.push(item)
-//             }
-//         })
-//     }
-// })
+const files = require.context('@/projects', true, /frameRouter.ts/)
+files.keys().forEach(key => {
+    const router = files(key).frameRouter
+    const menuList = files(key).adminRouteConfig
+    const subsMenu = files(key).subsMenuList
+    mainRouter = mainRouter.concat(router)
+    // 处理合并项目菜单
+    menuList.forEach(item => {
+        const targetIndex = routeConfig.findIndex(tex => tex.id === item.id)
+        if (targetIndex !== -1) {
+            routeConfig[targetIndex].children = routeConfig[targetIndex].children.concat(item.children).sort((a, b) => a.sortIndex - b.sortIndex)
+        } else {
+            routeConfig.push(item)
+        }
+    })
+    routeConfig.sort((a, b) => a.sortIndex - b.sortIndex)
+    subsMenuPromission = { ...subsMenuPromission, ...subsMenu }
+    const manageMenuItem = files(key).manageMenu
+    if (manageMenuItem) {
+        manageMenuItem.forEach(item => {
+            const findIndex = manageMenu.findIndex(tex => tex.id === item.id)
+            if (findIndex !== -1) {
+                manageMenu[findIndex].children = manageMenu[findIndex].children.concat(item.children).sort((a, b) => a.sortIndex - b.sortIndex)
+            } else {
+                manageMenu.push(item)
+            }
+        })
+    }
+})
 routeConfig.forEach(item => {
     if (item.id === 'Setting') {
         item.children = item.children.concat(manageMenu).sort((a, b) => a.sortIndex - b.sortIndex)

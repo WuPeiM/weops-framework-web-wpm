@@ -246,7 +246,7 @@
 
                     this.formData.modelId = this.instancePermissionDetail.permissions.bk_obj_id
 
-                    const res = await this.$api.roleManageMain.getInstances({
+                    const res = await this.$api.RoleManageMain.getInstances({
                         page: 1,
                         page_size: 9999,
                         search: '',
@@ -289,7 +289,7 @@
                 return false
             }
             this.columnsLoading = true
-            this.$api.roleManageMain.getMonitorAttrs({
+            this.$api.RoleManageMain.getMonitorAttrs({
                 bk_obj_id: this.formData.modelId,
                 instance_type: this.formData.instanceType
             }).then(res => {
@@ -314,7 +314,7 @@
             this.tableData = []
         }
         getInstancePermissionDetail(id) {
-            return this.$api.roleManageMain.getInstPermissionsDetail({
+            return this.$api.RoleManageMain.getInstPermissionsDetail({
                 id
             }).then(res => {
                 const { result, data } = res
@@ -394,7 +394,7 @@
         }
         getModelList(val) {
             this.modelLoading = true
-            this.$api.monitorCollectMain[val === '监控策略' ? 'getStrategyTree' : 'getCollectTree']().then(res => {
+            this.$api.MonitorCollectMain[val === '监控策略' ? 'getStrategyTree' : 'getCollectTree']().then(res => {
                 const { result, data } = res
                 if (!result) {
                     return false
@@ -441,7 +441,7 @@
         }
         getInstanceTypes() {
             this.instanceTypeLoading = true
-            return this.$api.roleManageMain.getInstanceTypes().then(res => {
+            return this.$api.RoleManageMain.getInstanceTypes().then(res => {
                 const { result, data } = res
                 if (!result) {
                     return false
@@ -483,7 +483,7 @@
                     role: this.role.id
                 }
                 this.loading = true
-                this.$api.roleManageMain[url](this.isAdd ? body : {
+                this.$api.RoleManageMain[url](this.isAdd ? body : {
                     id: this.detail.id,
                     body
                 }).then(res => {

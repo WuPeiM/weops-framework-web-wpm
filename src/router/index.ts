@@ -129,8 +129,8 @@ function dealRouterByPermission(to, from, next) {
                         const defaultName = findFirstUrl(menuList)
                         next({ name: defaultName })
                         return
-                        // const toName = menuList[0]?.children[0].id
-                        // next({name: toName})
+                        const toName = menuList[0]?.children[0].id
+                        next({name: toName})
                     }
                 }
             } else {
