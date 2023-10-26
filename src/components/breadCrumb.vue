@@ -49,7 +49,7 @@
             return this.$route.query?.subTitle || this.$route.query?.ip
         }
         get dynamicRoutes() {
-            return this.$store.state.menu.dynamicRoutes
+            return this.$store.state.menu?.dynamicRoutes
         }
         @Watch('$route', {
             immediate: true,

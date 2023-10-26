@@ -4,12 +4,12 @@ import { filterDataWithId } from '@/common/dealMenu'
 import vue from 'vue'
 
 import api from '@/api/index'
-
 const state = {
     navLists: [],
     addNavLists: [],
     user: {},
     menuList: [],
+    // menuList: menuList,
     completeDynamicRoute: false,
     ticketCount: 0,
     activationMenu: [],
