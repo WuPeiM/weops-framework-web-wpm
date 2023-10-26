@@ -4,7 +4,6 @@ import { filterDataWithId } from '@/common/dealMenu'
 import vue from 'vue'
 
 import api from '@/api/index'
-
 const state = {
     navLists: [],
     addNavLists: [],

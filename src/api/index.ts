@@ -1,10 +1,20 @@
 // 统一引入api模块
 import Server from './module/server'
 import User from './module/user'
+// import Activation from './module/activation'
+import UserManageMain from './module/userManage'
+import RoleManageMain from './module/roleManage'
+import MonitorCollectMain from './module/monitorCollect'
+import RemoteConnectMain from './module/remoteConnect'
 
 const api: any = {
     Server,
-    User
+    User,
+    // Activation,
+    UserManageMain,
+    RoleManageMain,
+    MonitorCollectMain,
+    RemoteConnectMain
 }
 // @ts-ignore
 const appFiles = require.context('@/projects/', true, /\/api\/index\.ts$/)

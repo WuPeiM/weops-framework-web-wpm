@@ -2,6 +2,14 @@
 const AuthPermission = () => import('@/views/authPermission.vue')
 const Forbidden = () => import('@/views/403.vue')
 const NoFound = () => import('@/views/404.vue')
+
+// 系统管理
+const SysRole = () => import('@/views/roleManage/index.vue')
+const SysUser = () => import('@/views/userMange/index.vue')
+const SysSetting = () => import('@/views/sysSetting/index.vue')
+const SysLog = () => import('@/views/logManage/index.vue')
+const MenuSetting = () => import('@/views/sysSetting/menuSetting.vue')
+
 let mainRouter = [
     {
         path: '/authPermissionFail',
@@ -26,11 +34,174 @@ let mainRouter = [
         meta: {
             title: '页面找不到'
         }
+    },
+    // 新增
+    {
+        path: '/sysRole',
+        name: 'SysRole',
+        component: SysRole,
+        meta: {
+            title: '角色管理'
+        }
+    },
+    {
+        path: '/sysUser',
+        name: 'SysUser',
+        component: SysUser,
+        meta: {
+            title: '用户管理'
+        }
+    },
+    {
+        path: '/sysSetting',
+        name: 'SysSetting',
+        component: SysSetting,
+        meta: {
+            title: '系统设置'
+        }
+    },
+    {
+        path: '/menuSetting',
+        name: 'MenuSetting',
+        component: MenuSetting,
+        meta: {
+            title: '自定义菜单',
+            activeMenu: 'SysSetting',
+            parentIds: ['SysSetting']
+        }
+    },
+    {
+        path: '/operateLog',
+        name: 'OperateLog',
+        component: SysLog,
+        meta: {
+            title: '操作日志'
+        }
     }
 ]
-const routeConfig = []
+const routeConfig = [
+    {
+        name: '管理',
+        id: 'Setting',
+        sortIndex: 8,
+        auth: [
+            {
+                key: 'checkAuth',
+                value: false,
+                label: '查看',
+                type: 'check'
+            },
+            {
+                key: 'operateAuth',
+                value: false,
+                label: '操作',
+                type: 'operate'
+            }
+        ],
+        children: [
+            {
+                name: '系统管理',
+                icon: 'cw-icon weops-system',
+                // id: 'sysManage',
+                id: 'sysRole',
+                sortIndex: 9,
+                auth: [
+                    {
+                        key: 'checkAuth',
+                        value: false,
+                        label: '查看',
+                        type: 'check'
+                    },
+                    {
+                        key: 'operateAuth',
+                        value: false,
+                        label: '操作',
+                        type: 'operate'
+                    }
+                ],
+                children: [
+                    {
+                        name: '角色管理',
+                        id: 'SysRole',
+                        icon: 'cw-icon weops-role',
+                        url: '/sysRole',
+                        auth: [
+                            {
+                                key: 'checkAuth',
+                                value: false,
+                                label: '查看',
+                                type: 'check'
+                            },
+                            {
+                                key: 'operateAuth',
+                                value: false,
+                                label: '操作',
+                                type: 'operate'
+                            }
+                        ]
+                    },
+                    {
+                        name: '用户管理',
+                        id: 'SysUser',
+                        icon: 'cw-icon weops-user',
+                        url: '/sysUser',
+                        auth: [
+                            {
+                                key: 'checkAuth',
+                                value: false,
+                                label: '查看',
+                                type: 'check'
+                            },
+                            {
+                                key: 'operateAuth',
+                                value: false,
+                                label: '操作',
+                                type: 'operate'
+                            }
+                        ]
+                    },
+                    {
+                        name: '操作日志',
+                        id: 'OperateLog',
+                        icon: 'cw-icon weops-operation-log-fill',
+                        url: '/operateLog',
+                        auth: [
+                            {
+                                key: 'checkAuth',
+                                value: false,
+                                label: '查看',
+                                type: 'check'
+                            }
+                        ]
+                    },
+                    {
+                        name: '系统设置',
+                        id: 'SysSetting',
+                        icon: 'cw-icon weops-setting',
+                        url: '/sysSetting',
+                        auth: [
+                            {
+                                key: 'checkAuth',
+                                value: false,
+                                label: '查看',
+                                type: 'check'
+                            },
+                            {
+                                key: 'operateAuth',
+                                value: false,
+                                label: '操作',
+                                type: 'operate'
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]
 let subsMenuPromission = {}
 const manageMenu = []
+
 // 自动导入子应用
 // @ts-ignore
 const files = require.context('@/projects', true, /frameRouter.ts/)
@@ -62,7 +233,6 @@ files.keys().forEach(key => {
         })
     }
 })
-
 routeConfig.forEach(item => {
     if (item.id === 'Setting') {
         item.children = item.children.concat(manageMenu).sort((a, b) => a.sortIndex - b.sortIndex)

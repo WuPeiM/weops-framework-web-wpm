@@ -16,7 +16,6 @@
         frameRouter = frameRouter.concat(files(key).frameRouter).filter(item => !!item)
         adminRouteConfig = adminRouteConfig.concat(files(key).adminRouteConfig).filter(item => !!item)
     })
-
     return {
         frameRouter,
         adminRouteConfig

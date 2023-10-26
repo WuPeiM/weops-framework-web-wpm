@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import html2canvas from 'html2canvas'
+import store from '@/store'
 
 // 去重
 Vue.prototype.$DupRem = function(list) {
@@ -389,4 +390,19 @@ export function urlDownload(url, fileName = '下载文件') {
         document.body.removeChild(eleLink)
     }
     httpRequest.send()
+}
+
+Vue.prototype.$BtnPermission = function(value) {
+    const user = store.state.permission.user
+    if (user.is_super) {
+        return true
+    } else {
+        const target = user.operate_ids.find(item => item.menuId === value.id)
+        if (target) {
+            const flag = target.operate_ids.find(item => item === value.type || item === value.secondAuth)
+            return !!flag
+        } else {
+            return false
+        }
+    }
 }

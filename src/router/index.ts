@@ -126,6 +126,11 @@ function dealRouterByPermission(to, from, next) {
                     if (menuList.length === 0) {
                         next({name: 'AuthPermissionFail'})
                     } else {
+                        const toName = menuList[0]?.children[0]?.id
+                        if (toName) {
+                            next({ name: toName })
+                            return
+                        }
                         const defaultName = findFirstUrl(menuList)
                         next({ name: defaultName })
                     }
@@ -149,7 +154,7 @@ router.beforeEach(async(to, from, next) => {
     const permission = store.state.permission
     const menu = store.state.menu
     const completeDynamicRoute = permission.completeDynamicRoute
-    const completeLoadChildApp = menu.completeLoadChildApp
+    const completeLoadChildApp = menu?.completeLoadChildApp
     // 处理其他菜单 如:资产的动态和基础监控的动态菜单时,需要走以下的公共逻辑
     if (!completeDynamicRoute && hasCommonFolder('common')) {
         // @ts-ignore
