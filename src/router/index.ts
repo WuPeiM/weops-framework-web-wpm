@@ -126,11 +126,13 @@ function dealRouterByPermission(to, from, next) {
                     if (menuList.length === 0) {
                         next({name: 'AuthPermissionFail'})
                     } else {
+                        const toName = menuList[0]?.children[0]?.id
+                        if (toName) {
+                            next({ name: toName })
+                            return
+                        }
                         const defaultName = findFirstUrl(menuList)
                         next({ name: defaultName })
-                        return
-                        const toName = menuList[0]?.children[0].id
-                        next({name: toName})
                     }
                 }
             } else {
