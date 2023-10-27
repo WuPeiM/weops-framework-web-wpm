@@ -71,8 +71,8 @@ let mainRouter = [
         }
     },
     {
-        path: '/operateLog',
-        name: 'OperateLog',
+        path: '/sysLog',
+        name: 'SysLog',
         component: SysLog,
         meta: {
             title: '操作日志'
@@ -162,9 +162,9 @@ const routeConfig = [
                     },
                     {
                         name: '操作日志',
-                        id: 'OperateLog',
+                        id: 'SysLog',
                         icon: 'cw-icon weops-operation-log-fill',
-                        url: '/operateLog',
+                        url: '/sysLog',
                         auth: [
                             {
                                 key: 'checkAuth',
