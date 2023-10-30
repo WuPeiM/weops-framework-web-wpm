@@ -6,7 +6,7 @@ import UserManageMain from './module/userManage'
 import RoleManageMain from './module/roleManage'
 import MonitorCollectMain from './module/monitorCollect'
 import RemoteConnectMain from './module/remoteConnect'
-import RoleManageMainMock from './module/mock/roleManageMock/index'
+import RoleManageMainMock from './module/mock/roleManageMock'
 
 const api: any = {
     Server,

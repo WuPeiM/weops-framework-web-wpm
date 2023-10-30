@@ -1,7 +1,7 @@
 // 角色管理模块
 import { get } from '@/api/axiosconfig/axiosconfig'
 import Mock from 'mockjs'
-import responseData from './responseData.ts'
+import responseData from './responseData'
 export default {
     /**
      * 获取角色列表数据
