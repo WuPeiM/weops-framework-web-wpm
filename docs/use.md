@@ -21,8 +21,10 @@
 └── main.ts # 入口 加载组件 自定义指令 初始化等
 ```
 ### example目录文件内容示例
-``` bash
-# api/modules/example.ts
+
+- 接口模块
+``` js
+//  api/modules/example.ts
 import { get, post } from '@/api/axiosconfig/axiosconfig'
 
 const mockUrl = 'http://yapi.canway.top/mock/1273' // 你可以使用yapi进行mock数据
@@ -36,8 +38,10 @@ export default {
     }
 }
 ```
-``` bash
-# api/index.ts
+
+- 统一管理接口模块
+``` js
+//  api/index.ts
 import example from './modules/example'
 
 const exampleBaseApi = {
@@ -46,14 +50,21 @@ const exampleBaseApi = {
 
 export default exampleBaseApi
 ```
-``` bash
-# router/frameRouter.ts
-const Example = () => import('@example/views/index.vue')
 
+- 子应用路由配置文件
+- **注意**：`framRouter`中的`name`属性值需要与`adminRouteConfig`中的children的`id`一致
+``` js
+// router/frameRouter.ts
+
+// 引入页面
+const Example = () => import('@example/views/index.vue')
+// 定义路由前缀
 const routerPrefix = 'example'
 
+// 页面路由都写在frameRouter里
 export const frameRouter = [
     {
+        // 访问该路由的路径
         path: `/${routerPrefix}/index`,
         name: 'Example',
         component: Example,
@@ -63,13 +74,19 @@ export const frameRouter = [
     }
 ]
 
+// 子应用入口，主框架会找到该文件的路由配置，合并到主框架中
 export const adminRouteConfig = [
     {
+        // 相当于一级菜单
+        // name为一级菜单的名称
         name: '子应用',
         id: 'ExampleApp',
+        // children数组相当于二级菜单，可配置多个对象
         children: [
             {
+                // 二级菜单名称
                 name: '子应用首页',
+                // id需要与上面frameRouter的name一致
                 id: 'Example'
             }
         ]
@@ -78,11 +95,13 @@ export const adminRouteConfig = [
 
 export const createAdminRouteConfig = () => adminRouteConfig
 ```
-``` bash
-# store/modules/example.ts
+
+- store模块文件
+``` js
+//  store/modules/example.ts
 // initial state
 const state = {
-    list: []
+    list: [{'message': '我是信息'}]
 }
 
 // getters
@@ -112,16 +131,20 @@ export default {
     mutations
 }
 ```
-``` bash
-# store/index.ts
+
+- 统一管理store模块
+``` js
+//  store/index.ts
 import example from './modules/example'
 
 export default {
     example
 }
 ```
-``` bash
-# views/index.vue
+
+- 页面组件文件
+``` js
+//  views/index.vue
 <template>
     <div class="example-wrapper" v-bkloading="{ isLoading: loading, zIndex: 10 }">
         <div class="example-wrapper-content">
@@ -182,14 +205,16 @@ export default class Example extends Vue {
 }
 </style>
 ```
-``` bash
-# main.ts
+- 子应用入口文件，用于引入公共方法，自定义指令等等
+- **注意**：不需要再新建vue实例配置路由，store等，主框架会进行处理
+``` js
+//  main.ts
 // 公共方法
-import './controller/func'
+import '../../controller/func/common'
 
 ```
 ### 服务启动及打包
-``` bash
+``` js
 # 服务启动
 npm run dev
 
