@@ -59,19 +59,6 @@
                             </ul>
                         </template>
                     </bk-popover>
-                    <!-- <span class="version" @click="checkVersionLog">
-                        v{{ version }}
-                        <span class="cw-icon weops-directions-fill version-tips"></span>
-                    </span> -->
-                    <!-- <bk-badge
-                        v-if="ticketIconVisible"
-                        style="width: 25px;height: 25px;"
-                        class="mr20"
-                        theme="success"
-                        :val="ticketCount"
-                        :max="99">
-                        <img class="ticket" src="@/assets/svg/ticket.svg" alt="ticket" @click="goTicket" />
-                    </bk-badge> -->
                 </div>
             </div>
         </template>

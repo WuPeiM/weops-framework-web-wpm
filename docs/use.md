@@ -26,15 +26,46 @@
 ``` js
 //  api/modules/example.ts
 import { get, post } from '@/api/axiosconfig/axiosconfig'
+import Mock from 'mockjs' // 使用Mockjs
 
-const mockUrl = 'http://yapi.canway.top/mock/1273' // 你可以使用yapi进行mock数据
+// mock数据
+const data = Mock.mock({
+    'list|10': [
+    {
+      id: '@increment',
+      name: '@cname()',
+      address: '@city(true)',
+      date: '@date(yyyy-MM-dd)'
+    }
+  ]
+})
+// 拦截get请求
+Mock.mock(/example\/list/, 'get', (option) => {
+    console.log(option)
+    return {
+        result: 'success',
+        code: '20000',
+        message: 'success',
+        data: data.list
+    }
+})
+// 拦截post请求
+Mock.mock(/example\/list/, 'post', (option) => {
+    console.log(option)
+    return {
+        result: 'success',
+        code: '20000',
+        message: 'success',
+        data: null
+    }
+})
 
 export default {
     getList(params = {}) {
-        return get(`${mockUrl}/example/list/`, params)
+        return get('/example/list/', params)
     },
     modifyList(params = {}) {
-        return post(`${mockUrl}/example/list/`, params)
+        return post('/example/list/', params)
     }
 }
 ```
@@ -58,6 +89,7 @@ export default exampleBaseApi
 
 // 引入页面
 const Example = () => import('@example/views/index.vue')
+const Other = () => import('@example/views/other.vue')
 // 定义路由前缀
 const routerPrefix = 'example'
 
@@ -70,6 +102,12 @@ export const frameRouter = [
         component: Example,
         meta: {
             title: '子应用首页'
+        },
+        path: `/${routerPrefix}/other`,
+        name: 'Other',
+        component: Other,
+        meta: {
+            title: 'Other页面'
         }
     }
 ]
@@ -87,7 +125,13 @@ export const adminRouteConfig = [
                 // 二级菜单名称
                 name: '子应用首页',
                 // id需要与上面frameRouter的name一致
-                id: 'Example'
+                id: 'Example',
+                // 三级菜单，最多写到三级菜单
+                children: [
+                    name: '三级菜单示例',
+                    id: 'Other',
+                    url: '/other'
+                ]
             }
         ]
     }
@@ -175,7 +219,7 @@ export default class Example extends Vue {
     }
 
     get msg() {
-        return this.list?.[0]?.message || '--'
+        return this.list || '--'
     }
 
     async getDetail() {
@@ -204,6 +248,12 @@ export default class Example extends Vue {
     }
 }
 </style>
+```
+```js
+//  views/other.vue
+<template>
+    <div>other页面</div>
+</template>
 ```
 - 子应用入口文件，用于引入公共方法，自定义指令等等
 - **注意**：不需要再新建vue实例配置路由，store等，主框架会进行处理

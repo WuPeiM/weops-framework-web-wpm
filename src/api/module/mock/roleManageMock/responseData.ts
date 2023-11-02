@@ -153,39 +153,6 @@ const instPermissions = Mock.mock({
 
 // 实例类型数据
 const instTypes = [
-    // {
-    //     'instance_type': '知识库',
-    //     'fields': {
-    //         'title': '文章标题',
-    //         'id': '',
-    //         'created_by': '创建人',
-    //         'created_at': '创建时间'
-    //     },
-    //     'permissions': {
-    //         'view': '查询',
-    //         'manage': '管理'
-    //     },
-    //     'show': 'title',
-    //     'unique_id': 'id'
-    // },
-    // {
-    //     'instance_type': '运维工具',
-    //     'fields': {
-    //         'tool_name': '工具名称',
-    //         'id': '',
-    //         'label': '标签',
-    //         'script_type': '脚本类型',
-    //         'tool_type': '工具类型',
-    //         'created_by': '创建人',
-    //         'created_at': '创建时间'
-    //     },
-    //     'permissions': {
-    //         'manage': '管理',
-    //         'use': '使用'
-    //     },
-    //     'show': 'tool_name',
-    //     'unique_id': 'id'
-    // },
     {
         'instance_type': '拓扑图',
         'fields': {
@@ -281,13 +248,12 @@ export default {
         const deleteId = getQuery(params.url, 'id')
         const deleteIndex = roles.findIndex(item => item.id === deleteId)
         roles.splice(deleteIndex, 1)
-        const res = {
+        return {
             result: true,
             code: '20000',
             message: 'success',
             data: '删除角色成功！'
         }
-        return res
     },
     editRoleData: (params) => {
         const body = JSON.parse(params.body)
@@ -311,20 +277,18 @@ export default {
         }
     },
     getAllRoleList: () => {
-        const res = {
+        return {
             result: true,
             data: roleList
         }
-        return res
     },
     getRoleMenus: (params) => {
-        const res = {
+        return {
             result: true,
             code: '20000',
             message: 'success',
             data: roleMenus
         }
-        return res
     },
     getInstPermissions: (params) => {
         const res = {
@@ -346,41 +310,36 @@ export default {
     deleteInstPermissions: (params) => {
         const deleteIndex = instPermissions.items.findIndex(item => item.id === params.id)
         instPermissions.items.splice(deleteIndex, 1)
-        const res = {
+        return {
             result: true,
             code: '20000',
             message: 'success',
             data: null
         }
-        return res
     },
     setRoleMenu: (params) => {
-        const res = {
+        return {
             result: true,
             code: '20000',
             message: 'success',
             data: '设置成功！'
         }
-        return res
     },
     getInstanceTypes: (params) => {
-        const res = {
+        return {
             result: true,
             code: '20000',
             message: 'success',
             data: instTypes
         }
-
-        return res
     },
     getInstPermissionsDetail: (params) => {
-        const res = {
+        return {
             result: true,
             code: '20000',
             message: 'success',
             data: instPermissionsDetail
         }
-        return res
     },
     getInstances: (params) => {
         const res = {
@@ -401,21 +360,14 @@ export default {
         return res
     },
     editInstPermissions: (params) => {
-        const res = {
+        return {
             result: true,
             code: 20000,
             message: 'success',
             data: null
         }
-        return res
     },
     createInstPermissions: (params) => {
-        const res = {
-            result: true,
-            code: 20000,
-            message: 'success',
-            data: null
-        }
         const newItem = Mock.mock({
             'id|+1': instPermissions.items[length - 1] + 1,
             'count': instPermissionsDetail.instances.length,
@@ -428,6 +380,11 @@ export default {
             'role': 3
         })
         instPermissions.items.push(newItem)
-        return res
+        return {
+            result: true,
+            code: 20000,
+            message: 'success',
+            data: null
+        }
     }
 }

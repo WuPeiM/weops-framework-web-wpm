@@ -93,48 +93,43 @@ export default {
     },
 
     getLogo: () => {
-        const res = {
+        return {
             'result': true,
             'code': '20000',
             'message': 'success',
             'data': logoData
         }
-        return res
     },
     resetlogo: () => {
-        const res = {
+        return {
             'result': true,
             'code': '20000',
             'message': 'success',
             'data': logoData
         }
-        return res
     },
     updateLogo: () => {
-        const res = {
-            'result': true,
-            'code': '20000',
-            'message': 'success',
-            'data': logoData
+        return {
+            result: true,
+            code: '20000',
+            message: 'success',
+            data: logoData
         }
-        return res
     },
     getBkUsers: (params) => {
-        const res = {
+        return {
             result: true,
             code: '20000',
             message: 'success',
             data: bkUsers
         }
-        return res
     },
     syncUsers: (params) => {
-        const res = {
+        return {
             result: true,
             code: '20000',
             message: 'success',
             data: {}
         }
-        return res
     }
 }

@@ -309,13 +309,12 @@ export default {
                 id: item.id
             }
         })
-        const res = {
+        return {
             result: true,
             code: '20000',
             message: 'success',
             data: '设置成功！'
         }
-        return res
     },
     getUserList: (params) => {
         const res = {
@@ -339,22 +338,20 @@ export default {
     deleteUser: (params) => {
         const deleteIndex = userListItems.findIndex(item => item.bk_user_id = params.bk_user_id)
         userListItems.splice(deleteIndex, 1)
-        const res = {
+        return {
             result: true,
             code: '20000',
             message: 'success',
             data: '删除用户成功！'
         }
-        return res
     },
     setUserRoles: (params) => {
-        const res = {
+        return {
             result: true,
             code: '20000',
             message: 'success',
             data: '设置用户角色成功！'
         }
-        return res
     },
     editUser: (params) => {
         const editItem = userListItems.find(item => item.id === params.id)
@@ -364,13 +361,12 @@ export default {
             editItem.phone = params.telephone
             editItem.leaders = params.leader
         }
-        const res = {
+        return {
             result: true,
             code: '20000',
             message: 'success',
             data: '修改用户成功'
         }
-        return res
     },
     createUser: (params) => {
         const newUser = {
@@ -394,61 +390,54 @@ export default {
             status: 'NORMAL'
         }
         userListItems.unshift(newUser)
-        const res = {
+        return {
             result: true,
             code: '20000',
             message: 'success',
             data: '创建用户成功'
         }
-        return res
     },
     updateUserStatus: (params) => {
         const updateUser = userListItems.find(item => item.id === params.id)
         updateUser.status = params.body.status
-        const res = {
+        return {
             result: true,
             code: '20000',
             message: 'success',
             data: '修改用户状态成功'
         }
-        return res
     },
     resetPassword: (params) => {
-        const res = {
+        return {
             result: true,
             code: '20000',
             message: 'success',
             data: '重置密码成功'
         }
-        return res
     },
     getDomainList: (params) => {
-        const res = {
+        return {
             result: true,
             data: ['default.local', 'test']
         }
-        return res
     },
     getLoginSet: (params) => {
-        const res = {
+        return {
             result: true,
             data: loginSetData
         }
-        return res
     },
     setDomain: (params) => {
         loginSetData.default_domain = params.default_domain
-        const res = {
+        return {
             result: true
         }
-        return res
     },
     updateLoginSet: (params) => {
         loginSetData = params
-        const res = {
+        return {
             result: true
         }
-        return res
     },
     searchRoleList: (params) => {
         const res = {
@@ -474,12 +463,11 @@ export default {
             menu: params.menu
         }
         menuItems.push(newMenu)
-        const res = {
+        return {
             result: true,
             code: '20000',
             message: 'success',
             data: newMenu
         }
-        return res
     }
 }
