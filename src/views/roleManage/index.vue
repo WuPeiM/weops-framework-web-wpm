@@ -2,7 +2,7 @@
     <div class="role-manage">
         <page-explanation
             title="角色管理"
-            content="您可以进行角色的新建和授权，权限的授权分为操作权限和应用权限，可从菜单操作和应用管理两个方面进行限制" />
+            content="您可以进行角色的新建和授权，权限的授权分为操作权限和实例权限，可从菜单操作和实例管理两个方面进行限制" />
         <div class="role-manage-wrapper">
             <div class="operate-box">
                 <bk-button
@@ -205,7 +205,7 @@
         }
         async confirmDelete(row) {
             try {
-                const res = await this.$api.RoleManageMain.deleteRole({
+                const res = await this.$api.RoleManageMainMock.deleteRole({
                     id: row.id
                 })
                 if (!res.result) {

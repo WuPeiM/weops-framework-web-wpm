@@ -225,9 +225,7 @@
                         this.getInstancePermissionDetail(this.detail.id),
                         this.getInstanceTypes()
                     ])
-
                     this.formData.instanceType = this.instancePermissionDetail.instance_type
-
                     await this.$nextTick()
 
                     for (const k in this.instancePermissionDetail.permissions) {
@@ -246,7 +244,7 @@
 
                     this.formData.modelId = this.instancePermissionDetail.permissions.bk_obj_id
 
-                    const res = await this.$api.RoleManageMain.getInstances({
+                    const res = await this.$api.RoleManageMainMock.getInstances({
                         page: 1,
                         page_size: 9999,
                         search: '',
@@ -314,7 +312,7 @@
             this.tableData = []
         }
         getInstancePermissionDetail(id) {
-            return this.$api.RoleManageMain.getInstPermissionsDetail({
+            return this.$api.RoleManageMainMock.getInstPermissionsDetail({
                 id
             }).then(res => {
                 const { result, data } = res
@@ -441,7 +439,7 @@
         }
         getInstanceTypes() {
             this.instanceTypeLoading = true
-            return this.$api.RoleManageMain.getInstanceTypes().then(res => {
+            return this.$api.RoleManageMainMock.getInstanceTypes().then(res => {
                 const { result, data } = res
                 if (!result) {
                     return false
@@ -483,7 +481,7 @@
                     role: this.role.id
                 }
                 this.loading = true
-                this.$api.RoleManageMain[url](this.isAdd ? body : {
+                this.$api.RoleManageMainMock[url](this.isAdd ? body : {
                     id: this.detail.id,
                     body
                 }).then(res => {

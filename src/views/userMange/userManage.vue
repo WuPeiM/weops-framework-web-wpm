@@ -224,7 +224,7 @@
     }
     setUserStatus(row, lastValue) {
         return new Promise((resolve, reject) => {
-            this.$api.UserManageMain.updateUserStatus(
+            this.$api.UserManageMainMock.updateUserStatus(
                 {
                     id: row.id,
                     body: {
@@ -250,7 +250,7 @@
     }
     syncUsers() {
         this.tableLoading = true
-        this.$api.Server.syncUsers().then(res => {
+        this.$api.ServerMock.syncUsers().then(res => {
             if (!res.result) {
                 this.$error(res.message)
                 return false
@@ -293,7 +293,7 @@
     }
     async confirmDelete(row) {
         try {
-            const res = await this.$api.UserManageMain.deleteUser({
+            const res = await this.$api.UserManageMainMock.deleteUser({
                 id: row.id,
                 bk_user_id: row.bk_user_id
             })
@@ -318,7 +318,7 @@
     }
     confirmSetRole(data) {
         this.tableLoading = true
-        this.$api.UserManageMain.setUserRoles({
+        this.$api.UserManageMainMock.setUserRoles({
             id: data.id,
             roles: data.roles
         }).then(res => {
@@ -341,7 +341,7 @@
             roles: this.roles
         }
         this.tableLoading = true
-        this.$api.UserManageMain.getUserList(params).then(res => {
+        this.$api.UserManageMainMock.getUserList(params).then(res => {
             if (!res.result) {
                 return false
             }
@@ -356,7 +356,7 @@
         })
     }
     getRoleList() {
-        this.$api.RoleManageMain.getAllRoleList().then(res => {
+        this.$api.RoleManageMainMock.getAllRoleList().then(res => {
             if (!res.result) {
                 return false
             }

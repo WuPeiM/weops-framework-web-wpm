@@ -7,6 +7,9 @@ import RoleManageMain from './module/roleManage'
 import MonitorCollectMain from './module/monitorCollect'
 import RemoteConnectMain from './module/remoteConnect'
 import RoleManageMainMock from './module/mock/roleManageMock/index'
+import UserManageMainMock from './module/mock/userManageMock/index'
+import ServerMock from './module/mock/serverMock/index'
+import UserMock from './module/mock/userMock/index'
 
 const api: any = {
     Server,
@@ -16,7 +19,10 @@ const api: any = {
     RoleManageMain,
     MonitorCollectMain,
     RemoteConnectMain,
-    RoleManageMainMock
+    RoleManageMainMock,
+    UserManageMainMock,
+    ServerMock,
+    UserMock
 }
 // @ts-ignore
 const appFiles = require.context('@/projects/', true, /\/api\/index\.ts$/)

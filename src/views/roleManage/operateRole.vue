@@ -94,7 +94,7 @@
                     }
                 }
                 this.loading = true
-                this.$api.RoleManageMain[url](params).then(res => {
+                this.$api.RoleManageMainMock[url](params).then(res => {
                     if (!res.result) {
                         this.$error(res.message)
                         return false
