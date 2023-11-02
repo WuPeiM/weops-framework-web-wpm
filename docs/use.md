@@ -41,7 +41,6 @@ const data = Mock.mock({
 })
 // 拦截get请求
 Mock.mock(/example\/list/, 'get', (option) => {
-    console.log(option)
     return {
         result: 'success',
         code: '20000',
@@ -51,7 +50,6 @@ Mock.mock(/example\/list/, 'get', (option) => {
 })
 // 拦截post请求
 Mock.mock(/example\/list/, 'post', (option) => {
-    console.log(option)
     return {
         result: 'success',
         code: '20000',
@@ -101,13 +99,13 @@ export const frameRouter = [
         name: 'Example',
         component: Example,
         meta: {
-            title: '子应用首页'
+            title: '一级菜单示例'
         },
         path: `/${routerPrefix}/other`,
         name: 'Other',
         component: Other,
         meta: {
-            title: 'Other页面'
+            title: '二级菜单示例'
         }
     }
 ]
@@ -117,13 +115,13 @@ export const adminRouteConfig = [
     {
         // 相当于一级菜单
         // name为一级菜单的名称
-        name: '子应用',
+        name: '一级菜单示例',
         id: 'ExampleApp',
         // children数组相当于二级菜单，可配置多个对象
         children: [
             {
                 // 二级菜单名称
-                name: '子应用首页',
+                name: '二级菜单示例',
                 // id需要与上面frameRouter的name一致
                 id: 'Example',
                 // 三级菜单，最多写到三级菜单
