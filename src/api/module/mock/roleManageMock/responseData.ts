@@ -1,5 +1,5 @@
 import Mock from 'mockjs'
-export const items = [
+export const roles = [
     {
         built_in: true,
         created_at: '2023-08-28 23:45:47',
@@ -244,13 +244,14 @@ export default {
                 items: []
             }
         }
-        res.data.items = roleList.filter(item => item.role_name.includes(params.search))
+        res.data.items = roles.filter(item => item.role_name.includes(params.search))
         res.data.count = res.data.items.length
+        console.log('角色管理', res)
         return res
     },
     createRoleData: (params) => {
         const name = params.role_name
-        const exists = items.some(item => item.role_name === name)
+        const exists = roles.some(item => item.role_name === name)
         if (exists) {
             return {
                 result: false,
@@ -273,13 +274,13 @@ export default {
                 describe: params.describe
             }
         }
-        items.push(res.data)
+        roles.push(res.data)
         return res
     },
     deleteRoleData: (params) => {
         const deleteId = getQuery(params.url, 'id')
-        const deleteIndex = items.findIndex(item => item.id === deleteId)
-        items.splice(deleteIndex, 1)
+        const deleteIndex = roles.findIndex(item => item.id === deleteId)
+        roles.splice(deleteIndex, 1)
         const res = {
             result: true,
             code: '20000',
@@ -290,7 +291,7 @@ export default {
     },
     editRoleData: (params) => {
         const body = JSON.parse(params.body)
-        const nameExists = items.some(item => item.role_name === body.role_name && item.id !== body.id)
+        const nameExists = roles.some(item => item.role_name === body.role_name && item.id !== body.id)
         if (nameExists) {
             return {
                 result: false,
@@ -299,7 +300,7 @@ export default {
                 data: null
             }
         }
-        const editItem = items.find(item => item.id === body.id)
+        const editItem = roles.find(item => item.id === body.id)
         editItem.role_name = body.role_name
         editItem.describe = body.describe
         return {
