@@ -244,7 +244,7 @@ export default {
                 items: []
             }
         }
-        res.data.items = items.filter(item => item.role_name.includes(params.search))
+        res.data.items = roleList.filter(item => item.role_name.includes(params.search))
         res.data.count = res.data.items.length
         return res
     },
