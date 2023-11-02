@@ -227,8 +227,8 @@
             this.loading = true
             try {
                 const res = this.isGroup
-                    ? await this.$api.UserManageMain.searchRoleList(params)
-                    : await this.$api.UserManageMain.searchUserList(params)
+                    ? await this.$api.UserManageMainMock.searchRoleList(params)
+                    : await this.$api.UserManageMainMock.searchUserList(params)
                 if (!res.result) {
                     this.dataList = []
                     this.pagination.count = 0
@@ -266,7 +266,7 @@
         async setUsersByRole() {
             this.isConfirm = true
             try {
-                const res = await this.$api.UserManageMain.setUsersByRole({
+                const res = await this.$api.UserManageMainMock.setUsersByRole({
                     users: this.selectedData.user.map(item => item.id),
                     id: this.roleDetail?.id
                 })

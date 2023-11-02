@@ -111,7 +111,7 @@
 
         getUserList() {
             this.loading = true
-            this.$api.Server.getBkUsers({ page_size: -1 }).then(res => {
+            this.$api.ServerMock.getBkUsers({ page_size: -1 }).then(res => {
                 if (!res.result) {
                     return this.$error(res.message)
                 }
@@ -160,7 +160,7 @@
                     }
                 }
                 this.loading = true
-                this.$api.UserManageMain[url](params).then(res => {
+                this.$api.UserManageMainMock[url](params).then(res => {
                     if (!res.result) {
                         this.$error(res.message)
                         return false

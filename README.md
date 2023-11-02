@@ -10,6 +10,9 @@
 
 ## 开发使用
 
+### 注意事项
+-   node版本建议采用`v14.16.0`，对应的npm版本：`6.14.11`
+
 ### 框架目录
 ```markdown
 ├── build # 构建相关
@@ -53,7 +56,7 @@ main 是主分支。
 
 ```shell
 # 克隆项目
-git clone https://github.com/herozhou/vue-framework-wz.git
+git clone https://github.com/WeOps-Lab/weops-framework-web.git
 
 # 安装依赖
 npm install --registry=https://registry.npm.taobao.org
@@ -72,6 +75,3 @@ npm run dev
 npm run build
 ```
 如果想知道相关的[底层工作原理](http://vuejs-templates.github.io/webpack/) 、 [vue-loader 相关文档](http://vuejs.github.io/vue-loader) 和 [开发示例指引](docs/use.md)
-
-
-

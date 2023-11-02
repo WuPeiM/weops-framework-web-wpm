@@ -99,7 +99,7 @@
             fileData.append('file', this.fileData.origin)
             this.basicLoading = true
             try {
-                const res = await this.$api.Server.updateLogo(fileData)
+                const res = await this.$api.ServerMock.updateLogo(fileData)
                 if (res.result) {
                     this.$success('上传成功')
                     // this.$store.commit('changeLogo')
@@ -121,7 +121,7 @@
                 confirmLoading: true,
                 confirmFn: async() => {
                     try {
-                        const res = await this.$api.Server.resetlogo()
+                        const res = await this.$api.ServerMock.resetlogo()
                         if (res.result) {
                             this.$success('恢复默认成功!')
                             this.$bus.$emit('updateLogo')
@@ -138,7 +138,7 @@
         }
         getLogo() {
             this.reShow = false
-            this.$api.Server.getLogo().then(res => {
+            this.$api.ServerMock.getLogo().then(res => {
                 if (res.result) {
                     this.file = [
                         {

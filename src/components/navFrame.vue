@@ -59,19 +59,6 @@
                             </ul>
                         </template>
                     </bk-popover>
-                    <span class="version" @click="checkVersionLog">
-                        v{{ version }}
-                        <span class="cw-icon weops-directions-fill version-tips"></span>
-                    </span>
-                    <bk-badge
-                        v-if="ticketIconVisible"
-                        style="width: 25px;height: 25px;"
-                        class="mr20"
-                        theme="success"
-                        :val="ticketCount"
-                        :max="99">
-                        <img class="ticket" src="@/assets/svg/ticket.svg" alt="ticket" @click="goTicket" />
-                    </bk-badge>
                 </div>
             </div>
         </template>
@@ -118,7 +105,7 @@
             <img :src="qrode" alt="这是一个二维码" width="200" height="200">
         </bk-dialog>
         <personal-info ref="personalInfo"></personal-info>
-        <version-log ref="versionLog"></version-log>
+        <!-- <version-log ref="versionLog"></version-log> -->
     </bk-navigation>
 </template>
 
@@ -126,14 +113,14 @@
     import { Component, Vue, Watch } from 'vue-property-decorator'
     import Container from './container.vue'
     import PersonalInfo from './personalInfo.vue'
-    import VersionLog from './versionLog.vue'
+    // import VersionLog from './versionLog.vue'
     import { mapState } from 'vuex'
     import { removeItemsWithId } from '@/common/dealMenu'
     @Component({
         components: {
             Container,
-            PersonalInfo,
-            VersionLog
+            PersonalInfo
+            // VersionLog
         },
         computed: {
             ...mapState({
@@ -309,7 +296,7 @@
                 if (res.result) {
                     this.bindStatus = false
                     this.$success('解绑成功')
-                    this.$api.Server.syncUsers()
+                    this.$api.ServerMock.syncUsers()
                 }
             })
         }
@@ -354,7 +341,7 @@
                     this.bindStatus = true
                     this.isShow = false
                     clearTimeout(this.timeoutId)
-                    this.$api.Server.syncUsers()
+                    this.$api.ServerMock.syncUsers()
                 } else {
                     this.timeoutId = setTimeout(() => {
                         this.getNowStatus()
@@ -366,7 +353,7 @@
             this.nav.id = id
         }
         getLogo() {
-            this.$api.Server.getLogo({}, {
+            this.$api.ServerMock.getLogo({}, {
                 cancelWhenRouteChange: false
             }).then(res => {
                 if (res.result) {

@@ -166,6 +166,15 @@
                 this.handleMenuData()
             }
         }
+        activated() {
+            const id = this.$route.query?.id
+            this.id = id
+            if (id) {
+                this.getMenuById(id)
+            } else {
+                this.handleMenuData()
+            }
+        }
         findAndReplaceByKey(arr, key, replacement) {
             for (let i = 0; i < arr.length; i++) {
                 const element = arr[i]
@@ -201,7 +210,7 @@
         async getMenuById(id = '') {
             this.initLoading = true
             try {
-                const res = await this.$api.UserManageMain.getMenuById({
+                const res = await this.$api.UserManageMainMock.getMenuById({
                     id
                 })
                 const { result, data, message } = res
@@ -470,7 +479,7 @@
             this.loading = true
             try {
                 const url = this.id ? 'updateMenuManage' : 'createMenuManage'
-                const res = await this.$api.UserManageMain[url]({
+                const res = await this.$api.UserManageMainMock[url]({
                     id: this.id,
                     menu_name: this.menuTitle,
                     menu: this.handleMenuParams()
