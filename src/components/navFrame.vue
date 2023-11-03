@@ -44,12 +44,6 @@
                         </div>
                         <template slot="content">
                             <ul class="monitor-navigation-admin" ref="userList" @mouseleave="hidePopover">
-                                <li class="nav-item" @click="bindWeChat" v-if="!bindStatus">
-                                    绑定微信
-                                </li>
-                                <li v-else class="nav-item" @click="unbindWeChat">
-                                    解绑微信
-                                </li>
                                 <li class="nav-item" @click="checkPersonalInfo">
                                     个人信息
                                 </li>
@@ -289,17 +283,6 @@
             const userPopover:any = this.$refs['userPopover']
             userPopover.hideHandler()
         }
-        async unbindWeChat() {
-            const url = `${window.location.origin}/console/user_center/weixin/unbind_wx_user_info/`
-            await this.$http.get(url).then(response => {
-                const res = response?.data
-                if (res.result) {
-                    this.bindStatus = false
-                    this.$success('解绑成功')
-                    this.$api.ServerMock.syncUsers()
-                }
-            })
-        }
         outLogin() {
             sessionStorage.clear()
             window.location.href = `${window.location.origin}/accounts/logout/`
@@ -309,28 +292,6 @@
             await this.$http.get(url).then(response => {
                 const res = response?.data
                 this.bindStatus = res.result
-            })
-        }
-        async bindWeChat() {
-            let url = ''
-            if (window['CONSOLE_BIND_WX_TYPE'] === 'qywx') {
-                url = `${window.location.origin}/console/user_center/weixin/qy/get_login_url/`
-            } else {
-                url = `${window.location.origin}/console/user_center/weixin/mp/get_qrcode`
-            }
-            await this.$http.get(url).then(response => {
-                const res = response?.data
-                if (res.result) {
-                    if (window['CONSOLE_BIND_WX_TYPE'] === 'qywx') {
-                        window.open(res.url)
-                    } else {
-                        this.isShow = true
-                        this.qrode = res.url
-                        this.getNowStatus()
-                    }
-                } else {
-                    this.$error('获取二维码接口异常，请联系管理员')
-                }
             })
         }
         getNowStatus() {

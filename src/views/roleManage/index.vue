@@ -124,13 +124,6 @@
                 minWidth: '300px'
             },
             {
-                label: '是否内置',
-                key: 'built_in',
-                align: 'left',
-                minWidth: '100px',
-                scopedSlots: 'built_in'
-            },
-            {
                 label: '创建时间',
                 key: 'created_at',
                 align: 'left',

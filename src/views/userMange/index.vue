@@ -1,10 +1,10 @@
 <template>
     <div>
-        <header-sub class="user-manage-header">
+        <!-- <header-sub class="user-manage-header">
             <template slot="title">
                 <menu-tab :panels="panels" type="line" :active-panel="active" @click="toTabMenu"></menu-tab>
             </template>
-        </header-sub>
+        </header-sub> -->
         <page-explanation
             :title="getTitleOrContent('label')"
             :content="getTitleOrContent('content')" />

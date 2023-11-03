@@ -11,14 +11,6 @@
                     @click="operateUser('add')">
                     新增用户
                 </bk-button>
-                <bk-button
-                    :disabled="tableLoading"
-                    theme="primary"
-                    title="同步用户"
-                    class="mr10"
-                    @click="syncUsers">
-                    同步用户
-                </bk-button>
             </div>
             <bk-input
                 :disabled="tableLoading"
@@ -168,34 +160,6 @@
             filterMultiple: true
         },
         {
-            label: '组织',
-            key: 'organization',
-            align: 'left',
-            minWidth: '100px',
-            scopedSlots: 'organization'
-        },
-        {
-            label: '上级',
-            key: 'superior',
-            align: 'left',
-            minWidth: '100px',
-            scopedSlots: 'superior'
-        },
-        {
-            label: '用户来源',
-            key: 'local',
-            align: 'left',
-            minWidth: '100px',
-            scopedSlots: 'local'
-        },
-        {
-            label: '启用',
-            key: 'enable',
-            align: 'left',
-            minWidth: '100px',
-            scopedSlots: 'enable'
-        },
-        {
             label: '操作',
             key: 'operation',
             align: 'left',
@@ -247,20 +211,6 @@
     sourceFilterMethod(val) {
        this.roles = Object.values(val).flat()
        this.handlerIconClick()
-    }
-    syncUsers() {
-        this.tableLoading = true
-        this.$api.ServerMock.syncUsers().then(res => {
-            if (!res.result) {
-                this.$error(res.message)
-                return false
-            }
-            this.handlerIconClick()
-            this.$success('同步用户成功！')
-            this.$store.dispatch('getAllUserList')
-        }).finally(() => {
-            this.tableLoading = false
-        })
     }
     changeRole(data) {
         setTimeout(() => {

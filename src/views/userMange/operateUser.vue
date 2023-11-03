@@ -10,20 +10,20 @@
         @after-leave="closeDialog"
     >
         <div class="content-box" v-bkloading="{ isLoading: loading, zIndex: 10 }">
-            <bk-form :label-width="75" :model="formData" :rules="rules" ref="validateForm">
+            <bk-form :label-width="80" :model="formData" :rules="rules" ref="validateForm">
                 <bk-form-item label="用户名" :required="true" :property="'username'" error-display-type="normal">
                     <bk-input :disabled="type === 'edit'" v-model="formData.username" placeholder="请输入用户名"></bk-input>
                 </bk-form-item>
-                <bk-form-item label="中文名" :required="true" :property="'display_name'" error-display-type="normal">
+                <bk-form-item label="中文名" :property="'display_name'" error-display-type="normal">
                     <bk-input v-model="formData.display_name" placeholder="请输入中文名"></bk-input>
                 </bk-form-item>
-                <bk-form-item label="邮箱" :required="true" :property="'email'" error-display-type="normal">
+                <bk-form-item label="邮箱" :property="'email'" error-display-type="normal">
                     <bk-input v-model="formData.email" placeholder="请输入邮箱"></bk-input>
                 </bk-form-item>
-                <bk-form-item label="手机号" :required="true" :property="'telephone'" error-display-type="normal">
+                <bk-form-item label="手机号" :property="'telephone'" error-display-type="normal">
                     <bk-input v-model="formData.telephone" placeholder="请输入手机号"></bk-input>
                 </bk-form-item>
-                <bk-form-item label="上级" error-display-type="normal">
+                <!-- <bk-form-item label="上级" error-display-type="normal">
                     <bk-select
                         v-model="formData.leader"
                         multiple
@@ -35,6 +35,12 @@
                             :disabled="option.disabled">
                         </bk-option>
                     </bk-select>
+                </bk-form-item> -->
+                <bk-form-item label="密码" :required="true" :property="'password'" error-display-type="normal">
+                    <bk-input v-model="formData.password" placeholder="请输入密码"></bk-input>
+                </bk-form-item>
+                <bk-form-item label="确认密码" :required="true" :property="'confirmPassword'" error-display-type="normal">
+                    <bk-input v-model="formData.confirmPassword" placeholder="请输入密码"></bk-input>
                 </bk-form-item>
             </bk-form>
         </div>
@@ -65,7 +71,9 @@
             display_name: '',
             email: '',
             telephone: '',
-            leader: []
+            leader: [],
+            password: '',
+            confirmPassword: ''
         }
         rules = {
             username: [
@@ -75,56 +83,39 @@
                     trigger: 'blur'
                 }
             ],
-            display_name: [
+            password: [
                 {
                     required: true,
                     message: '必填项',
                     trigger: 'blur'
                 }
             ],
-            email: [
+            confirmPassword: [
                 {
                     required: true,
                     message: '必填项',
-                    trigger: 'blur'
-                },
-                {
-                    regex: /^[A-Za-z\d]+([-_.][A-Za-z\d]+)*@([A-Za-z\d]+[-.])+[A-Za-z\d]{2,4}$/,
-                    message: '请输入正确的邮箱地址',
-                    trigger: 'blur'
-                }
-            ],
-            telephone: [
-                {
-                    required: true,
-                    message: '必填项',
-                    trigger: 'blur'
-                },
-                {
-                    regex: /^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$/,
-                    message: '请输入正确的手机格式',
                     trigger: 'blur'
                 }
             ]
         }
-        leaderList: Array<any> = []
+        // leaderList: Array<any> = []
 
-        getUserList() {
-            this.loading = true
-            this.$api.ServerMock.getBkUsers({ page_size: -1 }).then(res => {
-                if (!res.result) {
-                    return this.$error(res.message)
-                }
-                res.data.items.forEach(item => {
-                    if (this.userInfo.bk_user_id === item.bk_user_id) {
-                        item.disabled = true
-                    }
-                })
-                this.leaderList = res.data.items
-            }).finally(() => {
-                this.loading = false
-            })
-       }
+    //     getUserList() {
+    //         this.loading = true
+    //         this.$api.ServerMock.getBkUsers({ page_size: -1 }).then(res => {
+    //             if (!res.result) {
+    //                 return this.$error(res.message)
+    //             }
+    //             res.data.items.forEach(item => {
+    //                 if (this.userInfo.bk_user_id === item.bk_user_id) {
+    //                     item.disabled = true
+    //                 }
+    //             })
+    //             this.leaderList = res.data.items
+    //         }).finally(() => {
+    //             this.loading = false
+    //         })
+    //    }
         show(type, data) {
             this.visible = true
             this.type = type
@@ -136,7 +127,7 @@
                 this.formData.telephone = data.phone
                 this.formData.leader = data.leaders.map(item => item.bk_user_id)
             }
-            this.getUserList()
+            // this.getUserList()
         }
         close() {
             this.visible = false
