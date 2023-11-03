@@ -24,6 +24,27 @@ const menuItems = [
         'use': false,
         'menu': [
             {
+                'id': 'SysSetting',
+                'url': '/sysSetting',
+                'auth': [
+                    {
+                        'key': 'checkAuth',
+                        'type': 'check',
+                        'label': '查看',
+                        'value': false
+                    },
+                    {
+                        'key': 'operateAuth',
+                        'type': 'operate',
+                        'label': '操作',
+                        'value': false
+                    }
+                ],
+                'icon': 'cw-icon weops-setting',
+                'name': '系统设置',
+                'originName': '系统管理/系统设置'
+            },
+            {
                 'id': 'datainsight7457',
                 'key': '050v9',
                 'url': 'http://datainsight.weops.com/',
@@ -61,8 +82,8 @@ const menuItems = [
                 'originName': '系统管理/用户管理'
             },
             {
-                'id': 'OperateLog',
-                'url': '/operateLog',
+                'id': 'SysLog',
+                'url': '/sysLog',
                 'auth': [
                     {
                         'key': 'checkAuth',
@@ -252,6 +273,7 @@ export default {
         return res
     },
     getMenuById: (params) => {
+        console.log('点击编辑菜单', params)
         const menuData = menuItems.find(item => item.id === params.id)
         const res = {
             result: true,
@@ -468,6 +490,20 @@ export default {
             code: '20000',
             message: 'success',
             data: newMenu
+        }
+    },
+    updateMenuManage: (params) => {
+        menuItems.forEach(item => {
+            if (item.id === params.id) {
+                item.updated_at = Mock.mock('@now')
+                item.menu = params.menu
+                item.menu_name = params.menu_name
+            }
+        })
+        return {
+            result: true,
+            code: '20000',
+            message: 'success'
         }
     }
 }

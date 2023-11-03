@@ -175,7 +175,8 @@ export default {
      * @param {Object} params 请求参数
      */
     updateMenuManage: function(params: any = {}) {
-        return put(`${reUrl}/system/mgmt/menu_manage/${params.id}/`, params)
+        Mock.mock(/api\/system\/mgmt\/menu_manage/, 'put', responseData.updateMenuManage(params))
+        return put(`/system/mgmt/menu_manage/${params.id}/`, params)
     },
     // 获取启用的菜单
     getUseMenu(params = {}) {

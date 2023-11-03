@@ -210,7 +210,7 @@
                 dateTime: []
             }
             this.isLoading = true
-            this.$api.Server.getLogs(this.params).then(res => {
+            this.$api.ServerMock.getLogs(this.params).then(res => {
                 this.isLoading = false
                 if (res.result) {
                     this.logList = res.data.items
