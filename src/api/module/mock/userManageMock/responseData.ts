@@ -61,8 +61,8 @@ const menuItems = [
                 'originName': '系统管理/用户管理'
             },
             {
-                'id': 'OperateLog',
-                'url': '/operateLog',
+                'id': 'SysLog',
+                'url': '/sysLog',
                 'auth': [
                     {
                         'key': 'checkAuth',
