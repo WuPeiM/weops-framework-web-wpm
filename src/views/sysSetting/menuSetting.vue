@@ -166,15 +166,6 @@
                 this.handleMenuData()
             }
         }
-        activated() {
-            const id = this.$route.query?.id
-            this.id = id
-            if (id) {
-                this.getMenuById(id)
-            } else {
-                this.handleMenuData()
-            }
-        }
         findAndReplaceByKey(arr, key, replacement) {
             for (let i = 0; i < arr.length; i++) {
                 const element = arr[i]

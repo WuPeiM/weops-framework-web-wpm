@@ -2,13 +2,15 @@ import Vuex from 'vuex'
 import Vue from 'vue'
 import permission from './modules/permisson'
 import global from './global'
+import product from './modules/product'
 
 // @ts-ignore
 Vue.use(Vuex)
 
 const modules = {
     permission,
-    global
+    global,
+    product
 }
 
 // @ts-ignore
