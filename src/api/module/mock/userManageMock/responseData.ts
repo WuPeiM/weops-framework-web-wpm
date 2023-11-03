@@ -24,6 +24,27 @@ const menuItems = [
         'use': false,
         'menu': [
             {
+                'id': 'SysSetting',
+                'url': '/sysSetting',
+                'auth': [
+                    {
+                        'key': 'checkAuth',
+                        'type': 'check',
+                        'label': '查看',
+                        'value': false
+                    },
+                    {
+                        'key': 'operateAuth',
+                        'type': 'operate',
+                        'label': '操作',
+                        'value': false
+                    }
+                ],
+                'icon': 'cw-icon weops-setting',
+                'name': '系统设置',
+                'originName': '系统管理/系统设置'
+            },
+            {
                 'id': 'datainsight7457',
                 'key': '050v9',
                 'url': 'http://datainsight.weops.com/',
@@ -252,7 +273,7 @@ export default {
         return res
     },
     getMenuById: (params) => {
-        const menuData = menuItems.find(item => item.id === params.id)
+        const menuData = menuItems.find(item => item.id === +params.id)
         const res = {
             result: true,
             code: '20000',
@@ -468,6 +489,20 @@ export default {
             code: '20000',
             message: 'success',
             data: newMenu
+        }
+    },
+    updateMenuManage: (params) => {
+        menuItems.forEach(item => {
+            if (item.id === params.id) {
+                item.updated_at = Mock.mock('@now')
+                item.menu = params.menu
+                item.menu_name = params.menu_name
+            }
+        })
+        return {
+            result: true,
+            code: '20000',
+            message: 'success'
         }
     }
 }
