@@ -57,7 +57,8 @@ let mainRouter = [
         name: 'SysSetting',
         component: SysSetting,
         meta: {
-            title: '系统设置'
+            title: '系统设置',
+            cacheName: 'sys-setting' // 需要缓存的页面名称，需要跟这个组件的name命名一致
         }
     },
     {
@@ -67,7 +68,8 @@ let mainRouter = [
         meta: {
             title: '自定义菜单',
             activeMenu: 'SysSetting',
-            parentIds: ['SysSetting']
+            parentIds: ['SysSetting'],
+            needCache: false // 离开后是父级页面否需要缓存。需注意的是，要配合cacheName使用，并且在父级页面的beforeRouteLeave钩子中，判断是否需要缓存。若需要缓存，则调用this.$handleKeepAlive(to, from)这个方法,vuex中的keepAliveList要把父级页面的路由名称加进去
         }
     },
     {
