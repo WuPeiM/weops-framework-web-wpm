@@ -175,11 +175,14 @@
             return this.permission?.updateCustomMenu
         }
         get needLeftNav() {
+            if (this.$route.name === 'Login') {
+                return false
+            }
             const target = this.menuList.find(item => item.id === this.activeTopNav)
             return !!(target && target.children)
         }
         get headerHight() {
-            return this.$route.name === 'RemoteConnect' ? '0' : '52'
+            return this.$route.name === 'Login' ? '0' : '52'
         }
         @Watch('$route', {
             immediate: true,
@@ -285,7 +288,8 @@
         }
         outLogin() {
             sessionStorage.clear()
-            window.location.href = `${window.location.origin}/accounts/logout/`
+            // window.location.href = `${window.location.origin}/accounts/logout/`
+            this.$router.replace('/login')
         }
         async getBindStatus() {
             const url = `${window.location.origin}/console/user_center/weixin/get_bind_status/`

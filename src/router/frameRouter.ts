@@ -9,8 +9,17 @@ const SysUser = () => import('@/views/userMange/index.vue')
 const SysSetting = () => import('@/views/sysSetting/index.vue')
 const SysLog = () => import('@/views/logManage/index.vue')
 const MenuSetting = () => import('@/views/sysSetting/menuSetting.vue')
+const Login = () => import('@/views/login.vue')
 
 let mainRouter = [
+    {
+        path: '/login',
+        name: 'Login',
+        component: Login,
+        meta: {
+            title: '登录'
+        }
+    },
     {
         path: '/authPermissionFail',
         name: 'AuthPermissionFail',
