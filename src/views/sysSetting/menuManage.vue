@@ -232,9 +232,6 @@
                 this.$error(res.message)
             }
         }
-        activated() {
-            this.getMenuList()
-        }
     }
 </script>
 

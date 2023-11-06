@@ -31,6 +31,10 @@
             LogoSetting,
             MenuManage,
             PageExplanation
+        },
+        beforeRouteLeave(to, from, next) {
+            this.$handleKeepAlive(to, from)
+            next()
         }
     })
     export default class SysSetting extends Vue {

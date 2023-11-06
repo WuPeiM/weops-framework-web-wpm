@@ -406,3 +406,25 @@ Vue.prototype.$BtnPermission = function(value) {
         }
     }
 }
+
+const getRouter = () => {
+    return store.getters.cacheRouter
+}
+
+Vue.prototype.$handleKeepAlive = function(to, from) {
+    if (!to.meta.needCache) {
+        const menus = getRouter()
+        if (menus.includes(from.meta?.cacheName)) {
+            const index = menus.findIndex(item => item === from.meta?.cacheName)
+            menus.splice(index, 1)
+        }
+        store.commit('setCacheRouter', menus)
+    } else {
+        const keepAliveList = store.state.product.keepAliveList
+        if (keepAliveList.includes(from.name)) {
+            const menus = getRouter()
+            // @ts-ignore
+            store.commit('setCacheRouter', Array.from(new Set(menus.concat([from.meta?.cacheName]))))
+        }
+    }
+}

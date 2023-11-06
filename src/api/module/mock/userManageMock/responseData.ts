@@ -273,8 +273,7 @@ export default {
         return res
     },
     getMenuById: (params) => {
-        console.log('点击编辑菜单', params)
-        const menuData = menuItems.find(item => item.id === params.id)
+        const menuData = menuItems.find(item => item.id === +params.id)
         const res = {
             result: true,
             code: '20000',

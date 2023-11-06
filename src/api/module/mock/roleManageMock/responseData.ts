@@ -213,7 +213,6 @@ export default {
         }
         res.data.items = roles.filter(item => item.role_name.includes(params.search))
         res.data.count = res.data.items.length
-        console.log('角色管理', res)
         return res
     },
     createRoleData: (params) => {
