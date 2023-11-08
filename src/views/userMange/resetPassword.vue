@@ -98,9 +98,9 @@
             const validatePsdForm: any = this.$refs.validatePsdForm
             validatePsdForm.validate().then(validator => {
                 this.resetLoading = true
-                this.$api.UserManageMainMock.resetPassword({
+                this.$api.UserManageMain.resetPassword({
                     password: this.formData.password,
-                    id: this.resetUser.bk_user_id
+                    id: this.resetUser.id
                 }).then(res => {
                     if (!res.result) {
                         this.$error(res.message)

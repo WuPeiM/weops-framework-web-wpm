@@ -20,27 +20,11 @@
                 <bk-form-item label="邮箱" :property="'email'" error-display-type="normal">
                     <bk-input v-model="formData.email" placeholder="请输入邮箱"></bk-input>
                 </bk-form-item>
-                <bk-form-item label="手机号" :property="'telephone'" error-display-type="normal">
-                    <bk-input v-model="formData.telephone" placeholder="请输入手机号"></bk-input>
+                <bk-form-item v-if="type === 'add'" label="密码" :required="true" :property="'password'" error-display-type="normal">
+                    <bk-input v-model="formData.password" placeholder="请输入密码" type="password" :clearable="true"></bk-input>
                 </bk-form-item>
-                <!-- <bk-form-item label="上级" error-display-type="normal">
-                    <bk-select
-                        v-model="formData.leader"
-                        multiple
-                        searchable>
-                        <bk-option v-for="option in leaderList"
-                            :key="option.bk_user_id"
-                            :id="option.bk_user_id"
-                            :name="option.chname"
-                            :disabled="option.disabled">
-                        </bk-option>
-                    </bk-select>
-                </bk-form-item> -->
-                <bk-form-item label="密码" :required="true" :property="'password'" error-display-type="normal">
-                    <bk-input v-model="formData.password" placeholder="请输入密码"></bk-input>
-                </bk-form-item>
-                <bk-form-item label="确认密码" :required="true" :property="'confirmPassword'" error-display-type="normal">
-                    <bk-input v-model="formData.confirmPassword" placeholder="请输入密码"></bk-input>
+                <bk-form-item v-if="type === 'add'" label="确认密码" :required="true" :property="'confirmPassword'" error-display-type="normal">
+                    <bk-input v-model="formData.confirmPassword" placeholder="请输入密码" type="password" :clearable="true"></bk-input>
                 </bk-form-item>
             </bk-form>
         </div>
@@ -70,8 +54,6 @@
             username: '',
             display_name: '',
             email: '',
-            telephone: '',
-            leader: [],
             password: '',
             confirmPassword: ''
         }
@@ -95,39 +77,26 @@
                     required: true,
                     message: '必填项',
                     trigger: 'blur'
+                },
+                {
+                    validator: (val) => {
+                        return val === this.formData.password
+                    },
+                    message: '两次输入密码不一致',
+                    trigger: 'blur'
                 }
             ]
         }
-        // leaderList: Array<any> = []
 
-    //     getUserList() {
-    //         this.loading = true
-    //         this.$api.ServerMock.getBkUsers({ page_size: -1 }).then(res => {
-    //             if (!res.result) {
-    //                 return this.$error(res.message)
-    //             }
-    //             res.data.items.forEach(item => {
-    //                 if (this.userInfo.bk_user_id === item.bk_user_id) {
-    //                     item.disabled = true
-    //                 }
-    //             })
-    //             this.leaderList = res.data.items
-    //         }).finally(() => {
-    //             this.loading = false
-    //         })
-    //    }
         show(type, data) {
             this.visible = true
             this.type = type
             if (this.type === 'edit') {
                 this.userInfo = data
-                this.formData.username = data.bk_username
-                this.formData.display_name = data.chname
+                this.formData.username = data.username
+                this.formData.display_name = data.lastName
                 this.formData.email = data.email
-                this.formData.telephone = data.phone
-                this.formData.leader = data.leaders.map(item => item.bk_user_id)
             }
-            // this.getUserList()
         }
         close() {
             this.visible = false
@@ -136,22 +105,22 @@
             const validateForm: any = this.$refs.validateForm
             validateForm.validate().then(validator => {
                 let url = 'createUser'
-                let params = {
-                    ...this.formData
+                let params: any = {
+                    username: this.formData.username,
+                    lastName: this.formData.display_name,
+                    email: this.formData.email,
+                    password: this.formData.password
                 }
                 if (this.type !== 'add') {
                     url = 'editUser'
                     params = {
                         id: this.userInfo.id,
-                        bk_user_id: this.userInfo.bk_user_id,
-                        display_name: this.formData.display_name,
-                        email: this.formData.email,
-                        telephone: this.formData.telephone,
-                        leader: this.formData.leader
+                        lastName: this.formData.display_name,
+                        email: this.formData.email
                     }
                 }
                 this.loading = true
-                this.$api.UserManageMainMock[url](params).then(res => {
+                this.$api.UserManageMain[url](params).then(res => {
                     if (!res.result) {
                         this.$error(res.message)
                         return false

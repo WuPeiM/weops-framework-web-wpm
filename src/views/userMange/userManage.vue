@@ -57,29 +57,10 @@
                         </bk-option>
                     </bk-select>
                 </template>
-                <template slot="local" slot-scope="{ row }">
-                    <span>{{row.local ? '本地创建' : '异地同步'}}</span>
-                </template>
-                <template slot="organization" slot-scope="{ row }">
-                    <span>{{getOrganizationOrSuperior(row, { listKey: 'departments', fieldKey: 'full_name' })}}</span>
-                </template>
-                <template slot="superior" slot-scope="{ row }">
-                    <span>{{getOrganizationOrSuperior(row, { listKey: 'leaders', fieldKey: 'chname' })}}</span>
-                </template>
-                <template slot="enable" slot-scope="{ row }">
-                    <bk-switcher
-                        v-if="row.bk_username !== 'admin'"
-                        v-model="row.enable"
-                        theme="primary"
-                        :pre-check="(lastValue) => setUserStatus(row, lastValue) ">
-                    </bk-switcher>
-                    <span v-else>--</span>
-                </template>
                 <template slot="operation" slot-scope="{ row }">
                     <bk-button
                         class="mr10"
                         theme="primary"
-                        :disabled="!row.local"
                         text
                         @click="operateUser('edit', row)">
                         编辑
@@ -87,7 +68,6 @@
                     <bk-button
                         class="mr10"
                         theme="primary"
-                        :disabled="!row.local || row.bk_username === 'admin'"
                         text
                         @click="deleteUser(row)">
                         删除
@@ -95,7 +75,6 @@
                     <bk-button
                         class="mr10"
                         theme="primary"
-                        :disabled="!row.local"
                         text
                         @click="resetPassword(row)">
                         重置密码
@@ -127,25 +106,19 @@
     columns = [
         {
             label: '用户名',
-            key: 'bk_username',
+            key: 'username',
             align: 'left',
             minWidth: '150px'
         },
         {
             label: '中文名',
-            key: 'chname',
+            key: 'lastName',
             align: 'left',
             minWidth: '100px'
         },
         {
             label: '邮箱',
             key: 'email',
-            align: 'left',
-            minWidth: '150px'
-        },
-        {
-            label: '手机号码',
-            key: 'phone',
             align: 'left',
             minWidth: '150px'
         },
@@ -186,25 +159,6 @@
             this.maxHeight = window.innerHeight - PAGE_OCCUPIED_HEIGHT
         }
     }
-    setUserStatus(row, lastValue) {
-        return new Promise((resolve, reject) => {
-            this.$api.UserManageMainMock.updateUserStatus(
-                {
-                    id: row.id,
-                    body: {
-                        status: lastValue ? 'NORMAL' : 'DISABLED'
-                    }}).then(res => {
-                const { result, message } = res
-                if (!result) {
-                    this.$error(`${lastValue ? '启用' : '禁用'} 失败`)
-                    reject(new Error(message))
-                    return false
-                }
-                this.$success(`${lastValue ? '启用' : '禁用'} 成功`)
-                resolve(true)
-            })
-        })
-    }
     getOrganizationOrSuperior(row, { listKey, fieldKey }) {
         return row[listKey].map(item => item[fieldKey]).join(';') || '--'
     }
@@ -233,6 +187,7 @@
         resetPassword.show(row)
     }
     deleteUser(row) {
+        console.log('删除', row)
         this.$bkInfo({
             title: '确认要删除该用户？',
             confirmLoading: true,
@@ -243,9 +198,8 @@
     }
     async confirmDelete(row) {
         try {
-            const res = await this.$api.UserManageMainMock.deleteUser({
-                id: row.id,
-                bk_user_id: row.bk_user_id
+            const res = await this.$api.UserManageMain.deleteUser({
+                id: row.id
             })
             if (!res.result) {
                 return this.$error(res.message)
@@ -285,21 +239,17 @@
     }
     getUserList() {
         const params = {
+            // roles: this.roles
             page: this.pagination.current,
-            page_size: this.pagination.limit,
-            search: this.search,
-            roles: this.roles
+            per_page: this.pagination.limit,
+            search: this.search
         }
         this.tableLoading = true
-        this.$api.UserManageMainMock.getUserList(params).then(res => {
+        this.$api.UserManageMain.getUserList(params).then(res => {
             if (!res.result) {
                 return false
             }
-            this.dataList = res.data.items
-            this.dataList.forEach(item => {
-                this.$set(item, 'roleV1', item.roles)
-                this.$set(item, 'enable', item.status === 'NORMAL')
-            })
+            this.dataList = res.data.users
             this.pagination.count = res.data.count
         }).finally(() => {
             this.tableLoading = false
