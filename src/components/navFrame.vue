@@ -90,16 +90,7 @@
             </bk-navigation-menu>
         </template>
         <Container :key="renderKey" :nav-toggle="nav.toggle" :user="user"></Container>
-        <bk-dialog
-            v-model="isShow"
-            theme="primary"
-            :mask-close="false"
-            :show-footer="false"
-            style="text-align: center;">
-            <img :src="qrode" alt="这是一个二维码" width="200" height="200">
-        </bk-dialog>
         <personal-info ref="personalInfo"></personal-info>
-        <!-- <version-log ref="versionLog"></version-log> -->
     </bk-navigation>
 </template>
 
@@ -107,14 +98,12 @@
     import { Component, Vue, Watch } from 'vue-property-decorator'
     import Container from './container.vue'
     import PersonalInfo from './personalInfo.vue'
-    // import VersionLog from './versionLog.vue'
     import { mapState } from 'vuex'
     import { removeItemsWithId } from '@/common/dealMenu'
     @Component({
         components: {
             Container,
             PersonalInfo
-            // VersionLog
         },
         computed: {
             ...mapState({
@@ -127,11 +116,7 @@
         renderKey: number = 0
         clickFlag: boolean = false
         activeTopNav: string = ''
-        bindStatus: boolean = false
         leftNavList: Array<any> = []
-        isShow: boolean = false
-        qrode: string = ''
-        timeoutId: any = ''
         title: string = this.$route.meta.title
         nav = {
             list: [],
@@ -251,7 +236,7 @@
             })
             this.getLogo()
             this.title = this.$route.meta.title
-            this.getBindStatus()
+            // this.getBindStatus()
         }
         beforeDestroy() {
             this.$bus.$off('updateLogo')
@@ -288,31 +273,7 @@
         }
         outLogin() {
             sessionStorage.clear()
-            // window.location.href = `${window.location.origin}/accounts/logout/`
             this.$router.replace('/login')
-        }
-        async getBindStatus() {
-            const url = `${window.location.origin}/console/user_center/weixin/get_bind_status/`
-            await this.$http.get(url).then(response => {
-                const res = response?.data
-                this.bindStatus = res.result
-            })
-        }
-        getNowStatus() {
-            const url = `${window.location.origin}/console/user_center/weixin/get_bind_status/`
-            this.$http.get(url).then(response => {
-                const res = response?.data
-                if (res.result) {
-                    this.bindStatus = true
-                    this.isShow = false
-                    clearTimeout(this.timeoutId)
-                    this.$api.ServerMock.syncUsers()
-                } else {
-                    this.timeoutId = setTimeout(() => {
-                        this.getNowStatus()
-                    }, 1000)
-                }
-            })
         }
         handleSelect(id, item) {
             this.nav.id = id
