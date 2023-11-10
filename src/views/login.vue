@@ -10,7 +10,7 @@
                 <h2 style="font-size: 20px; text-align: center; margin-top: 50px; color: #333333;">欢迎登录WeOps</h2>
                 <div class="from-detail">
                     <form id="login-form">
-                        <div class="is-danger-tip"></div>
+                        <div class="is-danger-tip">{{ errorTip }}</div>
                         <div class="form-login">
                             <div class="user group-control">
                                 <input id="user" type="text" name="username" placeholder="账号" v-model="formData.username">
@@ -19,7 +19,7 @@
                                 <input class="password" id="password" type="password" name="password" v-model="formData.password" placeholder="密码">
                             </div>
                             <div class="btn-content clearfix">
-                                <button class="login-btn" @click.prevent="handleLogin">登录</button>
+                                <button class="login-btn" v-bkloading="{ isLoading: isLoading, zIndex: 10 }" @click.prevent="handleLogin(formData)">登录</button>
                             </div>
                         </div>
                     </form>
@@ -39,9 +39,27 @@
             username: '',
             password: ''
         }
-        handleLogin() {
-            console.log(this.formData)
-            this.$router.push('/')
+        errorTip: string = ''
+        isLoading: boolean = false
+        handleLogin(formData) {
+            this.errorTip = ''
+            if (formData.username === '' || formData.password === '') {
+                this.errorTip = '账号或密码不能为空'
+                return
+            }
+            this.isLoading = true
+            this.$api.UserMock.login(this.formData).then(res => {
+                const token = res.data.token
+                document.cookie = `bk_token=${token}`
+                const goto = this.$route.query.from
+                if (goto) {
+                    this.$router.push({name: goto})
+                } else {
+                    this.$router.push('/')
+                }
+            }).finally(() => {
+                this.isLoading = false
+            })
         }
     }
 </script>

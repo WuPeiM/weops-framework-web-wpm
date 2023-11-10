@@ -44,5 +44,16 @@ export default {
             data: infoData
         }
         return res
+    },
+    login: (params) => {
+        if (params.username === 'admin' && params.password === 'admin') {
+            return {
+                result: true,
+                code: '20000',
+                data: {
+                    token: 'eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSl'
+                }
+            }
+        }
     }
 }

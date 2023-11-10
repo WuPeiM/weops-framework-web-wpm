@@ -1,5 +1,5 @@
 // 获取登录信息！！！勿动
-import { get } from '@/api/axiosconfig/axiosconfig'
+import { get, post } from '@/api/axiosconfig/axiosconfig'
 import Mock from 'mockjs'
 import responseData from './responseData'
 
@@ -10,5 +10,9 @@ export default {
     homeInfo: function(params) {
         Mock.mock(/api\/login_info/, 'get', responseData.homeInfo())
         return get('/login_info/', params)
+    },
+    login: (params) => {
+        Mock.mock(/api\/keycloak_login/, 'post', responseData.login(params))
+        return post('/keycloak_login/', 'post', params)
     }
 }

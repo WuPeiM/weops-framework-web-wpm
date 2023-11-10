@@ -65,6 +65,13 @@
                     trigger: 'blur'
                 }
             ],
+            display_name: [
+                {
+                    regex: /^[\u4e00-\u9fa5]+$/,
+                    message: '必须是中文',
+                    trigger: 'blur'
+                }
+            ],
             password: [
                 {
                     required: true,
@@ -120,7 +127,7 @@
                     }
                 }
                 this.loading = true
-                this.$api.UserManageMain[url](params).then(res => {
+                this.$api.UserManageMainMock[url](params).then(res => {
                     if (!res.result) {
                         this.$error(res.message)
                         return false

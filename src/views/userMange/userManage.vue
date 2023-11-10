@@ -198,7 +198,7 @@
     }
     async confirmDelete(row) {
         try {
-            const res = await this.$api.UserManageMain.deleteUser({
+            const res = await this.$api.UserManageMainMock.deleteUser({
                 id: row.id
             })
             if (!res.result) {
@@ -245,7 +245,7 @@
             search: this.search
         }
         this.tableLoading = true
-        this.$api.UserManageMain.getUserList(params).then(res => {
+        this.$api.UserManageMainMock.getUserList(params).then(res => {
             if (!res.result) {
                 return false
             }

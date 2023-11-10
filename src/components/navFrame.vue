@@ -236,7 +236,6 @@
             })
             this.getLogo()
             this.title = this.$route.meta.title
-            // this.getBindStatus()
         }
         beforeDestroy() {
             this.$bus.$off('updateLogo')
@@ -273,7 +272,10 @@
         }
         outLogin() {
             sessionStorage.clear()
-            this.$router.replace('/login')
+            document.cookie = 'bk_token=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/;'
+            this.$router.replace({
+                path: '/login'
+            })
         }
         handleSelect(id, item) {
             this.nav.id = id
