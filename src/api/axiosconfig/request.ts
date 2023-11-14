@@ -43,8 +43,7 @@ axiosInstance.interceptors.request.use(config => {
 // 响应拦截
 axiosInstance.interceptors.response.use(
     response => {
-        // 判断状态码是什么，做出反应
-        // new Vue().$success('展示信息')
+        // 判断mock返回状态码是什么，做出反应
         if (response.data.status === 401) {
             if (router.history.current.fullPath !== '/login') {
                 router.push({

@@ -142,7 +142,6 @@
         }
 
         async onFormSubmit() {
-            console.log('提交个人信息', this.formData)
             this.isInfoLoading = true
             const params = {
                 id: this.formData.id,
@@ -174,10 +173,6 @@
             const validatePsdForm: any = this.$refs.validatePsdForm
             validatePsdForm.validate().then(validator => {
                 this.isPsdLoading = true
-                // setTimeout(() => {
-                //     console.log('提交', this.passwordFormData)
-                //     this.isPsdLoading = false
-                // }, 1000)
                 const params = {
                     id: this.formData.id,
                     password: this.passwordFormData.password

@@ -297,7 +297,6 @@ export default {
                 'users': userListItems
             }
         }
-        console.log('---', params)
         res.data.count = userListItems.length
         res.data.total_page = Math.ceil(res.data.count / params.per_age)
         res.data.users = userListItems.filter(item => item.username.includes(params.search))
@@ -323,7 +322,6 @@ export default {
     },
     editUser: (params) => {
         const editItem = userListItems.find(item => item.id === params.id)
-        console.log('编辑', params, editItem)
         if (editItem) {
             editItem.lastName = params.lastName
             editItem.email = params.email

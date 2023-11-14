@@ -187,7 +187,6 @@
         resetPassword.show(row)
     }
     deleteUser(row) {
-        console.log('删除', row)
         this.$bkInfo({
             title: '确认要删除该用户？',
             confirmLoading: true,
