@@ -30,6 +30,7 @@ import cwMessage from './prototype/message'
 import uploader from 'vue-simple-uploader'
 import btnPermission from './directive/modal/btn-permissions'
 import './assets/icon/bk_icon_font/cw-icon'
+import './assets/icon/bk_icon_font/style.css'
 Vue.use(uploader)
 // @ts-ignore
 Vue.use(Echarts)
