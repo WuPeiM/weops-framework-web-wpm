@@ -7,7 +7,8 @@
             :before-close="beforeClose">
             <div slot="header">个人信息</div>
             <div slot="content" class="content-box">
-                <bk-form :label-width="80" :model="formData" ref="validateForm" v-bkloading="{ isLoading: isInfoLoading, zIndex: 10 }" :rules="formRules">
+                <bk-form :label-width="80" :model="formData" ref="validateForm"
+                    v-bkloading="{ isLoading: isInfoLoading, zIndex: 10 }" :rules="formRules">
                     <bk-form-item label="用户名" :required="true" :property="'username'" error-display-type="normal">
                         <bk-input :disabled="true" v-model="formData.username" placeholder="请输入用户名"></bk-input>
                     </bk-form-item>

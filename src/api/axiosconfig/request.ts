@@ -43,7 +43,7 @@ axiosInstance.interceptors.request.use(config => {
 // 响应拦截
 axiosInstance.interceptors.response.use(
     response => {
-        // 判断mock返回状态码是什么，做出反应
+        // 此处的逻辑是判断mock模拟的数据返回的status是什么，模拟401报错后跳转的情况，使用真实后端接口报401错误时不会走下面逻辑
         if (response.data.status === 401) {
             if (router.history.current.fullPath !== '/login') {
                 router.push({
