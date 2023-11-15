@@ -54,6 +54,11 @@ export default {
                     token: 'eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSl'
                 }
             }
+        } else {
+            return {
+                result: false,
+                message: '账号或密码不正确'
+            }
         }
     }
 }
