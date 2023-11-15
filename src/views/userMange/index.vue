@@ -1,10 +1,10 @@
 <template>
     <div>
-        <header-sub class="user-manage-header">
+        <!-- <header-sub class="user-manage-header">
             <template slot="title">
                 <menu-tab :panels="panels" type="line" :active-panel="active" @click="toTabMenu"></menu-tab>
             </template>
-        </header-sub>
+        </header-sub> -->
         <page-explanation
             :title="getTitleOrContent('label')"
             :content="getTitleOrContent('content')" />
@@ -16,7 +16,6 @@
 
 <script lang="ts">
     import UserManage from './userManage.vue'
-    import UserCatalog from './userCatalog.vue'
     import MultipleFactor from './multipleFactor.vue'
     import MenuTab from '@/components/menuTab.vue'
     import HeaderSub from '@/components/headerSub.vue'
@@ -27,7 +26,6 @@
         components: {
             MenuTab,
             UserManage,
-            UserCatalog,
             HeaderSub,
             MultipleFactor,
             PageExplanation
@@ -39,11 +37,6 @@
                 name: 'userManage',
                 label: '用户列表',
                 content: '展示所有自动/手动同步的用户信息，您可以进行用户信息的维护和角色的授予'
-            },
-            {
-                name: 'userCatalog',
-                label: '用户目录',
-                content: '支持您创建不同用户目录，包括本地目录、AD目录、OpenLDAP'
             },
             {
                 name: 'multipleFactor',

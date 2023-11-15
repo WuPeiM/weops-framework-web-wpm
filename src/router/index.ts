@@ -64,8 +64,8 @@ const handleRouteAuthorization = async(to, from, next) => {
 
 function checkRouteAccess(to, from, next) {
     const permission = store.state.permission
-    // 远程连接不做路由拦截
-    if (to.name === 'RemoteConnect') {
+    // 登录页不做路由拦截
+    if (to.name === 'Login') {
         next()
         return
     }

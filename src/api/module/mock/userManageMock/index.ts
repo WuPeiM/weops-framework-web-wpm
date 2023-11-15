@@ -41,8 +41,8 @@ export default {
      * @param {Object} params 请求参数
      */
     getUserList(params = {}) {
-        Mock.mock(/api\/system\/mgmt\/user_manage\/get_users/, 'get', responseData.getUserList(params))
-        return get('/system/mgmt/user_manage/get_users/', params)
+        Mock.mock(/api\/system\/mgmt\/user_keycloak\/get_users/, 'get', responseData.getUserList(params))
+        return get('/system/mgmt/user_keycloak/get_users/', params)
     },
     /**
      * 删除用户
@@ -50,8 +50,8 @@ export default {
      * @param {Object} params 请求参数
      */
     deleteUser(params = {}) {
-        Mock.mock(/api\/system\/mgmt\/user_manage\/delete_users/, 'delete', responseData.deleteUser(params))
-        return deletes('/system/mgmt/user_manage/delete_users/', params)
+        Mock.mock(/api\/system\/mgmt\/user_keycloak\/delete_users/, 'delete', responseData.deleteUser(params))
+        return deletes('/system/mgmt/user_keycloak/delete_users/', params)
     },
     /**
      * 重置用户密码
@@ -59,8 +59,8 @@ export default {
      * @param {Object} params 请求参数
      */
     resetPassword(params = {}) {
-        Mock.mock(/api\/system\/mgmt\/user_manage\/reset_password/, 'patch', responseData.resetPassword(params))
-        return patch('/system/mgmt/user_manage/reset_password/', params)
+        Mock.mock(/api\/system\/mgmt\/user_keycloak\/reset_password/, 'put', responseData.resetPassword(params))
+        return put('/system/mgmt/user_keycloak/reset_password/', params)
     },
     /**
      * 新建用户
@@ -68,8 +68,8 @@ export default {
      * @param {Object} params 请求参数
      */
     createUser(params = {}) {
-        Mock.mock(/api\/system\/mgmt\/user_manage\/create_user/, 'post', responseData.createUser(params))
-        return post('/system/mgmt/user_manage/create_user/', params)
+        Mock.mock(/api\/system\/mgmt\/user_keycloak\/create_user/, 'post', responseData.createUser(params))
+        return post('/system/mgmt/user_keycloak/create_user/', params)
     },
     /**
      * 编辑用户
@@ -77,8 +77,8 @@ export default {
      * @param {Object} params 请求参数
      */
     editUser(params = {}) {
-        Mock.mock(/api\/system\/mgmt\/user_manage\/edit_user/, 'patch', responseData.editUser(params))
-        return patch('/system/mgmt/user_manage/edit_user/', params)
+        Mock.mock(/api\/system\/mgmt\/user_keycloak\/update_user/, 'put', responseData.editUser(params))
+        return put('/system/mgmt/user_keycloak/update_user/', params)
     },
     /**
      * 设置用户角色

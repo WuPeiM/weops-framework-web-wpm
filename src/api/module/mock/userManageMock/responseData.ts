@@ -158,70 +158,16 @@ const userItems = [
 // 用户列表数据
 const userListItems = [
     {
-        'id': 157,
-        'bk_user_id': 138,
-        'bk_username': 'test_qjj_009',
-        'chname': 'test_qjj_009',
-        'email': 'asjida@qq.com',
-        'phone': '13556789765',
-        'roles': [
-            3
-        ],
-        'local': true,
-        'departments': [
-            {
-                'id': 1,
-                'name': '总公司',
-                'order': 1,
-                'full_name': '总公司'
-            }
-        ],
-        'leaders': [],
-        'status': 'NORMAL'
+        id: '1',
+        username: '1',
+        lastName: '1',
+        email: '11.@qq.com'
     },
     {
-        'id': 156,
-        'bk_user_id': 137,
-        'bk_username': 'test_qjj_090',
-        'chname': 'test_qjj_090',
-        'email': 'asjida@qq.com',
-        'phone': '13556789765',
-        'roles': [
-            3
-        ],
-        'local': true,
-        'departments': [
-            {
-                'id': 1,
-                'name': '总公司',
-                'order': 1,
-                'full_name': '总公司'
-            }
-        ],
-        'leaders': [],
-        'status': 'NORMAL'
-    },
-    {
-        'id': 155,
-        'bk_user_id': 136,
-        'bk_username': 'test_qjj_09',
-        'chname': 'test_qjj_09',
-        'email': 'asjida@qq.com',
-        'phone': '13556789765',
-        'roles': [
-            3
-        ],
-        'local': true,
-        'departments': [
-            {
-                'id': 1,
-                'name': '总公司',
-                'order': 1,
-                'full_name': '总公司'
-            }
-        ],
-        'leaders': [],
-        'status': 'NORMAL'
+        id: '2',
+        username: '2',
+        lastName: '2',
+        email: '22.@qq.com'
     }
 ]
 
@@ -348,16 +294,16 @@ export default {
                 'count': 0,
                 'next': 'http://paas.weops.com/o/weops_saas/system/mgmt/user_manage/get_users/?page=2&page_size=20&roles=%5B%5D&search=',
                 'previous': null,
-                'items': userListItems
+                'users': userListItems
             }
         }
         res.data.count = userListItems.length
-        res.data.total_page = Math.ceil(res.data.count / params.page_size)
-        res.data.items = userListItems.filter(item => item.bk_username.includes(params.search))
+        res.data.total_page = Math.ceil(res.data.count / params.per_age)
+        res.data.users = userListItems.filter(item => item.username.includes(params.search))
         return res
     },
     deleteUser: (params) => {
-        const deleteIndex = userListItems.findIndex(item => item.bk_user_id = params.bk_user_id)
+        const deleteIndex = userListItems.findIndex(item => item.id === params.id)
         userListItems.splice(deleteIndex, 1)
         return {
             result: true,
@@ -377,10 +323,8 @@ export default {
     editUser: (params) => {
         const editItem = userListItems.find(item => item.id === params.id)
         if (editItem) {
-            editItem.bk_username = params.display_name
+            editItem.lastName = params.lastName
             editItem.email = params.email
-            editItem.phone = params.telephone
-            editItem.leaders = params.leader
         }
         return {
             result: true,
@@ -390,25 +334,19 @@ export default {
         }
     },
     createUser: (params) => {
+        if (userListItems.find(item => item.username === params.username)) {
+            return {
+                result: false,
+                code: 40000,
+                data: '用户已存在',
+                message: '用户已经存在'
+            }
+        }
         const newUser = {
-            id: Mock.mock('@integer'),
-            bk_user_id: Mock.mock('@integer'),
-            bk_username: params.username,
-            chname: params.display_name,
-            email: params.email,
-            phone: params.telephone,
-            local: true,
-            roles: [],
-            departments: [
-                {
-                    id: Mock.mock('@integer'),
-                    name: '总公司',
-                    order: 1,
-                    full_name: '总公司'
-                }
-            ],
-            leaders: [params.leader],
-            status: 'NORMAL'
+            id: '' + Mock.mock('@integer'),
+            username: params.username,
+            lastName: params.lastName,
+            email: params.email
         }
         userListItems.unshift(newUser)
         return {

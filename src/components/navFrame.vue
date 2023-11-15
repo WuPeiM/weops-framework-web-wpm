@@ -44,12 +44,6 @@
                         </div>
                         <template slot="content">
                             <ul class="monitor-navigation-admin" ref="userList" @mouseleave="hidePopover">
-                                <li class="nav-item" @click="bindWeChat" v-if="!bindStatus">
-                                    绑定微信
-                                </li>
-                                <li v-else class="nav-item" @click="unbindWeChat">
-                                    解绑微信
-                                </li>
                                 <li class="nav-item" @click="checkPersonalInfo">
                                     个人信息
                                 </li>
@@ -96,16 +90,7 @@
             </bk-navigation-menu>
         </template>
         <Container :key="renderKey" :nav-toggle="nav.toggle" :user="user"></Container>
-        <bk-dialog
-            v-model="isShow"
-            theme="primary"
-            :mask-close="false"
-            :show-footer="false"
-            style="text-align: center;">
-            <img :src="qrode" alt="这是一个二维码" width="200" height="200">
-        </bk-dialog>
         <personal-info ref="personalInfo"></personal-info>
-        <!-- <version-log ref="versionLog"></version-log> -->
     </bk-navigation>
 </template>
 
@@ -113,14 +98,12 @@
     import { Component, Vue, Watch } from 'vue-property-decorator'
     import Container from './container.vue'
     import PersonalInfo from './personalInfo.vue'
-    // import VersionLog from './versionLog.vue'
     import { mapState } from 'vuex'
     import { removeItemsWithId } from '@/common/dealMenu'
     @Component({
         components: {
             Container,
             PersonalInfo
-            // VersionLog
         },
         computed: {
             ...mapState({
@@ -133,11 +116,7 @@
         renderKey: number = 0
         clickFlag: boolean = false
         activeTopNav: string = ''
-        bindStatus: boolean = false
         leftNavList: Array<any> = []
-        isShow: boolean = false
-        qrode: string = ''
-        timeoutId: any = ''
         title: string = this.$route.meta.title
         nav = {
             list: [],
@@ -181,11 +160,14 @@
             return this.permission?.updateCustomMenu
         }
         get needLeftNav() {
+            if (this.$route.name === 'Login') {
+                return false
+            }
             const target = this.menuList.find(item => item.id === this.activeTopNav)
             return !!(target && target.children)
         }
         get headerHight() {
-            return this.$route.name === 'RemoteConnect' ? '0' : '52'
+            return this.$route.name === 'Login' ? '0' : '52'
         }
         @Watch('$route', {
             immediate: true,
@@ -254,7 +236,6 @@
             })
             this.getLogo()
             this.title = this.$route.meta.title
-            this.getBindStatus()
         }
         beforeDestroy() {
             this.$bus.$off('updateLogo')
@@ -289,64 +270,11 @@
             const userPopover:any = this.$refs['userPopover']
             userPopover.hideHandler()
         }
-        async unbindWeChat() {
-            const url = `${window.location.origin}/console/user_center/weixin/unbind_wx_user_info/`
-            await this.$http.get(url).then(response => {
-                const res = response?.data
-                if (res.result) {
-                    this.bindStatus = false
-                    this.$success('解绑成功')
-                    this.$api.ServerMock.syncUsers()
-                }
-            })
-        }
         outLogin() {
             sessionStorage.clear()
-            window.location.href = `${window.location.origin}/accounts/logout/`
-        }
-        async getBindStatus() {
-            const url = `${window.location.origin}/console/user_center/weixin/get_bind_status/`
-            await this.$http.get(url).then(response => {
-                const res = response?.data
-                this.bindStatus = res.result
-            })
-        }
-        async bindWeChat() {
-            let url = ''
-            if (window['CONSOLE_BIND_WX_TYPE'] === 'qywx') {
-                url = `${window.location.origin}/console/user_center/weixin/qy/get_login_url/`
-            } else {
-                url = `${window.location.origin}/console/user_center/weixin/mp/get_qrcode`
-            }
-            await this.$http.get(url).then(response => {
-                const res = response?.data
-                if (res.result) {
-                    if (window['CONSOLE_BIND_WX_TYPE'] === 'qywx') {
-                        window.open(res.url)
-                    } else {
-                        this.isShow = true
-                        this.qrode = res.url
-                        this.getNowStatus()
-                    }
-                } else {
-                    this.$error('获取二维码接口异常，请联系管理员')
-                }
-            })
-        }
-        getNowStatus() {
-            const url = `${window.location.origin}/console/user_center/weixin/get_bind_status/`
-            this.$http.get(url).then(response => {
-                const res = response?.data
-                if (res.result) {
-                    this.bindStatus = true
-                    this.isShow = false
-                    clearTimeout(this.timeoutId)
-                    this.$api.ServerMock.syncUsers()
-                } else {
-                    this.timeoutId = setTimeout(() => {
-                        this.getNowStatus()
-                    }, 1000)
-                }
+            document.cookie = 'bk_token=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/;'
+            this.$router.replace({
+                path: '/login'
             })
         }
         handleSelect(id, item) {

@@ -2,6 +2,10 @@ import axios from 'axios'
 import bus from '../../common/bus'
 import CachedPromise from './cached-promise'
 import RequestQueue from './request-queue'
+import Vue from 'vue'
+import router from '@/router'
+
+const vm = new Vue()
 
 const getToken = () => {
     const DEFAULT_X_CSRFTOKEN = 'NOTPROVIDED'
@@ -32,8 +36,30 @@ axiosInstance.interceptors.request.use(config => {
     const token = getToken()
     config.headers['X-csrfToken'] = token
     config.headers['X-Requested-With'] = 'XMLHttpRequest'
+    config.headers['AUTH-APP'] = 'WEOPS'
     return config
 })
+
+// 响应拦截
+axiosInstance.interceptors.response.use(
+    response => {
+        // 此处的逻辑是判断mock模拟的数据返回的status是什么，模拟401报错后跳转的情况，使用真实后端接口报401错误时不会走下面逻辑
+        if (response.data.status === 401) {
+            if (router.history.current.fullPath !== '/login') {
+                router.push({
+                    path: '/login',
+                    query: {
+                        from: router.history.current.name
+                    }
+                })
+            }
+        }
+        return response
+    },
+    error => {
+        return Promise.reject(error)
+    }
+)
 
 const http = {
     queue: new RequestQueue(),
@@ -181,22 +207,23 @@ function handleReject(error, config) {
         const { status, data } = error.response
         let message = (error && error.message) || (data && data.message)
         if (status === 401) {
-            const loginUrl = document.location.origin + '/login/?c_url=' + document.location.protocol.split(':')[0] + '%3A//' + document.location.host + document.location.pathname + 'account/login_success/&app_code=' + window['APP_CODE']
-            const nextError = {
-                login_url: loginUrl,
-                width: 620,
-                height: 400,
-                has_plain: true
+            if (router.history.current.fullPath !== '/login') {
+                router.push({
+                    path: '/login',
+                    query: {
+                        from: router.history.current.name
+                    }
+                })
             }
-            if (sessionStorage.getItem('show-login-modal')) return false
-            sessionStorage.setItem('show-login-modal', JSON.stringify(true))
-            bus.$emit('show-login-modal', nextError)
         } else if (status === 500) {
             message = '系统出现异常'
         } else if (status === 403) {
             message = '无权限操作'
         } else if ([4005, 4003].includes((data && data.code))) {
             // bus.$emit('show-apply-perm-modal', data?.data)
+        }
+        if ([401, 403, 500].includes(status)) {
+            vm.$warn(message)
         }
 
         if ((data && data.code) === 500 && (data && data.request_id)) { // code为500的请求需要带上request_id

@@ -7,14 +7,22 @@
         title="重置密码"
         @after-leave="closeResetDialog">
         <div v-bkloading="{ isLoading: resetLoading, zIndex: 10 }">
-            <bk-form :label-width="0" :model="formData" :rules="rules" ref="validatePsdForm">
-                <bk-form-item :required="true" :property="'password'" error-display-type="normal">
+            <bk-form :label-width="80" :model="formData" :rules="rules" ref="validatePsdForm">
+                <bk-form-item :required="true" label="重置密码" :property="'password'" error-display-type="normal">
                     <bk-input
                         :clearable="true"
                         v-model="formData.password"
                         type="password"
                         placeholder="请输入重置密码"
-                        @enter="confirmReset"
+                    >
+                    </bk-input>
+                </bk-form-item>
+                <bk-form-item :required="true" label="确认密码" :property="'confirmPassword'" error-display-type="normal">
+                    <bk-input
+                        :clearable="true"
+                        v-model="formData.confirmPassword"
+                        type="password"
+                        placeholder="请输入重置密码"
                     >
                     </bk-input>
                 </bk-form-item>
@@ -42,7 +50,8 @@
         resetUser: any = ''
         resetLoading: boolean = false
         formData = {
-            password: ''
+            password: '',
+            confirmPassword: ''
         }
         rules = {
             password: [
@@ -56,6 +65,20 @@
                 //     message: '密码长度为8-32个字符，必须包含大小写字母，数字',
                 //     trigger: 'blur'
                 // }
+            ],
+            confirmPassword: [
+                {
+                    required: true,
+                    message: '必填项',
+                    trigger: 'blur'
+                },
+                {
+                    validator: (val) => {
+                        return val === this.formData.password
+                    },
+                    message: '两次输入密码不一致',
+                    trigger: 'blur'
+                }
             ]
         }
         show(data) {
@@ -67,6 +90,7 @@
         }
         closeResetDialog() {
             this.formData.password = ''
+            this.formData.confirmPassword = ''
             const validatePsdForm: any = this.$refs.validatePsdForm
             validatePsdForm.clearError()
         }
@@ -76,7 +100,7 @@
                 this.resetLoading = true
                 this.$api.UserManageMainMock.resetPassword({
                     password: this.formData.password,
-                    id: this.resetUser.bk_user_id
+                    id: this.resetUser.id
                 }).then(res => {
                     if (!res.result) {
                         this.$error(res.message)
