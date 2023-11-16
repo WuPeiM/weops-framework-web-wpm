@@ -159,8 +159,8 @@ const userItems = [
 const userListItems = [
     {
         id: '1',
-        username: '1',
-        lastName: '1',
+        username: 'admin',
+        lastName: '管理员',
         email: '11.@qq.com'
     },
     {
@@ -297,9 +297,9 @@ export default {
                 'users': userListItems
             }
         }
-        res.data.count = userListItems.length
         res.data.total_page = Math.ceil(res.data.count / params.per_age)
         res.data.users = userListItems.filter(item => item.username.includes(params.search))
+        res.data.count = res.data.users.length
         return res
     },
     deleteUser: (params) => {

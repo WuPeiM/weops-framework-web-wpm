@@ -62,13 +62,13 @@
     })
     export default class PersonalInfo extends Vue {
         isShow:boolean = false
-        userInfo:string = ''
         isEdit:boolean = false
+        rawFormData:any = ''
         formData = {
-            id: '1',
-            username: 'admin',
-            display_name: 'admin',
-            email: 'admin.@admin.com'
+            id: '',
+            username: '',
+            display_name: '',
+            email: ''
         }
         formRules = {
             display_name: [
@@ -121,6 +121,7 @@
 
         show() {
             this.isShow = true
+            console.log('调接口')
             this.getUser()
         }
 
@@ -134,7 +135,12 @@
                 if (!res.result) {
                     return false
                 }
-                this.userInfo = res.data.users[0]
+                const {id, username, lastName, email} = res.data.users[0]
+                this.formData.id = id
+                this.formData.username = username
+                this.formData.display_name = lastName
+                this.formData.email = email
+                this.rawFormData = {...this.formData}
             })
         }
 
@@ -143,6 +149,12 @@
         }
 
         async onFormSubmit() {
+            this.$refs.validateForm.validate().then(validator => {
+                this.editUser()
+            })
+        }
+
+        async editUser() {
             this.isInfoLoading = true
             const params = {
                 id: this.formData.id,
@@ -155,12 +167,12 @@
             } else {
                 this.$success('修改成功!')
             }
+            await this.getUser()
             this.isInfoLoading = false
         }
 
         onFormCancel() {
-            this.formData.display_name = ''
-            this.formData.email = ''
+            this.formData = {...this.rawFormData}
             const validateForm: any = this.$refs.validateForm
             validateForm.clearError()
             this.isEdit = false
