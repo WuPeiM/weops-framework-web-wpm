@@ -395,6 +395,25 @@ get needLeftNav() {
 /src/assets/icon/bk_icon_font/
 ```
 
+##### 使用mock数据
+- 在接口名称后面加上 `Mock` 即可，示例如下：
+```js
+// src/views/login.vue
+// 使用后端接口
+this.$api.User.login(this.formData).then(res => {
+    // ...
+}).finally(() => {
+    this.isLoading = false
+})
+
+// 使用Mock数据（this.$api.User 改为 this.$api.UserMock）
+this.$api.UserMock.login(this.formData).then(res => {
+    // ...
+}).finally(() => {
+    this.isLoading = false
+})
+```
+
 #### 快速上手
 
 ```shell
