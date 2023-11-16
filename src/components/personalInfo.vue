@@ -121,7 +121,6 @@
 
         show() {
             this.isShow = true
-            console.log('调接口')
             this.getUser()
         }
 
