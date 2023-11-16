@@ -271,10 +271,16 @@
             userPopover.hideHandler()
         }
         outLogin() {
-            sessionStorage.clear()
-            document.cookie = 'bk_token=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/;'
-            this.$router.replace({
-                path: '/login'
+            this.$bkInfo({
+                title: '是否退出登录',
+                confirmLoading: true,
+                confirmFn: () => {
+                    sessionStorage.clear()
+                    document.cookie = 'bk_token=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/;'
+                    this.$router.replace({
+                        path: '/login'
+                    })
+                }
             })
         }
         handleSelect(id, item) {

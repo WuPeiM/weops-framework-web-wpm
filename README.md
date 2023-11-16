@@ -321,6 +321,47 @@ export default store
 
 ```
 
+- 自定义指令，在 `directive/modal/xxx.ts` 中定义，在 `main.ts` 中引入。
+```js
+// directive/modal/highlight.ts
+const highlight = {
+    bind(el, binding) {
+    // 设置元素的背景颜色为指令的值
+    el.style.backgroundColor = binding.value;
+  }
+}
+export default (Vue) => {
+    Vue.directive('highlight', highlight)
+}
+```
+```js
+// main.ts
+import highlight from './directive/modal/highlight'
+Vue.use(highlight)
+
+```
+
+- 过滤器，在 `fiter/xxx.ts` 中定义函数，在 `fiter/index.ts` 中统一引入，并在 `main.ts` 中引入。
+```js
+// filters/date.ts
+export default function formatDate(value) {
+  // 实际的日期格式化逻辑
+  const date = new Date(value)
+  return date.toLocaleDateString()
+}
+```
+```js
+// filters/index.ts
+import Vue from 'vue';
+import formatDate from './date';
+
+Vue.filter('formatDate', formatDate);
+```
+```js
+// main.ts
+import './filters'; // 引入过滤器注册模块
+```
+
 ##### projects文件夹：见[开发示例指引](docs/use.md)
 
 #### 注意
@@ -393,6 +434,25 @@ get needLeftNav() {
 ```js
 // .stylelintignore
 /src/assets/icon/bk_icon_font/
+```
+
+##### 使用mock数据
+- 在接口名称后面加上 `Mock` 即可，示例如下：
+```js
+// src/views/login.vue
+// 使用后端接口
+this.$api.User.login(this.formData).then(res => {
+    // ...
+}).finally(() => {
+    this.isLoading = false
+})
+
+// 使用Mock数据（this.$api.User 改为 this.$api.UserMock）
+this.$api.UserMock.login(this.formData).then(res => {
+    // ...
+}).finally(() => {
+    this.isLoading = false
+})
 ```
 
 #### 快速上手

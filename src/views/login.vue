@@ -49,13 +49,17 @@
             }
             this.isLoading = true
             this.$api.UserMock.login(this.formData).then(res => {
-                const token = res.data.token
-                document.cookie = `bk_token=${token}`
-                const goto = this.$route.query.from
-                if (goto) {
-                    this.$router.push({name: goto})
+                if (res.result) {
+                    const token = res.data.token
+                    document.cookie = `bk_token=${token}`
+                    const goto = this.$route.query.from
+                    if (goto) {
+                        this.$router.push({name: goto})
+                    } else {
+                        this.$router.push('/')
+                    }
                 } else {
-                    this.$router.push('/')
+                    this.errorTip = res.message
                 }
             }).finally(() => {
                 this.isLoading = false
