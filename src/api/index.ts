@@ -12,7 +12,7 @@ import UserMock from './module/mock/userMock/index'
 
 let api: any
 // USE_MOCK为true，则使用mock数据
-if (process.env.USE_MOCK) {
+if (window['USE_MOCK']) {
     api = {
         Server: ServerMock,
         User: UserMock,

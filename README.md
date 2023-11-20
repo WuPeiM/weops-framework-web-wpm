@@ -437,12 +437,10 @@ get needLeftNav() {
 ```
 
 ##### 是否使用mock模式
-- 在 `config/mock.env.ts` 文件夹中，设置 `USE_MOCK` 为 `true`，即可启用 mock
-```js
-// config/mock.env.ts
-module.exports = {
-    USE_MOCK: true,
-}
+- 在 `index-dev.html` 文件夹中，设置 `USE_MOCK` 为 `true`，即可启用 mock
+```
+// index-dev.html
+window.USE_MOCK = true
 ```
 
 #### 快速上手

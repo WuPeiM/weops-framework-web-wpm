@@ -9,7 +9,6 @@ const VueLoaderPlugin = require('vue-loader/lib/plugin')
 const StyleLintPlugin = require('stylelint-webpack-plugin')
 // const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 const fs = require('fs')
-const env = require('../config/mock.env.ts')
 
 const projectsDir = path.resolve(__dirname, '../src/projects')
 const projects = fs.readdirSync(projectsDir)
@@ -92,11 +91,6 @@ module.exports = {
             exclude: [path.resolve(__dirname, '../node_modules/**')]
         }),
         // new HardSourceWebpackPlugin()
-        new webpack.DefinePlugin({
-            'process.env': {
-                USE_MOCK: JSON.stringify(env.USE_MOCK)
-            }
-        })
     ],
     module: {
         rules: [
