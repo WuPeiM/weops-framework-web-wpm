@@ -130,7 +130,7 @@
                 page_size: 10,
                 search: this.user.username
             }
-            this.$api.UserManageMainMock.getUserList(params).then(res => {
+            this.$api.UserManageMain.getUserList(params).then(res => {
                 if (!res.result) {
                     return false
                 }
@@ -160,7 +160,7 @@
                 lastName: this.formData.display_name,
                 email: this.formData.email
             }
-            const res = await this.$api.UserManageMainMock.editUser(params)
+            const res = await this.$api.UserManageMain.editUser(params)
             if (!res.result) {
                 this.$error(res.message)
             } else {
@@ -189,7 +189,7 @@
                     id: this.formData.id,
                     password: this.passwordFormData.password
                 }
-                this.$api.UserManageMainMock.resetPassword(params).then(res => {
+                this.$api.UserManageMain.resetPassword(params).then(res => {
                     if (!res.result) {
                         this.$error(res.message)
                         return false

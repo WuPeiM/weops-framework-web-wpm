@@ -287,7 +287,7 @@
             this.nav.id = id
         }
         getLogo() {
-            this.$api.ServerMock.getLogo({}, {
+            this.$api.Server.getLogo({}, {
                 cancelWhenRouteChange: false
             }).then(res => {
                 if (res.result) {

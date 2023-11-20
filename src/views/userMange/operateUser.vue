@@ -127,7 +127,7 @@
                     }
                 }
                 this.loading = true
-                this.$api.UserManageMainMock[url](params).then(res => {
+                this.$api.UserManageMain[url](params).then(res => {
                     if (!res.result) {
                         this.$error(res.message)
                         return false

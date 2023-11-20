@@ -48,7 +48,7 @@
                 return
             }
             this.isLoading = true
-            this.$api.UserMock.login(this.formData).then(res => {
+            this.$api.User.login(this.formData).then(res => {
                 if (res.result) {
                     const token = res.data.token
                     document.cookie = `bk_token=${token}`
