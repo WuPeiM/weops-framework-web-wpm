@@ -187,7 +187,7 @@
                 const params = {
                     default_domain: this.formData.default_domain
                 }
-                const res = await this.$api.UserManageMainMock.setDomain(params)
+                const res = await this.$api.UserManageMain.setDomain(params)
                 if (!res.result) {
                     return this.$error(res.message)
                 }
@@ -200,7 +200,7 @@
         async getLoginSet() {
             this.loading = true
             try {
-                const res = await this.$api.UserManageMainMock.getLoginSet()
+                const res = await this.$api.UserManageMain.getLoginSet()
                 if (!res.result) {
                     return this.$error(res.message)
                 }
@@ -213,7 +213,7 @@
         }
 
         async getDomainList() {
-            const res = await this.$api.UserManageMainMock.getDomainList()
+            const res = await this.$api.UserManageMain.getDomainList()
             if (!res.result) {
                 return this.$error(res.message)
             }
@@ -271,7 +271,7 @@
                 this.isConfirm = md5(this.code) === this.validateCode
                 if (this.isConfirm || this.isAdmin) {
                     this.formData.auth_type = Array.isArray(this.formData.auth_type) ? this.formData.auth_type : [this.formData.auth_type]
-                    const res = await this.$api.UserManageMainMock.updateLoginSet(this.formData)
+                    const res = await this.$api.UserManageMain.updateLoginSet(this.formData)
                     if (!res.result) {
                         return this.$error(res.message)
                     }

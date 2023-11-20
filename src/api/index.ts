@@ -1,7 +1,6 @@
 // 统一引入api模块
 import Server from './module/server'
 import User from './module/user'
-// import Activation from './module/activation'
 import UserManageMain from './module/userManage'
 import RoleManageMain from './module/roleManage'
 import MonitorCollectMain from './module/monitorCollect'
@@ -11,19 +10,26 @@ import UserManageMainMock from './module/mock/userManageMock/index'
 import ServerMock from './module/mock/serverMock/index'
 import UserMock from './module/mock/userMock/index'
 
-const api: any = {
-    Server,
-    User,
-    // Activation,
-    UserManageMain,
-    RoleManageMain,
-    MonitorCollectMain,
-    RemoteConnectMain,
-    RoleManageMainMock,
-    UserManageMainMock,
-    ServerMock,
-    UserMock
+let api: any
+// USE_MOCK为true，则使用mock数据
+if (process.env.USE_MOCK) {
+    api = {
+        Server: ServerMock,
+        User: UserMock,
+        RoleManageMain: RoleManageMainMock,
+        UserManageMain: UserManageMainMock
+    }
+} else {
+    api = {
+        Server,
+        User,
+        UserManageMain,
+        RoleManageMain,
+        MonitorCollectMain,
+        RemoteConnectMain
+    }
 }
+
 // @ts-ignore
 const appFiles = require.context('@/projects/', true, /\/api\/index\.ts$/)
 appFiles.keys().forEach(key => {

@@ -107,7 +107,7 @@
             const appPermission: any = this.$refs.appPermission
             appPermission.getLatestApp()
             this.loading = true
-            this.$api.RoleManageMainMock.setRoleMenu({
+            this.$api.RoleManageMain.setRoleMenu({
                 id: this.role.id,
                 menu_ids: this.latestMenu || [],
                 operate_ids: this.latestOperate || [],

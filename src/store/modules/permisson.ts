@@ -163,7 +163,7 @@ const actions = {
             vue.prototype.$bus.$emit('setAppLoading', true)
         }, 0)
         const promise = new Promise((resolve, reject) => {
-            api.UserMock.homeInfo().then(async res => {
+            api.User.homeInfo().then(async res => {
                 if (res.result) {
                     const { data } = res
                     sessionStorage.setItem('loginInfo', JSON.stringify(data))
@@ -205,7 +205,7 @@ const actions = {
     },
     async getAllUserList({commit}) {
         const promise = new Promise((resolve, reject) => {
-            api.ServerMock.getBkUsers({
+            api.Server.getBkUsers({
                 page_size: -1
             }).then(res => {
                 if (res.result) {

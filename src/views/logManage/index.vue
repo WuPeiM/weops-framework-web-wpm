@@ -187,7 +187,7 @@
             this.params.page = this.pagination.current
             this.params.page_size = this.pagination.limit
             this.isLoading = true
-            this.$api.ServerMock.getLogs(this.params).then(res => {
+            this.$api.Server.getLogs(this.params).then(res => {
                 if (!res.result) {
                     this.$error(res.message)
                     this.logList = []
@@ -210,7 +210,7 @@
                 dateTime: []
             }
             this.isLoading = true
-            this.$api.ServerMock.getLogs(this.params).then(res => {
+            this.$api.Server.getLogs(this.params).then(res => {
                 this.isLoading = false
                 if (res.result) {
                     this.logList = res.data.items
