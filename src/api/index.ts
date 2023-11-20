@@ -10,7 +10,14 @@ import UserManageMainMock from './module/mock/userManageMock/index'
 import ServerMock from './module/mock/serverMock/index'
 import UserMock from './module/mock/userMock/index'
 
-let api: any
+let api: any = {
+    Server,
+    User,
+    UserManageMain,
+    RoleManageMain,
+    MonitorCollectMain,
+    RemoteConnectMain
+}
 // USE_MOCK为true，则使用mock数据
 if (window['USE_MOCK']) {
     api = {
@@ -18,15 +25,6 @@ if (window['USE_MOCK']) {
         User: UserMock,
         RoleManageMain: RoleManageMainMock,
         UserManageMain: UserManageMainMock
-    }
-} else {
-    api = {
-        Server,
-        User,
-        UserManageMain,
-        RoleManageMain,
-        MonitorCollectMain,
-        RemoteConnectMain
     }
 }
 
