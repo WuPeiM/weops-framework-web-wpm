@@ -64,6 +64,8 @@ export const request = (method, url) => (params = {}, config = {}) => {
             newUrl += `?${query}`
         }
         req = httpConfig[reqMethod](newUrl, null, reqConfig)
+    } else if (reqMethod === 'deleteb') {
+        req = httpConfig['delete'](newUrl, { data: params, ...reqConfig })
     } else {
         req = httpConfig[reqMethod](newUrl, params, reqConfig)
     }
@@ -99,6 +101,10 @@ export const put = (url, params, opts = {}) =>
 // delete
 export const deletes = (url, params, opts = {}) =>
     getPromise('delete', url, params, opts)
+
+// deleteb body传参
+export const deleteb = (url, params, opts = {}) =>
+    getPromise('deleteb', url, params, opts)
 
 // patch
 export const patch = (url, params, opts = {}) =>
