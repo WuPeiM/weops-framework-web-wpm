@@ -52,13 +52,14 @@ const router = new Router({
 })
 const handleRouteAuthorization = async(to, from, next) => {
     const permission = store.state.permission
-    if (!permission.user || JSON.stringify(permission.user) === '{}') {
+    if ((!permission.user || JSON.stringify(permission.user) === '{}') && to.name !== 'Login') {
         await store.dispatch('GenerateNavLists1')
     }
-    const allUserData = sessionStorage.getItem('allUserData')
-    if (!(allUserData && JSON.stringify(allUserData).length)) {
-        await store.dispatch('getAllUserList')
-    }
+    // 后端接口报500，要先注释掉这里才能切换路由
+    // const allUserData = sessionStorage.getItem('allUserData')
+    // if (!(allUserData && JSON.stringify(allUserData).length)) {
+    //     await store.dispatch('getAllUserList')
+    // }
     checkRouteAccess(to, from, next)
 }
 

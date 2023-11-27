@@ -106,13 +106,13 @@
     columns = [
         {
             label: '用户名',
-            key: 'username',
+            key: 'bk_username',
             align: 'left',
             minWidth: '150px'
         },
         {
             label: '中文名',
-            key: 'lastName',
+            key: 'chname',
             align: 'left',
             minWidth: '100px'
         },
@@ -198,7 +198,8 @@
     async confirmDelete(row) {
         try {
             const res = await this.$api.UserManageMain.deleteUser({
-                id: row.id
+                id: row.id,
+                bk_user_id: row.bk_user_id
             })
             if (!res.result) {
                 return this.$error(res.message)
@@ -238,9 +239,9 @@
     }
     getUserList() {
         const params = {
-            // roles: this.roles
+            roles: this.roles,
             page: this.pagination.current,
-            per_page: this.pagination.limit,
+            page_size: this.pagination.limit,
             search: this.search
         }
         this.tableLoading = true
@@ -248,7 +249,10 @@
             if (!res.result) {
                 return false
             }
-            this.dataList = res.data.users
+            this.dataList = res.data.items
+            this.dataList.forEach(item => {
+                this.$set(item, 'roleV1', item.roles)
+            })
             this.pagination.count = res.data.count
         }).finally(() => {
             this.tableLoading = false

@@ -134,10 +134,10 @@
                 if (!res.result) {
                     return false
                 }
-                const {id, username, lastName, email} = res.data.users[0]
+                const {id, bk_username: username, chname, email} = res.data.items[0]
                 this.formData.id = id
                 this.formData.username = username
-                this.formData.display_name = lastName
+                this.formData.display_name = chname
                 this.formData.email = email
                 this.rawFormData = {...this.formData}
             })
@@ -157,7 +157,7 @@
             this.isInfoLoading = true
             const params = {
                 id: this.formData.id,
-                lastName: this.formData.display_name,
+                display_name: this.formData.display_name,
                 email: this.formData.email
             }
             const res = await this.$api.UserManageMain.editUser(params)

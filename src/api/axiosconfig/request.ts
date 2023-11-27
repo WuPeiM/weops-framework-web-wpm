@@ -219,6 +219,12 @@ function handleReject(error, config) {
             message = '系统出现异常'
         } else if (status === 403) {
             message = '无权限操作'
+            router.push({
+                path: '/login',
+                query: {
+                    from: router.history.current.name
+                }
+            })
         } else if ([4005, 4003].includes((data && data.code))) {
             // bus.$emit('show-apply-perm-modal', data?.data)
         }
