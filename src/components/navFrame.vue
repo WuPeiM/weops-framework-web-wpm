@@ -277,6 +277,7 @@
                 confirmFn: () => {
                     sessionStorage.clear()
                     document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/;'
+                    this.$store.commit('setLoginStatus')
                     this.$router.replace({
                         path: '/login'
                     })

@@ -23,8 +23,9 @@ const hasCommonFolder = (fileName) => {
 
 function handleMenuList(userInfo) {
     const handleNeedMenuList = handleActivationMenu(userInfo, 'custom')
-    const userMenus = userInfo.menus
-    return userInfo.is_super ? handleNeedMenuList : setMenuPurview(handleNeedMenuList, userMenus)
+    // const userMenus = userInfo.menus
+    // return userInfo.is_super ? handleNeedMenuList : setMenuPurview(handleNeedMenuList, userMenus)
+    return handleNeedMenuList
 }
 
 function handleActivationMenu(userInfo, type) {
@@ -153,6 +154,12 @@ const mutations = {
     },
     setCustomMenuStatus(state) {
         state.updateCustomMenu = !state.updateCustomMenu
+    },
+    setLoginStatus(state) {
+        state.user = {}
+        state.ticketCount = 0
+        state.menuList = []
+        state.activationMenu = []
     }
 }
 
