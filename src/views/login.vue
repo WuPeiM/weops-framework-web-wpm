@@ -65,6 +65,9 @@
                 this.isLoading = false
             })
         }
+        mounted() {
+            this.$bus.$emit('setAppLoading', false)
+        }
     }
 </script>
 
