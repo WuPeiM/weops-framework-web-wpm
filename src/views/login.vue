@@ -52,6 +52,7 @@
                 if (res.result) {
                     const token = res.data.token
                     document.cookie = `token=${token}`
+                    localStorage.setItem('loginToken', token)
                     const goto = this.$route.query.from
                     if (goto) {
                         this.$router.push({name: goto})

@@ -34,9 +34,11 @@ const axiosInstance = axios.create({
  */
 axiosInstance.interceptors.request.use(config => {
     const token = getToken()
+    const loginToken = localStorage.getItem('loginToken')
     config.headers['X-csrfToken'] = token
     config.headers['X-Requested-With'] = 'XMLHttpRequest'
     config.headers['AUTH-APP'] = 'WEOPS'
+    config.headers['Authorization'] = `Bearer ${loginToken}`
     return config
 })
 
