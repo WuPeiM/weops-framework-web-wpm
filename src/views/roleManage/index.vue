@@ -110,16 +110,17 @@
     export default class RoleManage extends Vue {
         tableLoading: boolean = false
         dataList: Array<any> = []
+        allDataList: Array<any> = []
         columns = [
             {
                 label: '角色名称',
-                key: 'role_name',
+                key: 'name',
                 align: 'left',
                 minWidth: '100px'
             },
             {
                 label: '角色描述',
-                key: 'describe',
+                key: 'description',
                 align: 'left',
                 minWidth: '300px'
             },
@@ -160,11 +161,18 @@
         }
         handlerIconClick() {
             this.pagination.current = 1
-            this.getRoleList()
+            this.dataList = this.allDataList.filter(item => item.name.includes(this.search))
+            this.pagination.count = this.dataList.length
         }
-        personnelManage(row) {
+        async personnelManage(row) {
+            const res = await this.$api.RoleManageMain.getRoleAllUser({id: row.id})
+            res.data = res.data.map(item => ({
+                id: item.id,
+                bk_username: item.username,
+                chname: item.lastName
+            }))
             this.$refs.authWhiteList.showSlider({
-                user: row.users
+                user: res.data
             }, row)
         }
         setPermission(row) {
@@ -216,30 +224,28 @@
             }
         }
         getRoleList() {
-            const params = {
-                page: this.pagination.current,
-                page_size: this.pagination.limit,
-                search: this.search
-            }
             this.tableLoading = true
-            this.$api.RoleManageMain.getRoleList(params).then(res => {
+            this.$api.RoleManageMain.getRoleList().then(res => {
                 if (!res.result) {
                     return false
                 }
-                this.dataList = res.data.items
-                this.pagination.count = res.data.count
+                this.allDataList = res.data
+                const {current, limit} = this.pagination
+                this.dataList = this.allDataList.slice((current - 1) * limit, current * limit)
+                this.pagination.count = res.data.length
             }).finally(() => {
                 this.tableLoading = false
             })
         }
         handlePageChange(val) {
             this.pagination.current = val
-            this.getRoleList()
+            const {limit} = this.pagination
+            this.dataList = this.allDataList.filter(item => item.name.includes(this.search)).slice((val - 1) * limit, val * limit)
         }
         limitChange(val) {
             this.pagination.current = 1
             this.pagination.limit = val
-            this.getRoleList()
+            this.dataList = this.allDataList.filter(item => item.name.includes(this.search)).slice(0, val)
         }
     }
 </script>

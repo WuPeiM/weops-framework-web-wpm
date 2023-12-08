@@ -125,10 +125,14 @@
         menuLoading: boolean = false
         checkAuthMenusIds = []
         operateAuthMenusIds = []
+        // 保存角色的原始的权限
+        permissions = {}
+        // 查看权限的映射, 菜单Id:具体操作名称
+        checkMap = {}
         mounted() {
             this.menuList = JSON.parse(JSON.stringify(this.$store.state.permission.menuList))
             // 服务台管理，用户管理，通知渠道，角色权限这四个菜单只有admin能展示，操作权限不予展示
-            const ONLY_ADMIN_HAS_MENUS = ['ServiceDeskManage', 'AutoProcessManage', 'SysRole', 'SysUser', 'NoticeWays']
+            const ONLY_ADMIN_HAS_MENUS = ['ServiceDeskManage', 'AutoProcessManage', 'NoticeWays']
             removeItemsWithId(this.menuList, ONLY_ADMIN_HAS_MENUS)
             this.handleMenus(this.menuList)
             this.getRoleMenus()
@@ -158,6 +162,8 @@
                 checkAuthIds: this.checkAuthMenusIds,
                 operateAuthIds: this.operateAuthMenusIds
             })
+            // 将角色权限数据传给父组件
+            this.$emit('getPermissions', this.permissions)
         }
         getSelectMenusIds(data) {
             data.forEach(item => {
@@ -305,6 +311,7 @@
                 item.isChecked = item.auth.every(tex => tex.value)
                 item.isIndeterminate = !(item.auth.every(tex => tex.value) || item.auth.every(tex => !tex.value))
             }
+            console.log('item', 'status', 'type', item, status, type)
         }
         handleMenus(data, parentId?) {
             data.forEach(item => {
@@ -313,7 +320,7 @@
                 }
                 this.$set(item, 'isChecked', false)
                 this.$set(item, 'isIndeterminate', false)
-                item.auth.forEach(tex => {
+                item?.auth.forEach(tex => {
                     this.$set(tex, 'isIndeterminate', false)
                 })
                 if (item.children) {
@@ -341,39 +348,176 @@
         getRoleMenus() {
             this.menuLoading = true
             this.$emit('getMenuLoading', this.menuLoading)
-            this.$api.RoleManageMain.getRoleMenus(
-                {
-                    id: this.role.id
-                }
-            ).then(res => {
-                if (!res.result) {
-                    return false
-                }
-                for (const k in res.data) {
-                    res.data[k].forEach(item => {
-                        const target = this.findItemById(k === 'operate_ids' ? item.menuId : item, this.menuList)
-                        if (target) {
-                            if (k === 'operate_ids') {
-                                item[k].forEach(tex => {
-                                    const flag = target.auth.find(nev => nev.key === tex)
+            // this.$api.RoleManageMain.getRoleMenus(
+            //     {
+            //         id: this.role.id
+            //     }
+            // ).then(res => {
+            //     if (!res.result) {
+            //         return false
+            //     }
+            //     for (const k in res.data) {
+            //         res.data[k].forEach(item => {
+            //             const target = this.findItemById(k === 'operate_ids' ? item.menuId : item, this.menuList)
+            //             if (target) {
+            //                 if (k === 'operate_ids') {
+            //                     item[k].forEach(tex => {
+            //                         const flag = target.auth.find(nev => nev.key === tex)
+            //                         flag.value = true
+            //                         this.handleOperateChecked(target, flag.type, true)
+            //                     })
+            //                 } else {
+            //                     if (target.children && target.children.length) {
+            //                         return false
+            //                     }
+            //                     const flag = target.auth.find(nev => nev.key === 'checkAuth')
+            //                     flag.value = true
+            //                     this.handleOperateChecked(target, flag.type)
+            //                 }
+            //             }
+            //         })
+            //     }
+            // }).finally(() => {
+            //     this.menuLoading = false
+            //     this.$emit('getMenuLoading', this.menuLoading)
+            // })
+            this.$api.RoleManageMain.getRoleMenus({roleId: this.role.id}).then(res => {
+                if (res.result) {
+                    this.permissions = res.data.permissions
+                    // const menuIdMap = {
+                    //     sys: 'SysSetting',
+                    //     operation: 'SysLog',
+                    //     roles: 'SysRole',
+                    //     users: 'SysUser'
+                    // }
+                    // // 查看权限的映射, 菜单Id:具体操作名称
+                    // const checkMap = {}
+                    // const menusIds = []
+                    // const operateIds = []
+                    // const resKey = Object.keys(res.data.permissions)
+                    // // 遍历数据返回的key
+                    // resKey.forEach(key => {
+                    //     res.data.permissions[key].forEach(item => {
+                    //         const {name, allow} = item
+                    //         // 查看权限
+                    //         if (name.endsWith('view') && allow) {
+                    //             const menuId = menuIdMap[key]
+                    //             if (menuId) {
+                    //                 !menusIds.includes(menuId) && menusIds.push(menuId)
+                    //             }
+                    //             checkMap[menuId] = name
+                    //         }
+                    //         // 操作权限
+                    //         if (!name.endsWith('view') && allow) {
+                    //             const menuId = menuIdMap[key]
+                    //             if (menuId) {
+                    //                 const findMenuId = operateIds.find(operateIdItem => operateIdItem.menuId === menuId)
+                    //                 // 如果找不到，新增一个
+                    //                 if (!findMenuId) {
+                    //                     operateIds.push({
+                    //                         menuId: menuId,
+                    //                         operate_ids: [item.name]
+                    //                     })
+                    //                 } else {
+                    //                     findMenuId.operate_ids.push(item.name)
+                    //                 }
+                    //             }
+                    //         }
+                    //     })
+                    // })
+                    // const result = {
+                    //     menus_ids: menusIds,
+                    //     operate_ids: operateIds
+                    // }
+                    const result = this.changeDataFormat(res.data.permissions)
+                    // 计算一开始有权限的id
+                    const rawIds = this.getAllowedIds(res.data.permissions)
+                    // 传给父组件保存
+                    this.$emit('getRawIds', rawIds)
+                    for (const k in result) {
+                        result[k].forEach(item => {
+                            const target = this.findItemById(k === 'operate_ids' ? item.menuId : item, this.menuList)
+                            if (target) {
+                                if (k === 'operate_ids') {
+                                    item[k].forEach(tex => {
+                                        const flag = target.auth.find(nev => nev.key === tex)
+                                        flag.value = true
+                                        this.handleOperateChecked(target, flag.type, true)
+                                    })
+                                } else {
+                                    if (target.children && target.children.length) {
+                                        return false
+                                    }
+                                    const flag = target.auth.find(nev => nev.key === this.checkMap[item])
                                     flag.value = true
-                                    this.handleOperateChecked(target, flag.type, true)
-                                })
-                            } else {
-                                if (target.children && target.children.length) {
-                                    return false
+                                    this.handleOperateChecked(target, flag.type)
                                 }
-                                const flag = target.auth.find(nev => nev.key === 'checkAuth')
-                                flag.value = true
-                                this.handleOperateChecked(target, flag.type)
                             }
-                        }
-                    })
+                        })
+                    }
                 }
             }).finally(() => {
                 this.menuLoading = false
                 this.$emit('getMenuLoading', this.menuLoading)
             })
+        }
+        // 将数据转格式
+        changeDataFormat(data) {
+            const menuIdMap = {
+                sys: 'SysSetting',
+                operation: 'SysLog',
+                roles: 'SysRole',
+                users: 'SysUser'
+            }
+            const menusIds = []
+            const operateIds = []
+            const resKey = Object.keys(data)
+            // 遍历数据返回的key
+            resKey.forEach(key => {
+                data[key].forEach(item => {
+                    const {name, allow} = item
+                    // 查看权限
+                    if (name.endsWith('view') && allow) {
+                        const menuId = menuIdMap[key]
+                        if (menuId) {
+                            !menusIds.includes(menuId) && menusIds.push(menuId)
+                        }
+                        this.checkMap[menuId] = name
+                    }
+                    // 操作权限
+                    if (!name.endsWith('view') && allow) {
+                        const menuId = menuIdMap[key]
+                        if (menuId) {
+                            const findMenuId = operateIds.find(operateIdItem => operateIdItem.menuId === menuId)
+                            // 如果找不到，新增一个
+                            if (!findMenuId) {
+                                operateIds.push({
+                                    menuId: menuId,
+                                    operate_ids: [item.name]
+                                })
+                            } else {
+                                findMenuId.operate_ids.push(item.name)
+                            }
+                        }
+                    }
+                })
+            })
+            return {
+                menus_ids: menusIds,
+                operate_ids: operateIds
+            }
+        }
+        // 拿到allow为true的id
+        getAllowedIds(data) {
+            const allowedIds = []
+            for (const category in data) {
+                for (const item of data[category]) {
+                    if (item.allow) {
+                        allowedIds.push(item.id)
+                    }
+                }
+            }
+            return allowedIds
         }
     }
 </script>

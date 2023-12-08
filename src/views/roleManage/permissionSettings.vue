@@ -14,27 +14,23 @@
                     ref="menuPermission"
                     @getMenuLoading="getMenuLoading"
                     @getLatestMenu="getLatestMenu"
+                    @getPermissions="getPermissions"
+                    @getRawIds="getRawIds"
                 >
                 </operation-permission>
-                <app-permission
+                <!-- <app-permission
                     v-show="active === 'appPermission'"
                     :role="role"
                     ref="appPermission"
                     @getAppLoading="getAppLoading"
                     @getLatestApp="getLatestApp"
                 >
-                </app-permission>
-                <instance-permission
+                </app-permission> -->
+                <!-- <instance-permission
                     v-show="active === 'instancePermission'"
                     :role="role"
                     ref="instancePermission">
-                </instance-permission>
-                <!-- <log-permission
-                    v-show="active === 'logPermission'"
-                    :role="role"
-                    @getAppLoading="getAppLoading"
-                    ref="logPermission">
-                </log-permission> -->
+                </instance-permission> -->
             </div>
             <div class="footer-box">
                 <bk-button v-if="active !== 'instancePermission'" :disabled="disableBtn || loading" :theme="'primary'" :title="'确定'" @click="confirm">
@@ -46,25 +42,25 @@
 </template>
 
 <script lang="ts">
-    import AppPermission from './appPermission.vue'
+    // import AppPermission from './appPermission.vue'
     import OperationPermission from './operationPermission.vue'
-    import InstancePermission from './instancePermission.vue'
+    // import InstancePermission from './instancePermission.vue'
     import menuTab from '@/components/menuTab.vue'
     import { Vue, Component } from 'vue-property-decorator'
     @Component({
         name: 'permission-settings',
         components: {
-            AppPermission,
+            // AppPermission,
             OperationPermission,
-            InstancePermission,
+            // InstancePermission,
             menuTab
         }
     })
     export default class permissionSettings extends Vue {
         isShow: boolean = false
         panels = [
-            { name: 'operationPermission', label: '操作权限' },
-            { name: 'instancePermission', label: '实例权限' }
+            { name: 'operationPermission', label: '操作权限' }
+            // { name: 'instancePermission', label: '实例权限' }
         ]
         active: string = 'operationPermission'
         role: any = {}
@@ -74,6 +70,11 @@
         latestOperate = []
         latestApp = []
         loading: boolean = false
+        permissions = {}
+        // 原本有权限的id
+        rawIds = []
+        // 权限要改变的id
+        changePermissionIds = []
         get disableBtn() {
             return this.active === 'operationPermission' ? this.menuLoading : this.appLoading
         }
@@ -81,9 +82,9 @@
             this.latestMenu = data.checkAuthIds
             this.latestOperate = data.operateAuthIds
         }
-        getLatestApp(data) {
-            this.latestApp = data
-        }
+        // getLatestApp(data) {
+        //     this.latestApp = data
+        // }
         getMenuLoading(loading) {
             this.menuLoading = loading
         }
@@ -101,17 +102,56 @@
         toTabMenu(item) {
             this.active = item.name
         }
+        // 拿到角色权限数据
+        getPermissions(data) {
+            this.permissions = data
+        }
+        // 拿到原始id数据
+        getRawIds(data) {
+            this.rawIds = data
+        }
+
         confirm() {
             const menuPermission: any = this.$refs.menuPermission
             menuPermission.getLatestMenu()
-            const appPermission: any = this.$refs.appPermission
-            appPermission.getLatestApp()
+            // const appPermission: any = this.$refs.appPermission
+            // appPermission.getLatestApp()
+            const map = {
+                SysSetting: 'sys',
+                SysLog: 'operation',
+                SysRole: 'roles',
+                SysUser: 'users'
+            }
+            const nowIds = []
+            // 设置查看权限的id
+            this.latestMenu.forEach(item => {
+                const menuPermission = this.permissions[map[item]]
+                console.log('menuPermission', menuPermission, item)
+                if (menuPermission) {
+                    for (let i = 0; i < menuPermission.length; i++) {
+                    // 如果是查看权限
+                    if (menuPermission[i].name.endsWith('view')) {
+                        nowIds.push(menuPermission[i].id)
+                    }
+                }
+                }
+            })
+            this.latestOperate.forEach(item => {
+                item.operate_ids.forEach(key => {
+                    // 在permissions里找到对应的id
+                    const id = this.getIdByName(this.permissions, map[item.menuId], key)
+                    console.log('找到的id', id)
+                    nowIds.push(id)
+                })
+            })
+            console.log('nowId', nowIds)
+            this.changePermissionIds = this.compareArrays(this.rawIds, nowIds)
+            console.log('this.change', this.changePermissionIds)
+
             this.loading = true
             this.$api.RoleManageMain.setRoleMenu({
                 id: this.role.id,
-                menu_ids: this.latestMenu || [],
-                operate_ids: this.latestOperate || [],
-                app_ids: this.latestApp || []
+                array: this.changePermissionIds
             }).then(res => {
                 const { result, message } = res
                 if (!result) {
@@ -123,6 +163,22 @@
             }).finally(() => {
                 this.loading = false
             })
+        }
+        getIdByName(data, category, name) {
+            if (data.hasOwnProperty(category)) {
+                const items = data[category]
+                for (let i = 0; i < items.length; i++) {
+                    if (items[i].name === name) {
+                        return items[i].id
+                    }
+                }
+            }
+            return null // 如果没有找到对应的名称，则返回 null
+        }
+        compareArrays(arrayA, arrayB) {
+            const valuesOnlyInA = arrayA.filter(item => !arrayB.includes(item))
+            const valuesOnlyInB = arrayB.filter(item => !arrayA.includes(item))
+            return [...valuesOnlyInA, ...valuesOnlyInB]
         }
     }
 </script>

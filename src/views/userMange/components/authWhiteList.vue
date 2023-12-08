@@ -169,6 +169,7 @@
         dataList: any = []
         selectedData:any = {}
         allSelected:any = []
+        rawSelected:any = []
         credentialsDetail: any = {}
         roleDetail: any = {}
         get initChooseAdmin() {
@@ -197,6 +198,7 @@
                 }
             }
             this.selectedData = this.$deepClone(this.isMyCredentials ? originList : (list || originList))
+            this.rawSelected = this.$deepClone(this.selectedData.user)
             this.handleAllSelected()
             this.changeMenu(this.onlyChooseUser ? 'user' : 'role')
         }
@@ -221,19 +223,20 @@
         async getDataList() {
             const params = {
                 page: this.pagination.current,
-                page_size: this.pagination.limit,
+                per_page: this.pagination.limit,
                 search: this.searchValue
             }
             this.loading = true
             try {
                 const res = this.isGroup
                     ? await this.$api.UserManageMain.searchRoleList(params)
-                    : await this.$api.UserManageMain.searchUserList(params)
+                    : await this.$api.UserManageMain.getUserList(params)
                 if (!res.result) {
                     this.dataList = []
                     this.pagination.count = 0
                     return this.$error(res.message)
                 }
+                res.data.items = res.data.users.map(item => ({id: item.id, bk_username: item.username, chname: item.lastName}))
                 const selectMap = Object.fromEntries((this.selectedData[this.active] || []).map(r => [r.id, r]))
                 const isAdminGroup = this.roleDetail?.role_name === 'admin_group'
                 this.dataList = (res.data?.items || []).map(item => ({
@@ -257,27 +260,59 @@
             if (this.isMyCredentials) {
                 this.imPower()
             } else if (this.onlyChooseUser) {
-                this.setUsersByRole()
+                this.setUsersByRole(this.rawSelected, this.allSelected)
             } else {
                 this.visible = false
                 this.$emit('confirm', this.selectedData)
             }
         }
-        async setUsersByRole() {
+        async setUsersByRole(rawData, updateData) {
+            // 找出要删除的id和要增加的id
+            const deleteId = []
+            const rawTemp = rawData.map(item => item.id)
+            const updateTemp = updateData.map(item => item.id)
+            for (let i = 0; i < rawTemp.length; i++) {
+                if (!updateData.includes(rawTemp[i])) {
+                    deleteId.push(rawTemp[i])
+                }
+            }
+            const deletePromises = deleteId.map(id => {
+                return this.$api.RoleManageMain.deleteUserRole({id: this.roleDetail.id, userId: id})
+            })
+            const addId = []
+            for (let i = 0; i < updateTemp.length; i++) {
+                if (!rawData.includes(updateTemp[i])) {
+                    addId.push(updateTemp[i])
+                }
+            }
+            const addPromises = addId.map(id => {
+                return this.$api.UserManageMain.setUserRoles({id: this.roleDetail.id, userId: id})
+            })
             this.isConfirm = true
             try {
-                const res = await this.$api.UserManageMain.setUsersByRole({
-                    users: this.selectedData.user.map(item => item.id),
-                    id: this.roleDetail?.id
-                })
-                const { result, message } = res
-                if (!result) {
-                    this.$error(message)
-                    return false
+                // const res = await this.$api.UserManageMain.setUsersByRole({
+                //     users: this.selectedData.user.map(item => item.id),
+                //     id: this.roleDetail?.id
+                // })
+                // const { result, message } = res
+                // if (!result) {
+                //     this.$error(message)
+                //     return false
+                // }
+                // this.$success('设置人员成功')
+                // this.handleClose()
+                // this.$emit('confirm')
+                // const { result, message } = res
+                // if (!result) {
+                //     this.$error(message)
+                //     return false
+                // }
+                const res = await Promise.all([...addPromises, ...deletePromises])
+                if (res.every(item => item.result)) {
+                    this.$success('设置人员成功')
+                    this.handleClose()
+                    this.$emit('confirm')
                 }
-                this.$success('设置人员成功')
-                this.handleClose()
-                this.$emit('confirm')
             } finally {
                 this.isConfirm = false
             }
