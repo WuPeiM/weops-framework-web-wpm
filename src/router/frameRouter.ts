@@ -113,8 +113,8 @@ const routeConfig = [
             {
                 name: '系统管理',
                 icon: 'cw-icon weops-system',
-                // id: 'sysManage',
-                id: 'sysRole',
+                id: 'sysManage',
+                // id: 'sysRole',
                 sortIndex: 9,
                 auth: [
                     {
@@ -138,15 +138,39 @@ const routeConfig = [
                         url: '/sysRole',
                         auth: [
                             {
-                                key: 'checkAuth',
+                                key: 'roles_view',
                                 value: false,
                                 label: '查看',
                                 type: 'check'
                             },
                             {
-                                key: 'operateAuth',
+                                key: 'roles_create',
                                 value: false,
-                                label: '操作',
+                                label: '创建角色',
+                                type: 'operate'
+                            },
+                            {
+                                key: 'roles_edit',
+                                value: false,
+                                label: '编辑角色',
+                                type: 'operate'
+                            },
+                            {
+                                key: 'roles_delete',
+                                value: false,
+                                label: '删除角色',
+                                type: 'operate'
+                            },
+                            {
+                                key: 'roles_users_manage',
+                                value: false,
+                                label: '人员管理',
+                                type: 'operate'
+                            },
+                            {
+                                key: 'roles_permissions',
+                                value: false,
+                                label: '设置权限',
                                 type: 'operate'
                             }
                         ]
@@ -158,15 +182,27 @@ const routeConfig = [
                         url: '/sysUser',
                         auth: [
                             {
-                                key: 'checkAuth',
+                                key: 'users_view',
                                 value: false,
                                 label: '查看',
                                 type: 'check'
                             },
                             {
-                                key: 'operateAuth',
+                                key: 'users_create',
                                 value: false,
-                                label: '操作',
+                                label: '创建用户',
+                                type: 'operate'
+                            },
+                            {
+                                key: 'users_edit',
+                                value: false,
+                                label: '编辑用户',
+                                type: 'operate'
+                            },
+                            {
+                                key: 'users_delete',
+                                value: false,
+                                label: '删除用户',
                                 type: 'operate'
                             }
                         ]
@@ -178,7 +214,7 @@ const routeConfig = [
                         url: '/sysLog',
                         auth: [
                             {
-                                key: 'checkAuth',
+                                key: 'operation_logs_view',
                                 value: false,
                                 label: '查看',
                                 type: 'check'
@@ -192,15 +228,33 @@ const routeConfig = [
                         url: '/sysSetting',
                         auth: [
                             {
-                                key: 'checkAuth',
+                                key: 'sys_menus_view',
                                 value: false,
                                 label: '查看',
                                 type: 'check'
                             },
                             {
-                                key: 'operateAuth',
+                                key: 'sys_menus_create',
                                 value: false,
-                                label: '操作',
+                                label: '新增菜单',
+                                type: 'operate'
+                            },
+                            {
+                                key: 'sys_menus_edit',
+                                value: false,
+                                label: '编辑菜单',
+                                type: 'operate'
+                            },
+                            {
+                                key: 'sys_menus_delete',
+                                value: false,
+                                label: '删除菜单',
+                                type: 'operate'
+                            },
+                            {
+                                key: 'sys_logo_change',
+                                value: false,
+                                label: '更换logo',
                                 type: 'operate'
                             }
                         ]
@@ -215,35 +269,35 @@ const manageMenu = []
 
 // 自动导入子应用
 // @ts-ignore
-const files = require.context('@/projects', true, /frameRouter.ts/)
-files.keys().forEach(key => {
-    const router = files(key).frameRouter
-    const menuList = files(key).adminRouteConfig
-    const subsMenu = files(key).subsMenuList
-    mainRouter = mainRouter.concat(router)
-    // 处理合并项目菜单
-    menuList.forEach(item => {
-        const targetIndex = routeConfig.findIndex(tex => tex.id === item.id)
-        if (targetIndex !== -1) {
-            routeConfig[targetIndex].children = routeConfig[targetIndex].children.concat(item.children).sort((a, b) => a.sortIndex - b.sortIndex)
-        } else {
-            routeConfig.push(item)
-        }
-    })
-    routeConfig.sort((a, b) => a.sortIndex - b.sortIndex)
-    subsMenuPromission = { ...subsMenuPromission, ...subsMenu }
-    const manageMenuItem = files(key).manageMenu
-    if (manageMenuItem) {
-        manageMenuItem.forEach(item => {
-            const findIndex = manageMenu.findIndex(tex => tex.id === item.id)
-            if (findIndex !== -1) {
-                manageMenu[findIndex].children = manageMenu[findIndex].children.concat(item.children).sort((a, b) => a.sortIndex - b.sortIndex)
-            } else {
-                manageMenu.push(item)
-            }
-        })
-    }
-})
+// const files = require.context('@/projects', true, /frameRouter.ts/)
+// files.keys().forEach(key => {
+//     const router = files(key).frameRouter
+//     const menuList = files(key).adminRouteConfig
+//     const subsMenu = files(key).subsMenuList
+//     mainRouter = mainRouter.concat(router)
+//     // 处理合并项目菜单
+//     menuList.forEach(item => {
+//         const targetIndex = routeConfig.findIndex(tex => tex.id === item.id)
+//         if (targetIndex !== -1) {
+//             routeConfig[targetIndex].children = routeConfig[targetIndex].children.concat(item.children).sort((a, b) => a.sortIndex - b.sortIndex)
+//         } else {
+//             routeConfig.push(item)
+//         }
+//     })
+//     routeConfig.sort((a, b) => a.sortIndex - b.sortIndex)
+//     subsMenuPromission = { ...subsMenuPromission, ...subsMenu }
+//     const manageMenuItem = files(key).manageMenu
+//     if (manageMenuItem) {
+//         manageMenuItem.forEach(item => {
+//             const findIndex = manageMenu.findIndex(tex => tex.id === item.id)
+//             if (findIndex !== -1) {
+//                 manageMenu[findIndex].children = manageMenu[findIndex].children.concat(item.children).sort((a, b) => a.sortIndex - b.sortIndex)
+//             } else {
+//                 manageMenu.push(item)
+//             }
+//         })
+//     }
+// })
 routeConfig.forEach(item => {
     if (item.id === 'Setting') {
         item.children = item.children.concat(manageMenu).sort((a, b) => a.sortIndex - b.sortIndex)

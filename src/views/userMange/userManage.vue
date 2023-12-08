@@ -53,7 +53,7 @@
                         <bk-option v-for="option in roleList"
                             :key="option.id"
                             :id="option.id"
-                            :name="option.role_name">
+                            :name="option.name">
                         </bk-option>
                     </bk-select>
                 </template>
@@ -106,13 +106,13 @@
     columns = [
         {
             label: '用户名',
-            key: 'bk_username',
+            key: 'username',
             align: 'left',
             minWidth: '150px'
         },
         {
             label: '中文名',
-            key: 'chname',
+            key: 'lastName',
             align: 'left',
             minWidth: '100px'
         },
@@ -166,11 +166,32 @@
        this.roles = Object.values(val).flat()
        this.handlerIconClick()
     }
+    // 删除用户角色
     changeRole(data) {
         setTimeout(() => {
-            this.confirmSetRole(data)
+            // this.confirmSetRole(data)
+            const deleteRolesId = []
+            const arr1 = data.roleV1
+            const arr2 = data.roles
+            for (let i = 0; i < arr1.length; i++) {
+                if (!arr2.includes(arr1[i])) {
+                    deleteRolesId.push(arr1[i])
+                }
+            }
+            const deletePromises = deleteRolesId.map(id => {
+                return this.$api.RoleManageMain.deleteUserRole({id: id, userId: data.id})
+            })
+            this.tableLoading = true
+            Promise.all(deletePromises).then(res => {
+                if (res.result) {
+                    this.getUserList()
+                }
+            }).finally(() => {
+                this.tableLoading = false
+            })
         }, 0)
     }
+
     refreshList() {
         this.getUserList()
     }
@@ -221,27 +242,45 @@
         }
     }
     confirmSetRole(data) {
-        this.tableLoading = true
-        this.$api.UserManageMain.setUserRoles({
-            id: data.id,
-            roles: data.roles
-        }).then(res => {
-            if (!res.result) {
-                this.$error(res.message)
-                this.$set(data, 'roles', data.roleV1)
-                return false
+        const addRolesId = []
+        const arr1 = data.roles
+        const arr2 = data.roleV1
+        for (let i = 0; i < arr1.length; i++) {
+            if (!arr2.includes(arr1[i])) {
+                addRolesId.push(arr1[i])
             }
-            this.$success('设置成功！')
-            this.$set(data, 'roleV1', data.roles)
+        }
+        const addPromises = addRolesId.map(id => {
+            return this.$api.UserManageMain.setUserRoles({id: id, userId: data.id})
+        })
+        this.tableLoading = true
+        Promise.all(addPromises).then(res => {
+            if (res.result) {
+                this.getUserList()
+            }
         }).finally(() => {
             this.tableLoading = false
         })
+        // this.$api.UserManageMain.setUserRoles({
+        //     id: data.id,
+        //     roles: data.roles
+        // }).then(res => {
+        //     if (!res.result) {
+        //         this.$error(res.message)
+        //         this.$set(data, 'roles', data.roleV1)
+        //         return false
+        //     }
+        //     this.$success('设置成功！')
+        //     this.$set(data, 'roleV1', data.roles)
+        // }).finally(() => {
+        //     this.tableLoading = false
+        // })
     }
     getUserList() {
         const params = {
             roles: this.roles,
             page: this.pagination.current,
-            page_size: this.pagination.limit,
+            per_page: this.pagination.limit,
             search: this.search
         }
         this.tableLoading = true
@@ -249,9 +288,12 @@
             if (!res.result) {
                 return false
             }
-            this.dataList = res.data.items
+            this.dataList = res.data.users
             this.dataList.forEach(item => {
-                this.$set(item, 'roleV1', item.roles)
+                // 设置roles
+                const roles = item.roles.map(item => item.id)
+                this.$set(item, 'roles', roles)
+                this.$set(item, 'roleV1', roles)
             })
             this.pagination.count = res.data.count
         }).finally(() => {
@@ -259,16 +301,36 @@
         })
     }
     getRoleList() {
-        this.$api.RoleManageMain.getAllRoleList().then(res => {
+        // this.$api.RoleManageMain.getAllRoleList().then(res => {
+        //     if (!res.result) {
+        //         return false
+        //     }
+        //     this.roleList = res.data
+        //     const target = this.columns.find(item => item.key === 'roles')
+        //     if (target) {
+        //         target.filters = res.data.map(item => {
+        //             return {
+        //                 text: item.role_name,
+        //                 value: item.id
+        //             }
+        //         })
+        //     }
+        // })
+        this.$api.RoleManageMain.getRoleList().then(res => {
             if (!res.result) {
                 return false
             }
-            this.roleList = res.data
+            this.roleList = res.data.map(item => {
+                return {
+                    id: item.id,
+                    name: item.name
+                }
+            })
             const target = this.columns.find(item => item.key === 'roles')
             if (target) {
-                target.filters = res.data.map(item => {
+                target.filters = this.roleList.map(item => {
                     return {
-                        text: item.role_name,
+                        text: item.name,
                         value: item.id
                     }
                 })
