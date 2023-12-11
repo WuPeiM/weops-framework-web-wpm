@@ -39,7 +39,7 @@ export default {
      * @param {Object} params 请求参数
      */
     editRole(params = {}) {
-        return put(`${reUrl}/system/mgmt/role_manage/edit_role/`, params)
+        return put(`${reUrl}/system/mgmt/roles/${params.id}/`, params)
     },
     /**
      * 将一个用户从角色移除
