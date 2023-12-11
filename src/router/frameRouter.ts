@@ -138,37 +138,37 @@ const routeConfig = [
                         url: '/sysRole',
                         auth: [
                             {
-                                key: 'roles_view',
+                                key: 'SysRole_view',
                                 value: false,
                                 label: '查看',
                                 type: 'check'
                             },
                             {
-                                key: 'roles_create',
+                                key: 'SysRole_create',
                                 value: false,
                                 label: '创建角色',
                                 type: 'operate'
                             },
                             {
-                                key: 'roles_edit',
+                                key: 'SysRole_edit',
                                 value: false,
                                 label: '编辑角色',
                                 type: 'operate'
                             },
                             {
-                                key: 'roles_delete',
+                                key: 'SysRole_delete',
                                 value: false,
                                 label: '删除角色',
                                 type: 'operate'
                             },
                             {
-                                key: 'roles_users_manage',
+                                key: 'SysRole_users_manage',
                                 value: false,
                                 label: '人员管理',
                                 type: 'operate'
                             },
                             {
-                                key: 'roles_permissions',
+                                key: 'SysRole_permissions',
                                 value: false,
                                 label: '设置权限',
                                 type: 'operate'
@@ -182,25 +182,25 @@ const routeConfig = [
                         url: '/sysUser',
                         auth: [
                             {
-                                key: 'users_view',
+                                key: 'SysUser_view',
                                 value: false,
                                 label: '查看',
                                 type: 'check'
                             },
                             {
-                                key: 'users_create',
+                                key: 'SysUser_create',
                                 value: false,
                                 label: '创建用户',
                                 type: 'operate'
                             },
                             {
-                                key: 'users_edit',
+                                key: 'SysUser_edit',
                                 value: false,
                                 label: '编辑用户',
                                 type: 'operate'
                             },
                             {
-                                key: 'users_delete',
+                                key: 'SysUser_delete',
                                 value: false,
                                 label: '删除用户',
                                 type: 'operate'
@@ -214,7 +214,7 @@ const routeConfig = [
                         url: '/sysLog',
                         auth: [
                             {
-                                key: 'operation_logs_view',
+                                key: 'SysLog_view',
                                 value: false,
                                 label: '查看',
                                 type: 'check'
@@ -228,31 +228,31 @@ const routeConfig = [
                         url: '/sysSetting',
                         auth: [
                             {
-                                key: 'sys_menus_view',
+                                key: 'SysSetting_menus_view',
                                 value: false,
                                 label: '查看',
                                 type: 'check'
                             },
                             {
-                                key: 'sys_menus_create',
+                                key: 'SysSetting_menus_create',
                                 value: false,
                                 label: '新增菜单',
                                 type: 'operate'
                             },
                             {
-                                key: 'sys_menus_edit',
+                                key: 'SysSetting_menus_edit',
                                 value: false,
                                 label: '编辑菜单',
                                 type: 'operate'
                             },
                             {
-                                key: 'sys_menus_delete',
+                                key: 'SysSetting_menus_delete',
                                 value: false,
                                 label: '删除菜单',
                                 type: 'operate'
                             },
                             {
-                                key: 'sys_logo_change',
+                                key: 'SysSetting_logo_change',
                                 value: false,
                                 label: '更换logo',
                                 type: 'operate'

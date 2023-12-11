@@ -116,16 +116,10 @@
             menuPermission.getLatestMenu()
             // const appPermission: any = this.$refs.appPermission
             // appPermission.getLatestApp()
-            const map = {
-                SysSetting: 'sys',
-                SysLog: 'operation',
-                SysRole: 'roles',
-                SysUser: 'users'
-            }
             const nowIds = []
             // 设置查看权限的id
             this.latestMenu.forEach(item => {
-                const menuPermission = this.permissions[map[item]]
+                const menuPermission = this.permissions[item]
                 console.log('menuPermission', menuPermission, item)
                 if (menuPermission) {
                     for (let i = 0; i < menuPermission.length; i++) {
@@ -139,7 +133,7 @@
             this.latestOperate.forEach(item => {
                 item.operate_ids.forEach(key => {
                     // 在permissions里找到对应的id
-                    const id = this.getIdByName(this.permissions, map[item.menuId], key)
+                    const id = this.getIdByName(this.permissions, item.menuId, key)
                     console.log('找到的id', id)
                     nowIds.push(id)
                 })

@@ -348,87 +348,9 @@
         getRoleMenus() {
             this.menuLoading = true
             this.$emit('getMenuLoading', this.menuLoading)
-            // this.$api.RoleManageMain.getRoleMenus(
-            //     {
-            //         id: this.role.id
-            //     }
-            // ).then(res => {
-            //     if (!res.result) {
-            //         return false
-            //     }
-            //     for (const k in res.data) {
-            //         res.data[k].forEach(item => {
-            //             const target = this.findItemById(k === 'operate_ids' ? item.menuId : item, this.menuList)
-            //             if (target) {
-            //                 if (k === 'operate_ids') {
-            //                     item[k].forEach(tex => {
-            //                         const flag = target.auth.find(nev => nev.key === tex)
-            //                         flag.value = true
-            //                         this.handleOperateChecked(target, flag.type, true)
-            //                     })
-            //                 } else {
-            //                     if (target.children && target.children.length) {
-            //                         return false
-            //                     }
-            //                     const flag = target.auth.find(nev => nev.key === 'checkAuth')
-            //                     flag.value = true
-            //                     this.handleOperateChecked(target, flag.type)
-            //                 }
-            //             }
-            //         })
-            //     }
-            // }).finally(() => {
-            //     this.menuLoading = false
-            //     this.$emit('getMenuLoading', this.menuLoading)
-            // })
             this.$api.RoleManageMain.getRoleMenus({roleId: this.role.id}).then(res => {
                 if (res.result) {
                     this.permissions = res.data.permissions
-                    // const menuIdMap = {
-                    //     sys: 'SysSetting',
-                    //     operation: 'SysLog',
-                    //     roles: 'SysRole',
-                    //     users: 'SysUser'
-                    // }
-                    // // 查看权限的映射, 菜单Id:具体操作名称
-                    // const checkMap = {}
-                    // const menusIds = []
-                    // const operateIds = []
-                    // const resKey = Object.keys(res.data.permissions)
-                    // // 遍历数据返回的key
-                    // resKey.forEach(key => {
-                    //     res.data.permissions[key].forEach(item => {
-                    //         const {name, allow} = item
-                    //         // 查看权限
-                    //         if (name.endsWith('view') && allow) {
-                    //             const menuId = menuIdMap[key]
-                    //             if (menuId) {
-                    //                 !menusIds.includes(menuId) && menusIds.push(menuId)
-                    //             }
-                    //             checkMap[menuId] = name
-                    //         }
-                    //         // 操作权限
-                    //         if (!name.endsWith('view') && allow) {
-                    //             const menuId = menuIdMap[key]
-                    //             if (menuId) {
-                    //                 const findMenuId = operateIds.find(operateIdItem => operateIdItem.menuId === menuId)
-                    //                 // 如果找不到，新增一个
-                    //                 if (!findMenuId) {
-                    //                     operateIds.push({
-                    //                         menuId: menuId,
-                    //                         operate_ids: [item.name]
-                    //                     })
-                    //                 } else {
-                    //                     findMenuId.operate_ids.push(item.name)
-                    //                 }
-                    //             }
-                    //         }
-                    //     })
-                    // })
-                    // const result = {
-                    //     menus_ids: menusIds,
-                    //     operate_ids: operateIds
-                    // }
                     const result = this.changeDataFormat(res.data.permissions)
                     // 计算一开始有权限的id
                     const rawIds = this.getAllowedIds(res.data.permissions)
@@ -463,12 +385,6 @@
         }
         // 将数据转格式
         changeDataFormat(data) {
-            const menuIdMap = {
-                sys: 'SysSetting',
-                operation: 'SysLog',
-                roles: 'SysRole',
-                users: 'SysUser'
-            }
             const menusIds = []
             const operateIds = []
             const resKey = Object.keys(data)
@@ -478,26 +394,20 @@
                     const {name, allow} = item
                     // 查看权限
                     if (name.endsWith('view') && allow) {
-                        const menuId = menuIdMap[key]
-                        if (menuId) {
-                            !menusIds.includes(menuId) && menusIds.push(menuId)
-                        }
-                        this.checkMap[menuId] = name
+                        !menusIds.includes(key) && menusIds.push(key)
+                        this.checkMap[key] = name
                     }
                     // 操作权限
                     if (!name.endsWith('view') && allow) {
-                        const menuId = menuIdMap[key]
-                        if (menuId) {
-                            const findMenuId = operateIds.find(operateIdItem => operateIdItem.menuId === menuId)
-                            // 如果找不到，新增一个
-                            if (!findMenuId) {
-                                operateIds.push({
-                                    menuId: menuId,
-                                    operate_ids: [item.name]
-                                })
-                            } else {
-                                findMenuId.operate_ids.push(item.name)
-                            }
+                        const findMenuId = operateIds.find(operateIdItem => operateIdItem.menuId === key)
+                        // 如果找不到，新增一个
+                        if (!findMenuId) {
+                            operateIds.push({
+                                menuId: key,
+                                operate_ids: [item.name]
+                            })
+                        } else {
+                            findMenuId.operate_ids.push(item.name)
                         }
                     }
                 })
