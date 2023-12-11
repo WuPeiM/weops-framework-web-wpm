@@ -90,17 +90,19 @@
                                     <span>{{nev.name}}</span>
                                 </div>
                                 <div v-if="nev.auth" class="menu-operate">
-                                    <div v-for="(authNev, authNevIndex) in nev.auth" :key="authNevIndex">
-                                        <bk-checkbox
-                                            class="check-box"
-                                            :true-value="true"
-                                            :false-value="false"
-                                            v-model="authNev.value"
-                                            @change="handleOperateChecked(nev, authNev.type)"
-                                        >
-                                        </bk-checkbox>
-                                        <span v-bk-overflow-tips>{{authNev.label}}</span>
-                                    </div>
+                                    <template v-for="(authNev, authNevIndex) in nev.auth">
+                                        <div :key="authNevIndex" v-if="nev.id !== 'SysRole' || (role.name === 'admin' || authNev.key === 'SysRole_users_manage' || authNev.key === 'SysRole_view')">
+                                            <bk-checkbox
+                                                class="check-box"
+                                                :true-value="true"
+                                                :false-value="false"
+                                                v-model="authNev.value"
+                                                @change="handleOperateChecked(nev, authNev.type)"
+                                            >
+                                            </bk-checkbox>
+                                            <span v-bk-overflow-tips>{{authNev.label}}</span>
+                                        </div>
+                                    </template>
                                 </div>
                             </div>
                         </div>
