@@ -23,9 +23,8 @@ const hasCommonFolder = (fileName) => {
 
 function handleMenuList(userInfo) {
     const handleNeedMenuList = handleActivationMenu(userInfo, 'custom')
-    // const userMenus = userInfo.menus
-    // return userInfo.is_super ? handleNeedMenuList : setMenuPurview(handleNeedMenuList, userMenus)
-    return handleNeedMenuList
+    const userMenus = userInfo.menus
+    return userInfo.is_super ? handleNeedMenuList : setMenuPurview(handleNeedMenuList, userMenus)
 }
 
 function handleActivationMenu(userInfo, type) {
