@@ -12,7 +12,10 @@
                     @clear="getMenuList">
                 </bk-input>
                 <bk-button
-                    v-permission="permission"
+                    v-permission="{
+                        id: $route.name,
+                        type: 'SysSetting_menus_create'
+                    }"
                     :theme="'primary'"
                     @click="handleAdd">
                     新建菜单
@@ -38,7 +41,10 @@
                         </bk-button>
                         <bk-button
                             v-else
-                            v-permission="permission"
+                            v-permission="{
+                                id: $route.name,
+                                type: 'SysSetting_menus_edit'
+                            }"
                             text
                             class="mr10"
                             theme="primary"
@@ -47,7 +53,10 @@
                         </bk-button>
                         <bk-button
                             v-if="!row.default"
-                            v-permission="permission"
+                            v-permission="{
+                                id: $route.name,
+                                type: 'SysSetting_menus_edit'
+                            }"
                             text
                             :disabled="row.use"
                             class="mr10"
@@ -56,7 +65,10 @@
                             编辑
                         </bk-button>
                         <bk-button
-                            v-permission="permission"
+                            v-permission="{
+                                id: $route.name,
+                                type: 'SysSetting_menus_delete'
+                            }"
                             text
                             :disabled="row.default || row.use"
                             class="mr10"
@@ -122,12 +134,6 @@
             }
         ]
         maxHeight: string|number = ''
-        get permission() {
-            return {
-                id: this.$route.name,
-                type: 'operateAuth'
-            }
-        }
         created() {
             const PAGE_OCCUPIED_HEIGHT = 310
             this.maxHeight = window.innerHeight - PAGE_OCCUPIED_HEIGHT
@@ -159,7 +165,7 @@
             }
         }
         handleAdd() {
-            if (!this.$BtnPermission(this.permission)) return
+            if (!this.$BtnPermission({id: this.$route.name, type: 'SysSetting_menus_create'})) return
             this.$router.push({
                 name: 'MenuSetting'
             })
@@ -174,7 +180,7 @@
             this.getMenuList()
         }
         async handleChangeSatus(row) {
-            if (!this.$BtnPermission(this.permission)) return
+            if (!this.$BtnPermission({id: this.$route.name, type: 'SysSetting_menus_edit'})) return
             this.$bkInfo({
                 title: `是否启用菜单: ${row.menu_name}`,
                 confirmLoading: true,
@@ -200,7 +206,7 @@
             })
         }
         handleEdit(row) {
-            if (!this.$BtnPermission(this.permission)) return
+            if (!this.$BtnPermission({id: this.$route.name, type: 'SysSetting_menus_edit'})) return
             this.$router.push({
                 name: 'MenuSetting',
                 query: {
@@ -209,7 +215,7 @@
             })
         }
         handleDelete(row) {
-            if (!this.$BtnPermission(this.permission)) return
+            if (!this.$BtnPermission({id: this.$route.name, type: 'SysSetting_menus_delete'})) return
             this.$bkInfo({
                 title: `是否删除菜单: ${row.menu_name}`,
                 confirmLoading: true,
