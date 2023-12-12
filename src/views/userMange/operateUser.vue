@@ -136,7 +136,7 @@
                     }
                     this.$success(`${this.type === 'add' ? '新增' : '编辑'}用户成功!`)
                     this.$emit('refreshList')
-                    this.$store.dispatch('getAllUserList')
+                    // this.$store.dispatch('getAllUserList')
                     this.close()
                 }).finally(() => {
                     this.loading = false

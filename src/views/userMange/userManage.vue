@@ -264,7 +264,7 @@
                 this.pagination.current--
             }
             this.getUserList()
-            this.$store.dispatch('getAllUserList')
+            // this.$store.dispatch('getAllUserList')
         } catch (e) {
             return false
         }
