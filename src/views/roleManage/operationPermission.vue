@@ -313,7 +313,6 @@
                 item.isChecked = item.auth.every(tex => tex.value)
                 item.isIndeterminate = !(item.auth.every(tex => tex.value) || item.auth.every(tex => !tex.value))
             }
-            console.log('item', 'status', 'type', item, status, type)
         }
         handleMenus(data, parentId?) {
             data.forEach(item => {
