@@ -428,3 +428,27 @@ Vue.prototype.$handleKeepAlive = function(to, from) {
         }
     }
 }
+
+Vue.prototype.$convertBytes = function(size, type?) {
+    if (!isExit(size)) {
+        return '--'
+    }
+    // 定义各个单位的换算比例
+    const units = ['B', 'KB', 'MB', 'GB', 'TB']
+    // 计算最大可用单位的索引
+    const maxUnit = units.length - 1
+    // 循环计算并缩小单位，直到单位小于等于最大可用单位
+    for (let i = 0; i < maxUnit; i++) {
+        if (size < 1024 || i === maxUnit - 1) {
+            return size.toFixed(2) + ' ' + (type === 'speed' ? `${units[i]}/ min` : units[i])
+        }
+        size /= 1024
+    }
+}
+
+// 判断一个值是否存在
+function isExit(value) {
+    return value !== undefined && value !== null && value !== '' && !Number.isNaN(value)
+}
+
+Vue.prototype.$isExit = isExit
