@@ -34,9 +34,11 @@ const axiosInstance = axios.create({
  */
 axiosInstance.interceptors.request.use(config => {
     const token = getToken()
+    const loginToken = localStorage.getItem('loginToken')
     config.headers['X-csrfToken'] = token
     config.headers['X-Requested-With'] = 'XMLHttpRequest'
     config.headers['AUTH-APP'] = 'WEOPS'
+    config.headers['Authorization'] = `Bearer ${loginToken}`
     return config
 })
 
@@ -219,6 +221,12 @@ function handleReject(error, config) {
             message = '系统出现异常'
         } else if (status === 403) {
             message = '无权限操作'
+            router.push({
+                path: '/login',
+                query: {
+                    from: router.history.current.name
+                }
+            })
         } else if ([4005, 4003].includes((data && data.code))) {
             // bus.$emit('show-apply-perm-modal', data?.data)
         }

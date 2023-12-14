@@ -6,7 +6,10 @@
         <div class="role-manage-wrapper">
             <div class="operate-box">
                 <bk-button
-                    v-permission="powerParams"
+                    v-permission="{
+                        id: $route.name,
+                        type: 'SysRole_create'
+                    }"
                     theme="primary"
                     title="新增角色"
                     icon="plus"
@@ -42,7 +45,10 @@
                     </template>
                     <template slot="operation" slot-scope="{ row }">
                         <bk-button
-                            v-permission="powerParams"
+                            v-permission="{
+                                id: $route.name,
+                                type: 'SysRole_users_manage'
+                            }"
                             class="mr10"
                             theme="primary"
                             text
@@ -50,29 +56,38 @@
                             人员管理
                         </bk-button>
                         <bk-button
-                            v-permission="powerParams"
+                            v-permission="{
+                                id: $route.name,
+                                type: 'SysRole_permissions'
+                            }"
                             class="mr10"
                             theme="primary"
                             text
-                            :disabled="row.is_super || row.role_name === 'itsm_admin_group'"
+                            :disabled="row.name === 'admin'"
                             @click="setPermission(row)">
                             设置权限
                         </bk-button>
                         <bk-button
-                            v-permission="powerParams"
+                            v-permission="{
+                                id: $route.name,
+                                type: 'SysRole_edit'
+                            }"
                             class="mr10"
                             theme="primary"
                             text
-                            :disabled="row.built_in"
+                            :disabled="row.name === 'normal' || row.name === 'admin'"
                             @click="operateRole('edit', row)">
                             编辑
                         </bk-button>
                         <bk-button
-                            v-permission="powerParams"
+                            v-permission="{
+                                id: $route.name,
+                                type: 'SysRole_delete'
+                            }"
                             class="mr10"
                             theme="primary"
                             text
-                            :disabled="row.built_in"
+                            :disabled="row.name === 'normal' || row.name === 'admin'"
                             @click="deleteRole(row)">
                             删除
                         </bk-button>
@@ -110,22 +125,23 @@
     export default class RoleManage extends Vue {
         tableLoading: boolean = false
         dataList: Array<any> = []
+        allDataList: Array<any> = []
         columns = [
             {
                 label: '角色名称',
-                key: 'role_name',
+                key: 'name',
                 align: 'left',
                 minWidth: '100px'
             },
             {
                 label: '角色描述',
-                key: 'describe',
+                key: 'description',
                 align: 'left',
                 minWidth: '300px'
             },
             {
                 label: '创建时间',
-                key: 'created_at',
+                key: 'created',
                 align: 'left',
                 minWidth: '120'
             },
@@ -144,12 +160,6 @@
         }
         maxHeight: string|number = ''
         search: string = ''
-        get powerParams() {
-            return {
-                id: this.$route.name,
-                type: 'operateAuth'
-            }
-        }
         created() {
             this.getRoleList()
             const PAGE_OCCUPIED_HEIGHT = 276
@@ -160,22 +170,41 @@
         }
         handlerIconClick() {
             this.pagination.current = 1
-            this.getRoleList()
+            this.dataList = this.allDataList.filter(item => item.name.includes(this.search))
+            this.pagination.count = this.dataList.length
         }
-        personnelManage(row) {
+        async personnelManage(row) {
+            if (!this.$BtnPermission({
+                id: this.$route.name,
+                type: 'SysRole_users_manage'
+            })) {
+                return false
+            }
+            const res = await this.$api.RoleManageMain.getRoleAllUser({id: row.id})
+            res.data = res.data.map(item => ({
+                id: item.id,
+                bk_username: item.username,
+                chname: item.lastName
+            }))
             this.$refs.authWhiteList.showSlider({
-                user: row.users
+                user: res.data
             }, row)
         }
         setPermission(row) {
-            if (!this.$BtnPermission(this.powerParams)) {
+            if (!this.$BtnPermission({
+                id: this.$route.name,
+                type: 'SysRole_permissions'
+            })) {
                 return false
             }
             const permissionSettings: any = this.$refs.permissionSettings
             permissionSettings.show(row)
         }
         operateRole(type, data) {
-            if (!this.$BtnPermission(this.powerParams)) {
+            if (!this.$BtnPermission({
+                id: this.$route.name,
+                type: type === 'edit' ? 'SysRole_edit' : 'SysRole_create'
+            })) {
                 return false
             }
             const operateRole: any = this.$refs.operateRole
@@ -185,7 +214,10 @@
             this.getRoleList()
         }
         deleteRole(row) {
-            if (!this.$BtnPermission(this.powerParams)) {
+            if (!this.$BtnPermission({
+                id: this.$route.name,
+                type: 'SysRole_delete'
+            })) {
                 return false
             }
             this.$bkInfo({
@@ -216,30 +248,33 @@
             }
         }
         getRoleList() {
-            const params = {
-                page: this.pagination.current,
-                page_size: this.pagination.limit,
-                search: this.search
-            }
             this.tableLoading = true
-            this.$api.RoleManageMain.getRoleList(params).then(res => {
+            this.$api.RoleManageMain.getRoleList().then(res => {
                 if (!res.result) {
                     return false
                 }
-                this.dataList = res.data.items
-                this.pagination.count = res.data.count
+                this.allDataList = res.data.map(item => {
+                    return {
+                        ...item,
+                        created: item.attributes.created?.[0]
+                    }
+                })
+                const {current, limit} = this.pagination
+                this.dataList = this.allDataList.slice((current - 1) * limit, current * limit)
+                this.pagination.count = res.data.length
             }).finally(() => {
                 this.tableLoading = false
             })
         }
         handlePageChange(val) {
             this.pagination.current = val
-            this.getRoleList()
+            const {limit} = this.pagination
+            this.dataList = this.allDataList.filter(item => item.name.includes(this.search)).slice((val - 1) * limit, val * limit)
         }
         limitChange(val) {
             this.pagination.current = 1
             this.pagination.limit = val
-            this.getRoleList()
+            this.dataList = this.allDataList.filter(item => item.name.includes(this.search)).slice(0, val)
         }
     }
 </script>

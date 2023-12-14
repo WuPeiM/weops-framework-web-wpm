@@ -120,27 +120,11 @@
         }
 
         show() {
+            this.formData.id = this.user.id
+            this.formData.username = this.user.username
+            this.formData.display_name = this.user.chname
+            this.formData.email = this.user.email
             this.isShow = true
-            this.getUser()
-        }
-
-        getUser() {
-            const params = {
-                page: 1,
-                page_size: 10,
-                search: this.user.username
-            }
-            this.$api.UserManageMain.getUserList(params).then(res => {
-                if (!res.result) {
-                    return false
-                }
-                const {id, username, lastName, email} = res.data.users[0]
-                this.formData.id = id
-                this.formData.username = username
-                this.formData.display_name = lastName
-                this.formData.email = email
-                this.rawFormData = {...this.formData}
-            })
         }
 
         updateFormData() {
@@ -166,7 +150,7 @@
             } else {
                 this.$success('修改成功!')
             }
-            await this.getUser()
+            await this.$store.dispatch('GenerateNavLists1')
             this.isInfoLoading = false
         }
 

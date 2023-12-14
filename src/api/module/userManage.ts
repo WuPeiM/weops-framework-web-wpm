@@ -7,7 +7,7 @@ export default {
      * @param {Object} params 请求参数
      */
     getUserList(params = {}) {
-        return get(`${reUrl}/system/mgmt/user_keycloak/get_users/`, params)
+        return get(`${reUrl}/system/mgmt/users/`, params)
     },
     /**
      * 删除用户
@@ -15,7 +15,7 @@ export default {
      * @param {Object} params 请求参数
      */
     deleteUser(params = {}) {
-        return deletes(`${reUrl}/system/mgmt/user_keycloak/delete_users/`, params)
+        return deletes(`${reUrl}/system/mgmt/users/${params.id}/`, {})
     },
     /**
      * 重置用户密码
@@ -23,7 +23,7 @@ export default {
      * @param {Object} params 请求参数
      */
     resetPassword(params = {}) {
-        return put(`${reUrl}/system/mgmt/user_keycloak/reset_password/`, params)
+        return patch(`${reUrl}/system/mgmt/users/${params.id}/`, params)
     },
     /**
      * 新建用户
@@ -31,7 +31,7 @@ export default {
      * @param {Object} params 请求参数
      */
     createUser(params = {}) {
-        return post(`${reUrl}/system/mgmt/user_keycloak/create_user/`, params)
+        return post(`${reUrl}/system/mgmt/users/`, params)
     },
     /**
      * 编辑用户
@@ -39,7 +39,7 @@ export default {
      * @param {Object} params 请求参数
      */
     editUser(params = {}) {
-        return put(`${reUrl}/system/mgmt/user_keycloak/update_user/`, params)
+        return put(`${reUrl}/system/mgmt/users/${params.id}/`, params)
     },
     /**
      * 设置用户角色
@@ -47,7 +47,7 @@ export default {
      * @param {Object} params 请求参数
      */
     setUserRoles(params = {}) {
-        return post(`${reUrl}/system/mgmt/user_manage/set_user_roles/`, params)
+        return put(`${reUrl}/system/mgmt/roles/${params.id}/assign/${params.userId}/`, {})
     },
     /**
      * 双因子认证配置

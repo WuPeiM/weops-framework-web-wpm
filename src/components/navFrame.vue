@@ -212,7 +212,7 @@
         onLeftNavListChanged(val) {
             // 判断用户不是超管组内的人员，则不展示系统管理的界面[角色管理，用户管理，通知渠道，服务台管理]
             if (!this.user.is_super) {
-                const ONLY_ADMIN_HAS_MENUS = ['ServiceDeskManage', 'AutoProcessManage', 'SysRole', 'SysUser', 'NoticeWays']
+                const ONLY_ADMIN_HAS_MENUS = ['ServiceDeskManage', 'AutoProcessManage', 'NoticeWays']
                 removeItemsWithId(val, ONLY_ADMIN_HAS_MENUS)
             }
         }
@@ -276,7 +276,8 @@
                 confirmLoading: true,
                 confirmFn: () => {
                     sessionStorage.clear()
-                    document.cookie = 'bk_token=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/;'
+                    document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/;'
+                    this.$store.commit('setLoginStatus')
                     this.$router.replace({
                         path: '/login'
                     })

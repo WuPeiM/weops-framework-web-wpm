@@ -1,5 +1,5 @@
 // 角色管理模块
-import {get, deletes, post, put, reUrl} from '@/api/axiosconfig/axiosconfig'
+import {get, deletes, post, put, patch, reUrl} from '@/api/axiosconfig/axiosconfig'
 export default {
     /**
      * 获取角色列表数据
@@ -7,7 +7,7 @@ export default {
      * @param {Object} params 请求参数
      */
     getRoleList(params = {}) {
-        return get(`${reUrl}/system/mgmt/role_manage/get_roles/`, params)
+        return get(`${reUrl}/system/mgmt/roles/`, params)
     },
     /**
      * 获取全部角色列表数据
@@ -23,7 +23,7 @@ export default {
      * @param {Object} params 请求参数
      */
     deleteRole(params = {}) {
-        return deletes(`${reUrl}/system/mgmt/role_manage/delete_role/`, params)
+        return deletes(`${reUrl}/system/mgmt/roles/${params.id}/`, {})
     },
     /**
      * 新增角色
@@ -31,7 +31,7 @@ export default {
      * @param {Object} params 请求参数
      */
     createRole(params = {}) {
-        return post(`${reUrl}/system/mgmt/role_manage/create_role/`, params)
+        return post(`${reUrl}/system/mgmt/roles/`, params)
     },
     /**
      * 编辑角色
@@ -39,7 +39,23 @@ export default {
      * @param {Object} params 请求参数
      */
     editRole(params = {}) {
-        return put(`${reUrl}/system/mgmt/role_manage/edit_role/`, params)
+        return put(`${reUrl}/system/mgmt/roles/${params.id}/`, params)
+    },
+    /**
+     * 将一个用户从角色移除
+     *
+     * @param {Object} params 请求参数
+     */
+    deleteUserRole(params = {}) {
+        return deletes(`${reUrl}/system/mgmt/roles/${params.id}/withdraw/${params.userId}/`, {})
+    },
+    /**
+     * 获取该角色下的所有用户
+     *
+     * @param {Object} params 请求参数
+     */
+    getRoleAllUser(params = {}) {
+        return get(`${reUrl}/system/mgmt/users/roles/${params.id}/`, {})
     },
     /**
      * 设置角色菜单权限
@@ -47,7 +63,7 @@ export default {
      * @param {Object} params 请求参数
      */
     setRoleMenu(params = {}) {
-        return post(`${reUrl}/system/mgmt/role_manage/set_role_menus/`, params)
+        return patch(`${reUrl}/system/mgmt/roles/${params.id}/permissions/`, params.array)
     },
     /**
      * 设置角色应用权限
@@ -63,7 +79,7 @@ export default {
      * @param {Object} params 请求参数
      */
     getRoleMenus(params = {}) {
-        return get(`${reUrl}/system/mgmt/role_manage/get_role_menus/`, params)
+        return get(`${reUrl}/system/mgmt/roles/${params.roleId}/`, {})
     },
     /**
      * 获取角色应用

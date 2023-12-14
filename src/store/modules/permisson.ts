@@ -153,6 +153,12 @@ const mutations = {
     },
     setCustomMenuStatus(state) {
         state.updateCustomMenu = !state.updateCustomMenu
+    },
+    setLoginStatus(state) {
+        state.user = {}
+        state.ticketCount = 0
+        state.menuList = []
+        state.activationMenu = []
     }
 }
 
@@ -203,29 +209,29 @@ const actions = {
         })
         return promise
     },
-    async getAllUserList({commit}) {
-        const promise = new Promise((resolve, reject) => {
-            api.Server.getBkUsers({
-                page_size: -1
-            }).then(res => {
-                if (res.result) {
-                    const userData = res.data.items.filter(item => item.bk_username).map(item => {
-                        return {
-                            key: item.bk_username,
-                            display: item.bk_username,
-                            chname: item.chname,
-                            displayKey: `${item.chname}(${item.bk_username})`
-                        }
-                    })
-                    sessionStorage.setItem('allUserData', JSON.stringify(userData))
-                    resolve(res.data)
-                } else {
-                    reject(res.message)
-                }
-            })
-        })
-        return promise
-    },
+    // async getAllUserList({commit}) {
+    //     const promise = new Promise((resolve, reject) => {
+    //         api.Server.getBkUsers({
+    //             page_size: -1
+    //         }).then(res => {
+    //             if (res.result) {
+    //                 const userData = res.data.items.filter(item => item.bk_username).map(item => {
+    //                     return {
+    //                         key: item.bk_username,
+    //                         display: item.bk_username,
+    //                         chname: item.chname,
+    //                         displayKey: `${item.chname}(${item.bk_username})`
+    //                     }
+    //                 })
+    //                 sessionStorage.setItem('allUserData', JSON.stringify(userData))
+    //                 resolve(res.data)
+    //             } else {
+    //                 reject(res.message)
+    //             }
+    //         })
+    //     })
+    //     return promise
+    // },
     updateMenuList({commit}, userInfo) {
         commit('setMenuList', handleMenuList(userInfo))
     }

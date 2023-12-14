@@ -14,8 +14,8 @@
                 <bk-form-item label="用户名" :required="true" :property="'username'" error-display-type="normal">
                     <bk-input :disabled="type === 'edit'" v-model="formData.username" placeholder="请输入用户名"></bk-input>
                 </bk-form-item>
-                <bk-form-item label="中文名" :property="'display_name'" error-display-type="normal">
-                    <bk-input v-model="formData.display_name" placeholder="请输入中文名"></bk-input>
+                <bk-form-item label="中文名" :required="true" :property="'lastName'" error-display-type="normal">
+                    <bk-input v-model="formData.lastName" placeholder="请输入中文名"></bk-input>
                 </bk-form-item>
                 <bk-form-item label="邮箱" :property="'email'" error-display-type="normal">
                     <bk-input v-model="formData.email" placeholder="请输入邮箱"></bk-input>
@@ -52,7 +52,7 @@
         type: string = ''
         formData = {
             username: '',
-            display_name: '',
+            lastName: '',
             email: '',
             password: '',
             confirmPassword: ''
@@ -65,9 +65,10 @@
                     trigger: 'blur'
                 }
             ],
-            display_name: [
+            lastName: [
                 {
-                    regex: /^[\u4e00-\u9fa5]+$/,
+                    required: true,
+                    regex: /^$|^[\u4e00-\u9fa5]+$/,
                     message: '必须是中文',
                     trigger: 'blur'
                 }
@@ -101,7 +102,7 @@
             if (this.type === 'edit') {
                 this.userInfo = data
                 this.formData.username = data.username
-                this.formData.display_name = data.lastName
+                this.formData.lastName = data.lastName
                 this.formData.email = data.email
             }
         }
@@ -114,15 +115,16 @@
                 let url = 'createUser'
                 let params: any = {
                     username: this.formData.username,
-                    lastName: this.formData.display_name,
+                    lastName: this.formData.lastName,
                     email: this.formData.email,
                     password: this.formData.password
                 }
+                if (this.formData.email) params.email = this.formData.email
                 if (this.type !== 'add') {
                     url = 'editUser'
                     params = {
                         id: this.userInfo.id,
-                        lastName: this.formData.display_name,
+                        lastName: this.formData.lastName,
                         email: this.formData.email
                     }
                 }
@@ -134,7 +136,7 @@
                     }
                     this.$success(`${this.type === 'add' ? '新增' : '编辑'}用户成功!`)
                     this.$emit('refreshList')
-                    this.$store.dispatch('getAllUserList')
+                    // this.$store.dispatch('getAllUserList')
                     this.close()
                 }).finally(() => {
                     this.loading = false

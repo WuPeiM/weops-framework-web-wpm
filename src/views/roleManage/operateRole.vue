@@ -12,7 +12,7 @@
         <div class="content-box" v-bkloading="{ isLoading: loading, zIndex: 10 }">
             <bk-form :label-width="90" :model="formData" :rules="rules" ref="roleValidateForm">
                 <bk-form-item label="角色名称" :required="true" :property="'role_name'">
-                    <bk-input v-model="formData.role_name" placeholder="请输入角色名称"></bk-input>
+                    <bk-input v-model="formData.role_name" placeholder="请输入角色名称" :disabled="type === 'edit'"></bk-input>
                 </bk-form-item>
                 <bk-form-item label="角色描述">
                     <bk-input v-model="formData.describe" placeholder="请输入角色描述" type="textarea"></bk-input>
@@ -68,8 +68,8 @@
             this.formData.describe = ''
             if (['edit', 'copy'].includes(this.type)) {
                 this.roleInfo = data
-                this.formData.role_name = data.role_name
-                this.formData.describe = data.describe
+                this.formData.role_name = data.name
+                this.formData.describe = data.description
                 if (this.type === 'edit') {
                     this.formData.id = data.id
                 }
@@ -86,11 +86,12 @@
                 if (['add', 'copy'].includes(this.type)) {
                     url = 'createRole'
                     params.role_name = this.formData.role_name
-                    params.describe = this.formData.describe
+                    params.description = this.formData.describe
                 } else {
                     url = 'editRole'
                     params = {
-                        ...this.formData
+                        id: this.formData.id,
+                        description: this.formData.describe
                     }
                 }
                 this.loading = true

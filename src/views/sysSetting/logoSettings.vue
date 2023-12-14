@@ -57,7 +57,7 @@
         get powerParams() {
             return {
                 id: this.$route.name,
-                type: 'operateAuth'
+                type: 'SysSetting_logo_change'
             }
         }
         created() {

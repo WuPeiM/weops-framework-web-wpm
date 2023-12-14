@@ -13,6 +13,7 @@ import UserMock from './module/mock/userMock/index'
 let api: any = {
     Server,
     User,
+    UserMock,
     UserManageMain,
     RoleManageMain,
     MonitorCollectMain,

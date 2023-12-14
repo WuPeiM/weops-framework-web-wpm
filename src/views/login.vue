@@ -51,7 +51,8 @@
             this.$api.User.login(this.formData).then(res => {
                 if (res.result) {
                     const token = res.data.token
-                    document.cookie = `bk_token=${token}`
+                    document.cookie = `token=${token}`
+                    localStorage.setItem('loginToken', token)
                     const goto = this.$route.query.from
                     if (goto) {
                         this.$router.push({name: goto})
@@ -59,11 +60,14 @@
                         this.$router.push('/')
                     }
                 } else {
-                    this.errorTip = res.message
+                    this.errorTip = '账号或密码不正确'
                 }
             }).finally(() => {
                 this.isLoading = false
             })
+        }
+        mounted() {
+            this.$bus.$emit('setAppLoading', false)
         }
     }
 </script>

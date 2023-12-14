@@ -8,6 +8,10 @@
                     title="新增用户"
                     icon="plus"
                     class="mr10"
+                    v-permission="{
+                        id: $route.name,
+                        type: 'SysUser_create'
+                    }"
                     @click="operateUser('add')">
                     新增用户
                 </bk-button>
@@ -53,7 +57,7 @@
                         <bk-option v-for="option in roleList"
                             :key="option.id"
                             :id="option.id"
-                            :name="option.role_name">
+                            :name="option.name">
                         </bk-option>
                     </bk-select>
                 </template>
@@ -62,6 +66,10 @@
                         class="mr10"
                         theme="primary"
                         text
+                        v-permission="{
+                            id: $route.name,
+                            type: 'SysUser_edit'
+                        }"
                         @click="operateUser('edit', row)">
                         编辑
                     </bk-button>
@@ -69,6 +77,10 @@
                         class="mr10"
                         theme="primary"
                         text
+                        v-permission="{
+                            id: $route.name,
+                            type: 'SysUser_delete'
+                        }"
                         @click="deleteUser(row)">
                         删除
                     </bk-button>
@@ -76,6 +88,10 @@
                         class="mr10"
                         theme="primary"
                         text
+                        v-permission="{
+                            id: $route.name,
+                            type: 'SysUser_edit'
+                        }"
                         @click="resetPassword(row)">
                         重置密码
                     </bk-button>
@@ -166,11 +182,32 @@
        this.roles = Object.values(val).flat()
        this.handlerIconClick()
     }
+    // 删除用户角色
     changeRole(data) {
         setTimeout(() => {
-            this.confirmSetRole(data)
+            // this.confirmSetRole(data)
+            const deleteRolesId = []
+            const arr1 = data.roleV1
+            const arr2 = data.roles
+            for (let i = 0; i < arr1.length; i++) {
+                if (!arr2.includes(arr1[i])) {
+                    deleteRolesId.push(arr1[i])
+                }
+            }
+            const deletePromises = deleteRolesId.map(id => {
+                return this.$api.RoleManageMain.deleteUserRole({id: id, userId: data.id})
+            })
+            this.tableLoading = true
+            Promise.all(deletePromises).then(res => {
+                if (res.every(item => item.result)) {
+                    this.getUserList()
+                }
+            }).finally(() => {
+                this.tableLoading = false
+            })
         }, 0)
     }
+
     refreshList() {
         this.getUserList()
     }
@@ -179,14 +216,32 @@
         this.getUserList()
     }
     operateUser(type, data) {
+        if (!this.$BtnPermission({
+            id: this.$route.name,
+            type: type === 'edit' ? 'SysUser_edit' : 'SysUser_create'
+        })) {
+            return false
+        }
         const operateUser: any = this.$refs.operateUser
         operateUser.show(type, data)
     }
     resetPassword(row) {
+        if (!this.$BtnPermission({
+            id: this.$route.name,
+            type: 'SysRole_edit'
+        })) {
+            return false
+        }
         const resetPassword: any = this.$refs.resetPassword
         resetPassword.show(row)
     }
     deleteUser(row) {
+        if (!this.$BtnPermission({
+            id: this.$route.name,
+            type: 'SysUser_delete'
+        })) {
+            return false
+        }
         this.$bkInfo({
             title: '确认要删除该用户？',
             confirmLoading: true,
@@ -198,7 +253,8 @@
     async confirmDelete(row) {
         try {
             const res = await this.$api.UserManageMain.deleteUser({
-                id: row.id
+                id: row.id,
+                bk_user_id: row.bk_user_id
             })
             if (!res.result) {
                 return this.$error(res.message)
@@ -208,7 +264,7 @@
                 this.pagination.current--
             }
             this.getUserList()
-            this.$store.dispatch('getAllUserList')
+            // this.$store.dispatch('getAllUserList')
         } catch (e) {
             return false
         }
@@ -220,25 +276,29 @@
         }
     }
     confirmSetRole(data) {
+        // 要添加的角色
+        const addRolesId = this.compareArrays(data.roles, data.roleV1)
+        // 要删除的角色
+        const deleteRolesId = this.compareArrays(data.roleV1, data.roles)
+        const addPromises = addRolesId.map(id => {
+            return this.$api.UserManageMain.setUserRoles({id: id, userId: data.id})
+        })
+        const deletePromise = deleteRolesId.map(id => {
+            return this.$api.RoleManageMain.deleteUserRole({id: id, userId: data.id})
+        })
         this.tableLoading = true
-        this.$api.UserManageMain.setUserRoles({
-            id: data.id,
-            roles: data.roles
-        }).then(res => {
-            if (!res.result) {
-                this.$error(res.message)
-                this.$set(data, 'roles', data.roleV1)
-                return false
+        Promise.all([...addPromises, ...deletePromise]).then(res => {
+            if (res.every(item => item.result)) {
+                this.$success('设置成功！')
+                this.getUserList()
             }
-            this.$success('设置成功！')
-            this.$set(data, 'roleV1', data.roles)
         }).finally(() => {
             this.tableLoading = false
         })
     }
     getUserList() {
         const params = {
-            // roles: this.roles
+            roles: this.roles,
             page: this.pagination.current,
             per_page: this.pagination.limit,
             search: this.search
@@ -249,22 +309,33 @@
                 return false
             }
             this.dataList = res.data.users
+            this.dataList.forEach(item => {
+                // 设置roles
+                const roles = item.roles.map(item => item.id)
+                this.$set(item, 'roles', roles)
+                this.$set(item, 'roleV1', roles)
+            })
             this.pagination.count = res.data.count
         }).finally(() => {
             this.tableLoading = false
         })
     }
     getRoleList() {
-        this.$api.RoleManageMain.getAllRoleList().then(res => {
+        this.$api.RoleManageMain.getRoleList().then(res => {
             if (!res.result) {
                 return false
             }
-            this.roleList = res.data
+            this.roleList = res.data.map(item => {
+                return {
+                    id: item.id,
+                    name: item.name
+                }
+            })
             const target = this.columns.find(item => item.key === 'roles')
             if (target) {
-                target.filters = res.data.map(item => {
+                target.filters = this.roleList.map(item => {
                     return {
-                        text: item.role_name,
+                        text: item.name,
                         value: item.id
                     }
                 })
@@ -279,6 +350,11 @@
         this.pagination.current = 1
         this.pagination.limit = val
         this.getUserList()
+    }
+    // 传入两个数组，返回第一个数组比第二个数组多的项
+    compareArrays(arrayA, arrayB) {
+        const valuesOnlyInA = arrayA.filter(item => !arrayB.includes(item))
+        return valuesOnlyInA
     }
 }
 </script>
