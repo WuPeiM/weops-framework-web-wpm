@@ -54,7 +54,7 @@
                     document.cookie = `token=${token}`
                     localStorage.setItem('loginToken', token)
                     const goto = this.$route.query.from
-                    if (goto) {
+                    if (goto && goto !== 'Login') {
                         this.$router.push({name: goto})
                     } else {
                         this.$router.push('/')
