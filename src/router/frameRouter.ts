@@ -10,6 +10,7 @@ const SysSetting = () => import('@/views/sysSetting/index.vue')
 const SysLog = () => import('@/views/logManage/index.vue')
 const MenuSetting = () => import('@/views/sysSetting/menuSetting.vue')
 const Login = () => import('@/views/login.vue')
+const SysOrganization = () => import('@/views/organizationManage/index.vue')
 
 let mainRouter = [
     {
@@ -87,6 +88,14 @@ let mainRouter = [
         component: SysLog,
         meta: {
             title: '操作日志'
+        }
+    },
+    {
+        path: '/sysOrganization',
+        name: 'SysOrganization',
+        component: SysOrganization,
+        meta: {
+            title: '组织管理'
         }
     }
 ]
@@ -203,6 +212,38 @@ const routeConfig = [
                                 key: 'SysUser_delete',
                                 value: false,
                                 label: '删除用户',
+                                type: 'operate'
+                            }
+                        ]
+                    },
+                    {
+                        name: '组织管理',
+                        id: 'SysOrganization',
+                        icon: 'cw-icon weops-user',
+                        url: '/sysOrganization',
+                        auth: [
+                            {
+                                key: 'SysOrganization_view',
+                                value: false,
+                                label: '查看',
+                                type: 'check'
+                            },
+                            {
+                                key: 'SysOrganization_create',
+                                value: false,
+                                label: '创建组织',
+                                type: 'operate'
+                            },
+                            {
+                                key: 'SysOrganization_edit',
+                                value: false,
+                                label: '编辑组织',
+                                type: 'operate'
+                            },
+                            {
+                                key: 'SysOrganization_delete',
+                                value: false,
+                                label: '删除组织',
                                 type: 'operate'
                             }
                         ]

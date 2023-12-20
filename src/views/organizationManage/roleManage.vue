@@ -13,13 +13,13 @@
             <div class="auth-white-list">
                 <div class="list-container">
                     <div class="header">
-                        <menu-tab
+                        <!-- <menu-tab
                             v-if="!onlyChooseUser"
                             :panels="panels"
                             v-model="active"
                             type="capsule"
                             @change="changeMenu">
-                        </menu-tab>
+                        </menu-tab> -->
                         <bk-input
                             clearable
                             style="width: 300px;"
@@ -37,7 +37,7 @@
                         :data="dataList"
                         :pagination="pagination"
                         v-bkloading="{ isLoading: loading, zIndex: 10 }"
-                        :columns="onlyChooseUser ? userColumns : groupColumns"
+                        :columns="roleColumns"
                         @select="handleSelect"
                         @select-all="handleAllSelect"
                         @page-change="handlePageChange"
@@ -48,7 +48,7 @@
                     <p>已选择（共<span>{{allSelected.length}}</span>条）<span class="clear" @click="handleClear">清空</span></p>
                     <ul>
                         <li v-for="item in allSelected" :key="item.id + item.type">
-                            {{ item.type === 'role' ? item.role_name : `${item.chname}(${item.bk_username})` }}
+                            {{ item.type === 'role' ? item.name : `${item.chname}(${item.bk_username})` }}
                             <span>{{ item.type === 'role' ? '角色' : '用户' }}</span>
                             <bk-icon type="close" @click="handleRemove(item)" />
                         </li>
@@ -90,38 +90,38 @@
         }
     })
     export default class RoleManage extends Vue {
-        @Prop({
-            type: Boolean,
-            default: () => false
-        })
-        isMyCredentials: boolean
+        // @Prop({
+        //     type: Boolean,
+        //     default: () => false
+        // })
+        // isMyCredentials: boolean
         @Prop({
             type: String,
             default: () => '白名单'
         })
         title: string
         // 只进行人员选择
-        @Prop({
-            type: Boolean,
-            default: () => false
-        })
-        onlyChooseUser: boolean
+        // @Prop({
+        //     type: Boolean,
+        //     default: () => false
+        // })
+        // onlyChooseUser: boolean
         visible: boolean = false
         loading: boolean = false
         isConfirm: boolean = false
-        panels: Array<{
-            label: string,
-            name: string
-        }> = [
-            {
-                label: '角色',
-                name: 'role'
-            },
-            {
-                label: '用户',
-                name: 'user'
-            }
-        ]
+        // panels: Array<{
+        //     label: string,
+        //     name: string
+        // }> = [
+        //     {
+        //         label: '角色',
+        //         name: 'role'
+        //     },
+        //     {
+        //         label: '用户',
+        //         name: 'user'
+        //     }
+        // ]
         active: string = 'role'
         pagination: Pagination = {
             current: 1,
@@ -129,59 +129,60 @@
             limit: 20,
             small: true
         }
-        groupColumns: Array<TableData> = [
-            {
-                type: 'selection'
-            },
-            {
-                label: '角色名称',
-                key: 'role_name'
-            },
-            {
-                label: '用户数',
-                key: 'user_count'
-            }
-        ]
-        userColumns: Array<TableData> = [
-            {
-                type: 'selection',
-                selectable: (row) => {
-                    if (this.onlyChooseUser && row.bk_username === 'admin') {
-                        return !row.isChecked
-                    }
-                    return true
-                }
-            },
-            {
-                label: '中文名',
-                key: 'chname'
-            },
-            {
-                label: '用户名',
-                key: 'bk_username'
-            }
-        ]
-        // 角色管理
-        // roleColumns: Array<TableData> = [
+        // groupColumns: Array<TableData> = [
         //     {
         //         type: 'selection'
-        //         // selectable: (row) => {
-        //         //     if (!this.onlyChooseUser && row.bk_username === 'admin') {
-        //         //         return !row.isChecked
-        //         //     }
-        //         //     return true
-        //         // }
         //     },
         //     {
         //         label: '角色名称',
-        //         key: 'name'
+        //         key: 'role_name'
         //     },
         //     {
-        //         label: '角色描述',
-        //         key: 'description'
+        //         label: '用户数',
+        //         key: 'user_count'
         //     }
         // ]
+        // userColumns: Array<TableData> = [
+        //     {
+        //         type: 'selection',
+        //         selectable: (row) => {
+        //             if (this.onlyChooseUser && row.bk_username === 'admin') {
+        //                 return !row.isChecked
+        //             }
+        //             return true
+        //         }
+        //     },
+        //     {
+        //         label: '中文名',
+        //         key: 'chname'
+        //     },
+        //     {
+        //         label: '用户名',
+        //         key: 'bk_username'
+        //     }
+        // ]
+        // 角色管理
+        roleColumns: Array<TableData> = [
+            {
+                type: 'selection'
+                // selectable: (row) => {
+                //     if (!this.onlyChooseUser && row.bk_username === 'admin') {
+                //         return !row.isChecked
+                //     }
+                //     return true
+                // }
+            },
+            {
+                label: '角色名称',
+                key: 'name'
+            },
+            {
+                label: '角色描述',
+                key: 'description'
+            }
+        ]
         searchValue: string = ''
+        rawDataList: any = []
         dataList: any = []
         selectedData:any = {}
         allSelected:any = []
@@ -194,24 +195,26 @@
         async showSlider(list, row?) {
             this.visible = true
             this.searchValue = ''
-            if (this.onlyChooseUser) {
-                this.roleDetail = row
-            }
+            // if (this.onlyChooseUser) {
+            //     this.roleDetail = row
+            // }
             const originList = {
                 role: [],
                 user: []
             }
-            if (this.isMyCredentials) {
-                this.credentialsDetail = row
-                const { result, data } = await this.$api.remoteConnect.getCredDetail({id: row.id})
-                if (result) {
-                    originList.role = data.role
-                    originList.user = data.user
-                }
-            }
-            this.selectedData = this.$deepClone(this.isMyCredentials ? originList : (list || originList))
+            // if (this.isMyCredentials) {
+            //     this.credentialsDetail = row
+            //     const { result, data } = await this.$api.remoteConnect.getCredDetail({id: row.id})
+            //     if (result) {
+            //         originList.role = data.role
+            //         originList.user = data.user
+            //     }
+            // }
+            // this.selectedData = this.$deepClone(this.isMyCredentials ? originList : (list || originList))
+            this.selectedData = this.$deepClone((list || originList))
             this.handleAllSelected()
-            this.changeMenu(this.onlyChooseUser ? 'user' : 'role')
+            // this.changeMenu(this.onlyChooseUser ? 'user' : 'role')
+            this.getDataList()
         }
 
         handleAllSelected() {
@@ -221,12 +224,12 @@
             })
         }
 
-        changeMenu(active) {
-            this.active = active
-            this.pagination.current = 1
-            this.$refs.userTable?.updateColumns(this.isGroup ? this.groupColumns : this.userColumns)
-            this.getDataList()
-        }
+        // changeMenu(active) {
+        //     this.active = active
+        //     this.pagination.current = 1
+        //     this.$refs.userTable?.updateColumns(this.roleColumns)
+        //     this.getDataList()
+        // }
 
         async getDataList() {
             const params = {
@@ -236,27 +239,38 @@
             }
             this.loading = true
             try {
-                const res = this.isGroup
-                    ? await this.$api.userManage.searchRoleList(params)
-                    : await this.$api.userManage.searchUserList(params)
+                // const res = this.isGroup
+                //     ? await this.$api.userManage.searchRoleList(params)
+                //     : await this.$api.userManage.searchUserList(params)
+                const res = await this.$api.RoleManageMain.getRoleList(params)
+                res.data.items = res.data.map(item => ({id: item.id, name: item.name, description: item.description}))
                 if (!res.result) {
-                    this.dataList = []
+                    this.rawDataList = []
+                    // this.dataList = []
                     this.pagination.count = 0
                     return this.$error(res.message)
                 }
                 const selectMap = Object.fromEntries((this.selectedData[this.active] || []).map(r => [r.id, r]))
+                console.log('selectMap', selectMap)
                 const isAdminGroup = this.roleDetail?.role_name === 'admin_group'
-                this.dataList = (res.data?.items || []).map(item => ({
+                this.rawDataList = (res.data?.items || []).map(item => ({
                     ...item,
                     isChecked: isAdminGroup ? selectMap[item.id] : true
                 }))
-                this.pagination.count = res.data.count
+                console.log('this.rawDataList', this.rawDataList)
+                this.pagination.count = res.data.length
                 this.$nextTick(() => {
-                    this.dataList.forEach(item => {
+                    this.rawDataList.forEach(item => {
                         if (selectMap[item.id]) {
                             this.$refs.userTable?.toggleRowSelection(item, true)
                         }
                     })
+                    const {current, limit} = this.pagination
+                    // 搜索的关键字
+                    this.dataList = this.rawDataList.filter(item => item.name.includes(this.searchValue))
+                    // 分页
+                    this.dataList = this.dataList.slice((current - 1) * limit, current * limit)
+                    console.log('tis.', this.rawDataList)
                 })
             } finally {
                 this.loading = false
@@ -264,14 +278,17 @@
         }
 
         handleConfirm() {
-            if (this.isMyCredentials) {
-                this.imPower()
-            } else if (this.onlyChooseUser) {
-                this.setUsersByRole()
-            } else {
-                this.visible = false
-                this.$emit('confirm', this.selectedData)
-            }
+            // if (this.isMyCredentials) {
+            //     this.imPower()
+            // } else if (this.onlyChooseUser) {
+            //     this.setUsersByRole()
+            // } else {
+            //     this.visible = false
+            //     this.$emit('confirm', this.selectedData)
+            // }
+            this.visible = false
+            console.log('选中的', this.selectedData)
+            this.$emit('confirm', this.selectedData)
         }
         async setUsersByRole() {
             this.isConfirm = true
@@ -292,26 +309,26 @@
                 this.isConfirm = false
             }
         }
-        imPower() {
-            this.isConfirm = true
-            this.$api.remoteConnect.setCredAuthList({
-                id: this.credentialsDetail.id,
-                body: {
-                    user_list: this.selectedData.user.map(item => item.bk_username),
-                    role_list: this.selectedData.role.map(item => item.id)
-                }
-            }).then(res => {
-                const { result, message } = res
-                if (!result) {
-                    this.$error(message)
-                    return false
-                }
-                this.$success('授权成功')
-                this.handleClose()
-            }).finally(() => {
-                this.isConfirm = false
-            })
-        }
+        // imPower() {
+        //     this.isConfirm = true
+        //     this.$api.remoteConnect.setCredAuthList({
+        //         id: this.credentialsDetail.id,
+        //         body: {
+        //             user_list: this.selectedData.user.map(item => item.bk_username),
+        //             role_list: this.selectedData.role.map(item => item.id)
+        //         }
+        //     }).then(res => {
+        //         const { result, message } = res
+        //         if (!result) {
+        //             this.$error(message)
+        //             return false
+        //         }
+        //         this.$success('授权成功')
+        //         this.handleClose()
+        //     }).finally(() => {
+        //         this.isConfirm = false
+        //     })
+        // }
 
         handleClose() {
             this.visible = false
@@ -344,17 +361,23 @@
 
         handlePageChange(page) {
             this.pagination.current = page
-            this.getDataList()
+            // this.getDataList()
+            const {limit} = this.pagination
+            // this.dataList = this.rawDataList.filter(item => item.name.includes(this.searchValue)).slice((page - 1) * limit, page * limit)
+            this.dataList = this.dataList.slice((page - 1) * limit, page * limit)
         }
 
         handleLimitChange(size) {
             this.pagination.current = 1
             this.pagination.limit = size
-            this.getDataList()
+            // this.dataList = this.rawDataList.filter(item => item.name.includes(this.searchValue)).slice(0, size)
+            this.dataList = this.rawDataList.slice(0, size)
+            // this.getDataList()
         }
 
         handleSearch() {
             this.pagination.current = 1
+            // this.dataList = this.rawDataList.filter(item => item.name.includes(this.searchValue))
             this.getDataList()
         }
 
@@ -369,6 +392,11 @@
                         this.$refs.userTable?.toggleRowSelection(item, false)
                     }
                 })
+                // this.rawDataList.forEach(item => {
+                //     if (item.id === row.id) {
+                //         this.$refs.userTable?.toggleRowSelection(item, false)
+                //     }
+                // })
             })
             // 移除用户或角色后，更新map数据
             const selectedIndex = this.selectedData[row.type].findIndex(r => r.id === row.id)
@@ -381,6 +409,12 @@
                 user: []
             }
             this.handleAllSelected()
+            this.$nextTick(() => {
+                this.dataList.forEach(item => {
+                    // const isAdmin = this.initChooseAdmin && item?.bk_username === 'admin'
+                    this.$refs.userTable?.toggleRowSelection(item, false)
+                })
+            })
         }
     }
 </script>
