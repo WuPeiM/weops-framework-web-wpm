@@ -1,5 +1,5 @@
 // 用户管理模块
-import {get, deletes, patch, post, put, reUrl} from '@/api/axiosconfig/axiosconfig'
+import {get, deletes, patch, post, put, reUrl, deleteb} from '@/api/axiosconfig/axiosconfig'
 export default {
     /**
      * 获取用户列表数据
@@ -167,5 +167,21 @@ export default {
      */
     updateUserStatus(params: any = {}) {
         return patch(`${reUrl}/system/mgmt/user_manage/${params.id}/update_user_status/`, params.body)
+    },
+    /**
+     * 将一系列组添加到用户
+     *
+     * @param {Object} params 请求参数
+     */
+    addUserGroups(params: any = {}) {
+        return patch(`${reUrl}/system/mgmt/users/${params.id}/assign_groups/`, params.addIds)
+    },
+    /**
+     * 将一系列组从该用户移除
+     *
+     * @param {Object} params 请求参数
+     */
+    delUserGroups(params: any = {}) {
+        return deleteb(`${reUrl}/system/mgmt/users/${params.id}/unassign_groups/`, params.deleteIds)
     }
 }

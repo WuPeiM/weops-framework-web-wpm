@@ -48,7 +48,7 @@
                         display-tag
                         :clearable="false"
                         :disabled="row.bk_username === 'admin'"
-                        v-model="row.roles"
+                        v-model="row.allRoles"
                         :search-with-pinyin="true"
                         @toggle="setUserRole(row)"
                         @tab-remove="changeRole(row)"
@@ -61,7 +61,21 @@
                         </bk-option>
                     </bk-select>
                 </template>
+                <template slot="groups" slot-scope="{ row }">
+                    <span>{{getOrganizationOrSuperior(row, { listKey: 'groups', fieldKey: 'path' })}}</span>
+                </template>
                 <template slot="operation" slot-scope="{ row }">
+                    <bk-button
+                        class="mr10"
+                        theme="primary"
+                        text
+                        v-permission="{
+                            id: $route.name,
+                            type: 'SysUser_edit'
+                        }"
+                        @click="operateGroup(row)">
+                        设置组织
+                    </bk-button>
                     <bk-button
                         class="mr10"
                         theme="primary"
@@ -100,6 +114,7 @@
         </div>
         <reset-password ref="resetPassword"></reset-password>
         <operate-user ref="operateUser" @refreshList="refreshList"></operate-user>
+        <group-setting ref="operateGroup" @confirm="confirm"></group-setting>
     </div>
 </template>
 
@@ -108,12 +123,14 @@
     import resetPassword from './resetPassword.vue'
     import operateUser from './operateUser.vue'
     import { Vue, Component } from 'vue-property-decorator'
+    import GroupSetting from './groupSetting.vue'
     @Component({
     name: 'user-manage',
     components: {
         comTable,
         resetPassword,
-        operateUser
+        operateUser,
+        GroupSetting
     }
 })
     export default class UserManage extends Vue {
@@ -149,10 +166,17 @@
             filterMultiple: true
         },
         {
+            label: '组织',
+            key: 'groups',
+            align: 'left',
+            minWidth: '100px',
+            scopedSlots: 'groups'
+        },
+        {
             label: '操作',
             key: 'operation',
             align: 'left',
-            width: '180px',
+            width: '240px',
             fixed: 'right',
             scopedSlots: 'operation'
         }
@@ -176,7 +200,7 @@
         }
     }
     getOrganizationOrSuperior(row, { listKey, fieldKey }) {
-        return row[listKey].map(item => item[fieldKey]).join(';') || '--'
+        return row[listKey].map(item => item[fieldKey].slice(1)).join(';') || '--'
     }
     sourceFilterMethod(val) {
        this.roles = Object.values(val).flat()
@@ -188,7 +212,7 @@
             // this.confirmSetRole(data)
             const deleteRolesId = []
             const arr1 = data.roleV1
-            const arr2 = data.roles
+            const arr2 = data.allRoles
             for (let i = 0; i < arr1.length; i++) {
                 if (!arr2.includes(arr1[i])) {
                     deleteRolesId.push(arr1[i])
@@ -270,16 +294,16 @@
         }
     }
     setUserRole(data) {
-        const flag = data.roles.sort().toString() === data.roleV1.sort().toString()
-        if (data.roles.length !== data.roleV1.length || (data.roles.length === data.roleV1.length && !flag)) {
+        const flag = data.allRoles.sort().toString() === data.roleV1.sort().toString()
+        if (data.allRoles.length !== data.roleV1.length || (data.allRoles.length === data.roleV1.length && !flag)) {
             this.confirmSetRole(data)
         }
     }
     confirmSetRole(data) {
         // 要添加的角色
-        const addRolesId = this.compareArrays(data.roles, data.roleV1)
+        const addRolesId = this.compareArrays(data.allRoles, data.roleV1)
         // 要删除的角色
-        const deleteRolesId = this.compareArrays(data.roleV1, data.roles)
+        const deleteRolesId = this.compareArrays(data.roleV1, data.allRoles)
         const addPromises = addRolesId.map(id => {
             return this.$api.UserManageMain.setUserRoles({id: id, userId: data.id})
         })
@@ -312,8 +336,14 @@
             this.dataList.forEach(item => {
                 // 设置roles
                 const roles = item.roles.map(item => item.id)
-                this.$set(item, 'roles', roles)
-                this.$set(item, 'roleV1', roles)
+                // 组织的roles
+                const groupRoles = item.group_roles.map(item => item.id)
+                // 去重
+                const allRoles = Array.from(new Set([...roles, ...groupRoles].map(JSON.stringify))).map(JSON.parse)
+                // 设置allRoles，allRoles与v-model绑定
+                this.$set(item, 'allRoles', allRoles)
+                // roleV1存放原始角色数据
+                this.$set(item, 'roleV1', allRoles)
             })
             this.pagination.count = res.data.count
         }).finally(() => {
@@ -355,6 +385,16 @@
     compareArrays(arrayA, arrayB) {
         const valuesOnlyInA = arrayA.filter(item => !arrayB.includes(item))
         return valuesOnlyInA
+    }
+    // 设置组织
+    operateGroup(row) {
+        const operateGroup: any = this.$refs.operateGroup
+        operateGroup.show(row.groups, row.id)
+    }
+    // 设置组织完成后调用，重新获得数据
+    confirm() {
+        this.getUserList()
+        this.getRoleList()
     }
 }
 </script>
