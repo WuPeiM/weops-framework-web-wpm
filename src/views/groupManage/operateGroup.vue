@@ -11,8 +11,8 @@
     >
         <div class="content-box" v-bkloading="{ isLoading: loading, zIndex: 10 }">
             <bk-form :label-width="90" :model="formData" :rules="rules" ref="organizationValidateForm">
-                <bk-form-item label="名称" :required="true" :property="'organization_name'">
-                    <bk-input v-model="formData.organization_name" placeholder="请输入组织名称"></bk-input>
+                <bk-form-item label="名称" :required="true" :property="'group_name'">
+                    <bk-input v-model="formData.group_name" placeholder="请输入组织名称"></bk-input>
                 </bk-form-item>
             </bk-form>
         </div>
@@ -30,17 +30,17 @@
 <script lang="ts">
     import { Vue, Component } from 'vue-property-decorator'
     @Component
-    export default class OperateOrganization extends Vue {
+    export default class OperateGroup extends Vue {
         visible: boolean = false
         loading: boolean = false
         roleInfo: any = ''
         type: string = ''
         formData = {
-            organization_name: '',
+            group_name: '',
             id: ''
         }
         rules = {
-            organization_name: [
+            group_name: [
                 {
                     required: true,
                     message: '必填项',
@@ -60,11 +60,13 @@
         show(type, data) {
             this.visible = true
             this.type = type
-            // this.formData.organization_name = ''
-            console.log('有data', data)
-            if (['edit', 'copy'].includes(this.type)) {
+            this.formData.group_name = ''
+            if (type === 'addSub') {
+                this.formData.id = data.id
+            }
+            if (['edit'].includes(this.type)) {
                 this.roleInfo = data
-                this.formData.organization_name = data.name
+                this.formData.group_name = data.name
                 if (this.type === 'edit') {
                     this.formData.id = data.id
                 }
@@ -77,35 +79,35 @@
             const organizationValidateForm: any = this.$refs.organizationValidateForm
             organizationValidateForm.validate().then(validator => {
                 let url = ''
-                let params: any = {}
-                if (['add'].includes(this.type)) {
-                    url = 'createOrganization'
-                    params.organization_name = this.formData.organization_name
-                } else {
-                    url = 'editOrganization'
-                    params = {
-                        id: this.formData.id
+                const params: any = {}
+                if (['add', 'addSub'].includes(this.type)) {
+                    url = 'addGroup'
+                    params.group_name = this.formData.group_name
+                    if (this.type === 'addSub') {
+                        params.parent_group_id = this.formData.id
                     }
+                } else {
+                    url = 'editGroup'
+                    params.id = this.formData.id
+                    params.group_name = this.formData.group_name
                 }
-                // this.loading = true
-                // this.$api.RoleManageMain[url](params).then(res => {
-                //     if (!res.result) {
-                //         this.$error(res.message)
-                //         return false
-                //     }
-                //     this.$success(`${this.title}成功!`)
-                //     this.$emit('refreshList')
-                //     this.close()
-                // }).finally(() => {
-                //     this.loading = false
-                // })
+                this.loading = true
+                this.$api.GroupManage[url](params).then(res => {
+                    if (!res.result) {
+                        this.$error(res.message)
+                        return false
+                    }
+                    this.$success(`${this.title}成功!`)
+                    this.$emit('refreshList')
+                    this.close()
+                }).finally(() => {
+                    this.loading = false
+                })
                 this.close()
-                console.log('发送接口', url, this.type)
             })
         }
         closeDialog() {
-            Object.assign(this.$data, this.$options.data.call(this))
-            console.log('likaiq')
+            // Object.assign(this.$data, this.$options.data.call(this))
             const organizationValidateForm: any = this.$refs.organizationValidateForm
             organizationValidateForm.clearError()
         }

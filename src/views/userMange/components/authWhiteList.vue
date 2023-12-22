@@ -110,6 +110,12 @@
             default: () => false
         })
         onlyChooseUser: boolean
+        // 哪里调用，角色管理或者组织管理，调用的接口不一样
+        @Prop({
+            type: String,
+            default: () => 'roleManage'
+        })
+        caller: string
         visible: boolean = false
         loading: boolean = false
         isConfirm: boolean = false
@@ -198,6 +204,7 @@
                 }
             }
             this.selectedData = this.$deepClone(this.isMyCredentials ? originList : (list || originList))
+            // 保存user原始数据
             this.rawSelected = this.$deepClone(this.selectedData.user)
             this.handleAllSelected()
             this.changeMenu(this.onlyChooseUser ? 'user' : 'role')
@@ -272,22 +279,30 @@
             const rawTemp = rawData.map(item => item.id)
             const updateTemp = updateData.map(item => item.id)
             for (let i = 0; i < rawTemp.length; i++) {
-                if (!updateData.includes(rawTemp[i])) {
+                if (!updateTemp.includes(rawTemp[i])) {
                     deleteId.push(rawTemp[i])
                 }
             }
-            const deletePromises = deleteId.map(id => {
-                return this.$api.RoleManageMain.deleteUserRole({id: this.roleDetail.id, userId: id})
-            })
             const addId = []
             for (let i = 0; i < updateTemp.length; i++) {
-                if (!rawData.includes(updateTemp[i])) {
+                if (!rawTemp.includes(updateTemp[i])) {
                     addId.push(updateTemp[i])
                 }
             }
-            const addPromises = addId.map(id => {
-                return this.$api.UserManageMain.setUserRoles({id: this.roleDetail.id, userId: id})
+            // 如果是角色管理页面调用
+            let deletePromises = []
+            let addPromises = []
+            if (this.caller === 'roleManage') {
+                deletePromises = deleteId.map(id => {
+                return this.$api.RoleManageMain.deleteUserRole({id: this.roleDetail.id, userId: id})
             })
+                addPromises = addId.map(id => {
+                    return this.$api.UserManageMain.setUserRoles({id: this.roleDetail.id, userId: id})
+                })
+            } else if (this.caller === 'groupManage') { // 组织管理调用
+                addId.length > 0 && addPromises.push(this.$api.GroupManage.addGroupUsers({id: this.roleDetail.id, addIds: addId}))
+                deleteId.length > 0 && deletePromises.push(this.$api.GroupManage.delGroupUsers({id: this.roleDetail.id, deleteIds: deleteId}))
+            }
             this.isConfirm = true
             try {
                 // const res = await this.$api.UserManageMain.setUsersByRole({

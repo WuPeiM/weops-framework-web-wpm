@@ -10,13 +10,14 @@
                         theme="primary"
                         title="新增组织"
                         class="mr10"
-                        @click="operateOrganization('add')">
+                        @click="operateGroup('add')">
                         新增组织
                     </bk-button>
                     <bk-button
                         theme="default"
                         title="批量删除"
-                        class="mr10">
+                        class="mr10"
+                        @click="deleteNodes">
                         批量删除
                     </bk-button>
                 </div>
@@ -32,18 +33,21 @@
                 >
                 </bk-input>
             </div>
-            <div class="tree-box">
+            <div class="tree-box" v-bkloading="{ isLoading: loading, zIndex: 10 }">
                 <bk-big-tree
                     enable-title-tip
                     ref="tree"
                     :selectable="true"
                     :show-checkbox="true"
+                    @check-change="handleCheck"
+                    :options="{ childrenKey: 'subGroups' }"
+                    default-expand-all
                     :data="nodeData">
                     <div slot-scope="{ node,data }">
                         <div class="node-box">
-                            <span @click="look(data, node)">{{ data.name }}---{{ data.level }}</span>
+                            <span>{{ data.name }}</span>
                             <div class="operate-node">
-                                <bk-button size="small" :text="true" title="primary" @click.stop="operateOrganization('addSub')">
+                                <bk-button size="small" :text="true" title="primary" @click.stop="operateGroup('addSub', data)">
                                     添加子组
                                 </bk-button>
                                 <bk-button size="small" :text="true" title="primary" @click.stop="personnelManage(node)">
@@ -52,7 +56,7 @@
                                 <bk-button size="small" :text="true" title="primary" @click.stop="roleManage(node)">
                                     角色管理
                                 </bk-button>
-                                <bk-button size="small" :text="true" title="primary" @click.stop="operateOrganization('edit', node)">
+                                <bk-button size="small" :text="true" title="primary" @click.stop="operateGroup('edit', node)">
                                     编辑
                                 </bk-button>
                                 <bk-button size="small" :text="true" title="primary" @click.stop="deleteNode(node)">
@@ -64,16 +68,13 @@
                 </bk-big-tree>
             </div>
         </div>
-        <operate-organization ref="operateOrganization" @refreshList="refreshList" />
+        <operate-group ref="operateGroup" @refreshList="refreshList" />
         <auth-white-list
             ref="authWhiteList"
             :only-choose-user="true"
             title="人员管理"
-            @confirm="getRoleList()" />
-        <!-- <auth-white-list
-            ref="roleManageList"
-            title="角色管理"
-            @confirm="getRoleList()" /> -->
+            caller="groupManage"
+            @confirm="getGroups" />
         <role-manage
             ref="roleManage"
             title="角色管理" />
@@ -83,56 +84,53 @@
 <script lang="ts">
     import { Vue, Component } from 'vue-property-decorator'
     import PageExplanation from '@/components/pageExplanation.vue'
-    import operateOrganization from './operateOrganization.vue'
+    import OperateGroup from './operateGroup.vue'
     import AuthWhiteList from '../userMange/components/authWhiteList.vue'
     import RoleManage from './roleManage.vue'
     @Component({
-        name: 'organization-manage',
+        name: 'group-manage',
         components: {
             PageExplanation,
-            operateOrganization,
+            OperateGroup,
             AuthWhiteList,
             RoleManage
         }
     })
-    export default class OrganizationManage extends Vue {
+    export default class GroupManage extends Vue {
         search: string = ''
-        nodeData: any[] = this.getNodes(null, 20, 3)
+        nodeData: any[] = []
+        loading: boolean = false
+        // 存放复选框勾选的id
+        checkedIds: string[] = []
         get user() {
             return this.$store.state.permission.user
         }
-        look(data, node) {
-            console.log('data', data, 'node', node)
+        mounted() {
+            this.getGroups()
         }
         // 新建/编辑组织
-        operateOrganization(type: string, data?: any) {
-            console.log('type')
-            const operateOrganization: any = this.$refs.operateOrganization
-            operateOrganization.show(type, data)
+        operateGroup(type: string, data?: any) {
+            const operateGroup: any = this.$refs.operateGroup
+            operateGroup.show(type, data)
         }
         // 搜索
         handlerIconClick() {
-            console.log('搜搜', this.search)
+            this.getGroups()
         }
-        getNodes(parent, childCount, deep) {
-            const nodes = []
-            for (let i = 0; i < childCount; i++) {
-                const node = {
-                    id: parent ? `${parent.id}-${i}` : `${i}`,
-                    level: parent ? parent.level + 1 : 0,
-                    name: parent ? `${parent.name}-${i}` : `组织-${i}`,
-                    children: null
-                }
-                if (node.level < deep) {
-                    node.children = this.getNodes(node, 3, deep)
-                }
-                nodes.push(node)
+        async getGroups() {
+            this.loading = true
+            const params = {
+                search: this.search
             }
-            return nodes
+            const res = await this.$api.GroupManage.getGroups(params)
+            if (!res.result) {
+                return false
+            }
+            this.nodeData = res.data
+            this.loading = false
         }
         // 删除节点
         deleteNode(node) {
-            console.log('删除节点', node)
             this.$bkInfo({
                 title: '确认要删除该组织？',
                 confirmLoading: true,
@@ -141,38 +139,57 @@
                 }
             })
         }
-        confirmDelete(node) {
-            this.nodeData = this.nodeData.filter(item => item.id !== node.id)
+        // 批量删除
+        deleteNodes() {
+            this.$bkInfo({
+                title: '确认要删除选中组织？',
+                confirmLoading: true,
+                confirmFn: async() => {
+                    await this.confirmDelete()
+                }
+            })
+        }
+        async confirmDelete(node?) {
+            let deleteIds
+            // 有传参则删除一个，没有则删除勾选组织
+            if (node) {
+                deleteIds = [node.id]
+            } else {
+                deleteIds = this.checkedIds
+            }
+            const res = await this.$api.GroupManage.delGroup({ deleteIds })
+            if (res.result) {
+                this.$success('删除成功')
+                this.getGroups()
+            } else {
+                this.$error('删除失败')
+            }
         }
         // 刷新
         refreshList() {
-            console.log('刷新')
+            this.getGroups()
         }
-        getRoleList() {
-            console.log('getRoleList')
-        }
-        async personnelManage(row) {
-            // if (!this.$BtnPermission({
-            //     id: this.$route.name,
-            //     type: 'SysRole_users_manage'
-            // })) {
-            //     return false
-            // }
-            // const res = await this.$api.RoleManageMain.getRoleAllUser({id: row.id})
-            // res.data = res.data.map(item => ({
-            //     id: item.id,
-            //     bk_username: item.username,
-            //     chname: item.lastName
-            // }))
+        async personnelManage(node) {
+            const res = await this.$api.GroupManage.getGroupUsers({id: node.id, page: 1, per_page: 20})
+            res.data = res.data.map(item => ({
+                id: item.id,
+                bk_username: item.username,
+                chname: item.lastName
+            }))
             this.$refs.authWhiteList.showSlider({
-                user: []
-            }, row)
+                user: res.data
+            }, node)
         }
 
-        roleManage(node) {
+        async roleManage(node) {
+            const res = await this.$api.GroupManage.getGroupRoles({id: node.id})
             this.$refs.roleManage.showSlider({
-                role: []
+                role: res.data
             }, node)
+        }
+        // 复选框改变
+        handleCheck(ids) {
+            this.checkedIds = ids
         }
     }
 </script>

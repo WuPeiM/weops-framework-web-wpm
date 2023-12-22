@@ -10,7 +10,7 @@ const SysSetting = () => import('@/views/sysSetting/index.vue')
 const SysLog = () => import('@/views/logManage/index.vue')
 const MenuSetting = () => import('@/views/sysSetting/menuSetting.vue')
 const Login = () => import('@/views/login.vue')
-const SysOrganization = () => import('@/views/organizationManage/index.vue')
+const SysGroup = () => import('@/views/groupManage/index.vue')
 
 let mainRouter = [
     {
@@ -91,9 +91,9 @@ let mainRouter = [
         }
     },
     {
-        path: '/sysOrganization',
-        name: 'SysOrganization',
-        component: SysOrganization,
+        path: '/sysGroup',
+        name: 'SysGroup',
+        component: SysGroup,
         meta: {
             title: '组织管理'
         }
@@ -218,30 +218,30 @@ const routeConfig = [
                     },
                     {
                         name: '组织管理',
-                        id: 'SysOrganization',
+                        id: 'SysGroup',
                         icon: 'cw-icon weops-user',
-                        url: '/sysOrganization',
+                        url: '/sysGroup',
                         auth: [
                             {
-                                key: 'SysOrganization_view',
+                                key: 'SysGroup_view',
                                 value: false,
                                 label: '查看',
                                 type: 'check'
                             },
                             {
-                                key: 'SysOrganization_create',
+                                key: 'SysGroup_create',
                                 value: false,
                                 label: '创建组织',
                                 type: 'operate'
                             },
                             {
-                                key: 'SysOrganization_edit',
+                                key: 'SysGroup_edit',
                                 value: false,
                                 label: '编辑组织',
                                 type: 'operate'
                             },
                             {
-                                key: 'SysOrganization_delete',
+                                key: 'SysGroup_delete',
                                 value: false,
                                 label: '删除组织',
                                 type: 'operate'
