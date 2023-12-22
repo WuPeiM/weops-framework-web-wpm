@@ -7,16 +7,16 @@
             <div class="operate-box">
                 <div>
                     <bk-button
+                        class="mr10"
                         theme="primary"
                         title="新增组织"
-                        class="mr10"
                         @click="operateGroup('add')">
                         新增组织
                     </bk-button>
                     <bk-button
+                        class="mr10"
                         theme="default"
                         title="批量删除"
-                        class="mr10"
                         @click="deleteNodes">
                         批量删除
                     </bk-button>
@@ -35,31 +35,31 @@
             </div>
             <div class="tree-box" v-bkloading="{ isLoading: loading, zIndex: 10 }">
                 <bk-big-tree
-                    enable-title-tip
                     ref="tree"
+                    enable-title-tip
+                    default-expand-all
                     :selectable="true"
                     :show-checkbox="true"
-                    @check-change="handleCheck"
                     :options="{ childrenKey: 'subGroups' }"
-                    default-expand-all
-                    :data="nodeData">
+                    :data="nodeData"
+                    @check-change="handleCheck">
                     <div slot-scope="{ node,data }">
                         <div class="node-box">
                             <span>{{ data.name }}</span>
                             <div class="operate-node">
-                                <bk-button size="small" :text="true" title="primary" @click.stop="operateGroup('addSub', data)">
+                                <bk-button size="small" text title="primary" @click.stop="operateGroup('addSub', data)">
                                     添加子组
                                 </bk-button>
-                                <bk-button size="small" :text="true" title="primary" @click.stop="personnelManage(node)">
+                                <bk-button size="small" text title="primary" @click.stop="personnelManage(node)">
                                     人员管理
                                 </bk-button>
-                                <bk-button size="small" :text="true" title="primary" @click.stop="roleManage(node)">
+                                <bk-button size="small" text title="primary" @click.stop="roleManage(node)">
                                     角色管理
                                 </bk-button>
-                                <bk-button size="small" :text="true" title="primary" @click.stop="operateGroup('edit', node)">
+                                <bk-button size="small" text title="primary" @click.stop="operateGroup('edit', node)">
                                     编辑
                                 </bk-button>
-                                <bk-button size="small" :text="true" title="primary" @click.stop="deleteNode(node)">
+                                <bk-button size="small" text title="primary" @click.stop="deleteNode(node)">
                                     删除
                                 </bk-button>
                             </div>

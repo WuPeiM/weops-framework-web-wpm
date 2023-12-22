@@ -10,10 +10,10 @@
                         id: $route.name,
                         type: 'SysRole_create'
                     }"
+                    class="mr10"
                     theme="primary"
                     title="新增角色"
                     icon="plus"
-                    class="mr10"
                     @click="operateRole('add')">
                     新增角色
                 </bk-button>

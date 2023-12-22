@@ -25,12 +25,12 @@
                     </div>
                     <div class="organization-box" v-bkloading="{ isLoading: loading, zIndex: 10 }">
                         <bk-big-tree
+                            v-if="nodeData.length"
                             enable-title-tip
                             ref="tree"
                             :default-expand-all="true"
                             :options="{ childrenKey: 'subGroups' }"
-                            :data="nodeData"
-                            v-if="nodeData.length">
+                            :data="nodeData">
                             <div slot-scope="{ data }">
                                 <div class="node-box">
                                     <div class="name">{{data.name}}</div>
@@ -42,29 +42,13 @@
                         </bk-big-tree>
                         <bk-exception
                             v-else
+                            :class="{ 'exception-gray': false }"
                             type="empty"
-                            scene="part"
-                            :class="{ 'exception-gray': false }">
+                            scene="part">
                         </bk-exception>
                     </div>
                 </div>
             </div>
-            <!-- <div class="target-list">
-                <div class="header">
-                    <div class="title">已选择列表({{ selectedNode.length }})</div>
-                    <bk-button :text="true" title="primary" @click="handleClear">
-                        清空
-                    </bk-button>
-                </div>
-                <div class="content-box">
-                    <ul>
-                        <li class="list-item" v-for="item in selectedNode" :key="item.id">
-                            <p>{{ item.name }}</p>
-                            <bk-icon type="close" @click="handleDelete(item.id)" />
-                        </li>
-                    </ul>
-                </div>
-            </div> -->
             <div class="selection-container">
                 <p>已选择（共<span>{{ selectedNode.length }}</span>条）<span class="clear" @click="handleClear">清空</span></p>
                 <ul>

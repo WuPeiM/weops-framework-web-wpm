@@ -11,13 +11,13 @@
     >
         <div class="content-box" v-bkloading="{ isLoading: loading, zIndex: 10 }">
             <bk-form :label-width="90" :model="formData" :rules="rules" ref="organizationValidateForm">
-                <bk-form-item label="名称" :required="true" :property="'group_name'">
+                <bk-form-item label="名称" required :property="'group_name'">
                     <bk-input v-model="formData.group_name" placeholder="请输入组织名称"></bk-input>
                 </bk-form-item>
             </bk-form>
         </div>
         <template slot="footer">
-            <bk-button :disabled="loading" :theme="'primary'" :title="'确认'" class="mr10" @click="confirm">
+            <bk-button class="mr10" :disabled="loading" :theme="'primary'" :title="'确认'" @click="confirm">
                 确认
             </bk-button>
             <bk-button :theme="'default'" type="submit" :title="'取消'" @click="close">
@@ -51,11 +51,11 @@
         get title() {
             if (this.type === 'add') {
                 return '新增组织'
-            } else if (this.type === 'edit') {
-                return '编辑组织'
-            } else if (this.type === 'addSub') {
-                return '添加子组'
             }
+            if (this.type === 'edit') {
+                return '编辑组织'
+            }
+            return '添加子组'
         }
         show(type, data) {
             this.visible = true
