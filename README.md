@@ -1,12 +1,12 @@
 # WeOps Framework Web
 ![](https://wedoc.canway.net/imgs/img/嘉为蓝鲸.jpg)
 
-> 嘉为蓝鲸WeOps基础框架前端源码
+> 嘉为WeOps轻量级版本基础框架前端源码
 
 #### 更多问题欢迎添加“小嘉”微信，加入官方沟通群
 ![](https://wedoc.canway.net/imgs/img/小嘉.jpg)
 
-# 嘉为蓝鲸WeOps基础前端框架使用说明
+# 嘉为WeOps轻量级版本基础前端框架使用说明
 
 ## 开发使用
 
@@ -43,20 +43,6 @@
 ├── index.html                 # html模板
 └── package.json               # package.json
 ```
-
-### 分支管理
-
-- main
-
-    main 是主分支。
-
-- feature-lite
-
-    feature-lite 分支依赖于蓝鲸，支持本地mock数据。
-
-- experimental
-  
-    experimental 分支使用的是keycloak的登录，脱离蓝鲸平台，包含登录页，系统管理（角色管理，用户管理，操作日志，系统设置）页面，支持本地mock数据。
 
 ### 开发
 
